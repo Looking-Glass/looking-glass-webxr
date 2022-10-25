@@ -1,8 +1,8 @@
-import { resolve } from 'path'
-import path from 'path'
-import { defineConfig } from 'vite'
+import { resolve } from 'path';
+import path from 'path';
+import { defineConfig } from 'vite';
 
-const entry = resolve(__dirname, 'src/LookingGlassWebXRPolyfill.js')
+const entry = resolve(__dirname, 'src/LookingGlassWebXRPolyfill.js');
 
 export default defineConfig({
   resolve: {
@@ -40,4 +40,4 @@ export default defineConfig({
       }
     }
   }
-})
+});
