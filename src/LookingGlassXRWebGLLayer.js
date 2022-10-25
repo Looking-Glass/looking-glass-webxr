@@ -17,6 +17,7 @@
  import XRWebGLLayer, { PRIVATE as XRWebGLLayer_PRIVATE } from '@lookingglass/webxr-polyfill/src/api/XRWebGLLayer';
  import getLookingGlassConfig from './LookingGlassConfig';
  import { makeControls } from './LookingGlassControls';
+ import { forwardEvents } from './LookingGlassEventBridge';
  import { Shader } from 'holoplay-core';
  
  export const PRIVATE = Symbol('LookingGlassXRWebGLLayer');
@@ -33,6 +34,9 @@
        this.requestFullscreen();
      });
      const controls = makeControls(lkgCanvas);
+
+     const appCanvas = gl.canvas;
+     const disposeEventBridge = forwardEvents(lkgCanvas, appCanvas);
  
      const cfg = getLookingGlassConfig();
  
@@ -188,8 +192,6 @@
        gl.clearStencil(currentClearStencil);
      };
  
-     const appCanvas = gl.canvas;
- 
      let origWidth, origHeight;
  
      const blitTextureToDefaultFramebufferIfNeeded = () => {
@@ -306,6 +308,7 @@
      this[PRIVATE] = {
        LookingGlassEnabled: false,
        framebuffer,
+       disposeEventBridge,
        clearFramebuffer,
        blitTextureToDefaultFramebufferIfNeeded,
        moveCanvasToWindow,
