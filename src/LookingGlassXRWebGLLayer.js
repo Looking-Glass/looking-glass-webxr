@@ -15,7 +15,6 @@
  */
 
  import XRWebGLLayer, { PRIVATE as XRWebGLLayer_PRIVATE } from '@lookingglass/webxr-polyfill/src/api/XRWebGLLayer';
- import _global from '@lookingglass/webxr-polyfill/src/lib/global';
  import getLookingGlassConfig from './LookingGlassConfig';
  import { makeControls } from './LookingGlassControls';
  import { Shader } from 'holoplay-core';
@@ -218,7 +217,6 @@
        const oldRenderbufferBinding = gl.getParameter(gl.RENDERBUFFER_BINDING);
        const oldProgram = gl.getParameter(gl.CURRENT_PROGRAM);
        const oldActiveTexture = gl.getParameter(gl.ACTIVE_TEXTURE);
- 
        {
          const oldTextureBinding = gl.getParameter(gl.TEXTURE_BINDING_2D);
          {
@@ -307,6 +305,7 @@
  
      this[PRIVATE] = {
        LookingGlassEnabled: false,
+       FBOOveride: false,
        framebuffer,
        clearFramebuffer,
        blitTextureToDefaultFramebufferIfNeeded,
