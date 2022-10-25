@@ -1,19 +1,12 @@
-import { resolve } from 'path';
-import path from 'path';
-import { defineConfig } from 'vite';
-
-const entry = resolve(__dirname, 'src/LookingGlassWebXRPolyfill.js');
+import { resolve } from 'path'
+import path from 'path'
+import { defineConfig } from 'vite'
 
 export default defineConfig({
-  resolve: {
-    alias: {
-      '@lookingglass/webxr': entry
-    }
-  },
   build: {
     minify: true,
     lib: {
-      entry,
+      entry: resolve(__dirname, 'src/LookingGlassWebXRPolyfill.js'),
       name: 'Looking Glass WebXR',
       // the proper extensions will be added
       fileName: '@lookingglass/webxr'
@@ -40,4 +33,4 @@ export default defineConfig({
       }
     }
   }
-});
+})
