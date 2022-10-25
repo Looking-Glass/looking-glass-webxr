@@ -46,10 +46,10 @@
       scene.add(new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshNormalMaterial()));
 
       window.addEventListener('resize', () => {
-        renderer.setSize(window.innerWidth, window.innerHeight)
-        camera.aspect = window.innerWidth / window.innerHeight
-        camera.updateProjectionMatrix()
-      })
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+      });
 
       renderer.setAnimationLoop(() => {
         // Uncomment this line to reproduce

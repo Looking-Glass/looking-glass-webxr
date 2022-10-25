@@ -222,8 +222,8 @@
        // Copy to layer framebuffer when targets mismatch
        const isWebGL2 = gl instanceof _global.WebGL2RenderingContext
        if (isWebGL2 && oldFramebufferBinding !== this.framebuffer) {
-         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, oldFramebufferBinding)
-         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.framebuffer);;
+         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, oldFramebufferBinding);
+         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.framebuffer);
          gl.blitFramebuffer(
            0,
            0,
