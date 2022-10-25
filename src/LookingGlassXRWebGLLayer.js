@@ -219,27 +219,6 @@
        const oldProgram = gl.getParameter(gl.CURRENT_PROGRAM);
        const oldActiveTexture = gl.getParameter(gl.ACTIVE_TEXTURE);
  
-       // Copy to layer framebuffer when targets mismatch
-       const isWebGL2 = gl instanceof _global.WebGL2RenderingContext
-       if (isWebGL2 && oldFramebufferBinding !== this.framebuffer) {
-         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, oldFramebufferBinding);
-         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, this.framebuffer);
-         gl.blitFramebuffer(
-           0,
-           0,
-           gl.drawingBufferWidth,
-           gl.drawingBufferHeight,
-           0,
-           0,
-           gl.drawingBufferWidth,
-           gl.drawingBufferHeight,
-           gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT | gl.STENCIL_BUFFER_BIT,
-           gl.NEAREST,
-         );
-         gl.bindFramebuffer(gl.READ_FRAMEBUFFER, null);
-         gl.bindFramebuffer(gl.DRAW_FRAMEBUFFER, null);
-       }
- 
        {
          const oldTextureBinding = gl.getParameter(gl.TEXTURE_BINDING_2D);
          {
