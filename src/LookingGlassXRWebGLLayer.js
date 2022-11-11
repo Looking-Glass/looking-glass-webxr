@@ -305,6 +305,7 @@
  
      this[PRIVATE] = {
        LookingGlassEnabled: false,
+       FBOOveride: false,
        framebuffer,
        clearFramebuffer,
        blitTextureToDefaultFramebufferIfNeeded,

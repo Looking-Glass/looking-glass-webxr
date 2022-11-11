@@ -40,9 +40,22 @@ export default class LookingGlassXRDevice extends XRDevice {
 
     const baseLayerPrivate = layer[LookingGlassXRWebGLLayer_PRIVATE];
     baseLayerPrivate.LookingGlassEnabled = session.immersive;
+
     if (session.immersive) {
+      // In an immersive session, we render WebXR content in a separate window,
+      // so we want to ensure that draws to the canvas backbuffer are always pointed to our
+      // XRWebGLLayer and thus the separate window, so we retarget `null` to `XRWebGLLayer.framebuffer`.
+      // https://github.com/Looking-Glass/looking-glass-webxr/pull/5
+      const gl = session.baseLayer.context;
+      const bindFramebuffer = gl.bindFramebuffer.bind(gl);
+      gl.bindFramebuffer = function(type, target) {
+        if (baseLayerPrivate.FBOOveride) target ??= baseLayerPrivate.framebuffer;
+        bindFramebuffer(type, target);
+      }
+
       baseLayerPrivate.moveCanvasToWindow(true, () => {
         this.endSession(sessionId);
+        gl.bindFramebuffer = bindFramebuffer;
       });
     }
   }
@@ -128,6 +141,7 @@ export default class LookingGlassXRDevice extends XRDevice {
       }
 
       const baseLayerPrivate = session.baseLayer[LookingGlassXRWebGLLayer_PRIVATE];
+      baseLayerPrivate.FBOOveride = true;
       baseLayerPrivate.clearFramebuffer();
     } else {
       const gl = session.baseLayer.context;
@@ -145,7 +159,10 @@ export default class LookingGlassXRDevice extends XRDevice {
 
   onFrameEnd(sessionId) {
     const session = this.sessions.get(sessionId);
-    session.baseLayer[LookingGlassXRWebGLLayer_PRIVATE].blitTextureToDefaultFramebufferIfNeeded();
+    const baseLayerPrivate = session.baseLayer[LookingGlassXRWebGLLayer_PRIVATE];
+
+    if (session.immersive) baseLayerPrivate.FBOOveride = false;
+    baseLayerPrivate.blitTextureToDefaultFramebufferIfNeeded();    
   }
 
   async requestFrameOfReferenceTransform(type, options) {
