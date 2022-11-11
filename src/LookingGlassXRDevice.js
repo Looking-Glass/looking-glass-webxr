@@ -165,7 +165,9 @@ export default class LookingGlassXRDevice extends XRDevice {
   endSession(sessionId) {
     const session = this.sessions.get(sessionId);
     if (session.immersive && session.baseLayer) {
-      session.baseLayer[LookingGlassXRWebGLLayer_PRIVATE].moveCanvasToWindow(false);
+      const baseLayerPrivate = session.baseLayer[LookingGlassXRWebGLLayer_PRIVATE];
+      baseLayerPrivate.moveCanvasToWindow(false);
+      baseLayerPrivate.disposeEventBridge();
       this.dispatchEvent('@@webxr-polyfill/vr-present-end', sessionId);
     }
     session.ended = true;
