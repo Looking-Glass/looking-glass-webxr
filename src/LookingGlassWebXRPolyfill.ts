@@ -20,6 +20,8 @@ import WebXRPolyfill from "@lookingglass/webxr-polyfill/src/WebXRPolyfill"
 import { getLookingGlassConfig, updateLookingGlassConfig, ViewControlArgs } from "./LookingGlassConfig"
 import LookingGlassXRDevice from "./LookingGlassXRDevice"
 import LookingGlassXRWebGLLayer from "./LookingGlassXRWebGLLayer"
+import { webXRButton, setStyle } from './LookingGlassStyles';
+import { CreateLookingGlassWebXRButton } from './LookingGlassWebXRButton';
 
 export class LookingGlassWebXRPolyfill extends WebXRPolyfill {
 	private vrButton: HTMLButtonElement | undefined
@@ -60,7 +62,7 @@ export class LookingGlassWebXRPolyfill extends WebXRPolyfill {
 
 	/** If a "Enter VR" button exists, let's override it with our own copy */
 	private async overrideDefaultVRButton() {
-		this.vrButton = await waitForElement<HTMLButtonElement>("VRButton")
+		this.vrButton = await waitForElement<HTMLButtonElement>("xrbutton")
 
 		if (this.vrButton && this.device) {
 			this.device.addEventListener("@@webxr-polyfill/vr-present-start", () => {
@@ -86,6 +88,7 @@ export class LookingGlassWebXRPolyfill extends WebXRPolyfill {
 		if (this.vrButton) {
 			// Hack: Need to delay slightly in order to properly update
 			await delay(100)
+			setStyle(this.vrButton, webXRButton)
 			if (this.isPresenting) {
 				this.vrButton.innerHTML = "EXIT LOOKING GLASS"
 			} else {
@@ -140,3 +143,4 @@ function delay(ms: number) {
  * ```
  */
 export const LookingGlassConfig = getLookingGlassConfig()
+// export const LookingGlassWebXRButton = CreateLookingGlassWebXRButton()
