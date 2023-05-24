@@ -58,6 +58,14 @@
 
 				renderer.render(scene, camera)
 			})
+			
+			function resize() {
+				renderer.setSize(innerWidth, innerHeight)
+				camera.aspect = innerWidth / innerHeight
+				camera.updateProjectionMatrix()
+			}
+			resize()
+			window.addEventListener("resize", resize)
 		</script>
 	</body>
 </html>

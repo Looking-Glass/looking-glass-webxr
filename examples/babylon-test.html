@@ -105,6 +105,11 @@
 			babylonEngine.runRenderLoop(() => {
 			  scene.render()
 			})
+
+			// Resize
+			window.addEventListener("resize", function () {
+				babylonEngine.resize()
+			})
 		</script>
         <div>
 	</body>

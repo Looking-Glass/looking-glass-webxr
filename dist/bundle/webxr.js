@@ -6791,21 +6791,13 @@ function Shader(cfg) {
     // Flip UVs if necessary
     nuv.x = (1.0 - flipX) * nuv.x + flipX * (1.0 - nuv.x);
     nuv.y = (1.0 - flipY) * nuv.y + flipY * (1.0 - nuv.y);
-    vec3 views = nuv;
     for (int i = 0; i < 3; i++) {
       nuv.z = (v_texcoord.x + float(i) * subp + v_texcoord.y * tilt) * pitch - center;
       nuv.z = mod(nuv.z + ceil(abs(nuv.z)), 1.0);
       nuv.z = (1.0 - invView) * nuv.z + invView * (1.0 - nuv.z);
-      views[i] = nuv.z;
       rgb[i] = texture2D(u_texture, texArr(vec3(v_texcoord.x, v_texcoord.y, nuv.z)));
     }
     gl_FragColor = vec4(rgb[0].r, rgb[1].g, rgb[2].b, 1);
-
-    // black: 0.0 -> 0.06, gradient to color: 0.06 -> 0.15, color: 0.15 -> 0.85,
-    // gradient to black: 0.85 -> 0.94, black: 0.94 -> 1.0
-    vec3 dimValues = min(-0.7932489 + 14.0647 * views - 14.0647 * views * views, 1.0);
-    vec4 dim = vec4(dimValues, 1.0);
-    gl_FragColor *= dim;
   }
 `;
 }
