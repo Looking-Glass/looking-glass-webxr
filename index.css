@@ -117,8 +117,11 @@ body {
   .example {
     padding: 0;
     margin: 0;
-    height: 700px;
+  }
+
+  .scene {
     width: 400px;
+    height: 700px;
   }
 
   /* Small screens */
@@ -126,10 +129,11 @@ body {
     .example-grid {
       /* On small screens, try using columns instead of rows */
       flex-flow: column wrap;
-      padding: 10px;
+      /* Make this asymetrical to leave room for a thumb track */
+      padding-right: 40px;
     }
 
-    .example {
+    .scene {
       width: 100%;
       height: 500px;
     }
