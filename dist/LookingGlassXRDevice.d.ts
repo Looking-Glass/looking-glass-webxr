@@ -29,11 +29,11 @@ export default class LookingGlassXRDevice extends XRDevice {
     requestFrameOfReferenceTransform(type: any, options: any): Promise<any>;
     endSession(sessionId: any): void;
     doesSessionSupportReferenceSpace(sessionId: any, type: any): any;
-    getViewSpaces(mode: any): any[] | undefined;
+    getViewSpaces(mode: any): any;
     getViewport(sessionId: any, eye: any, layer: any, target: any, viewIndex: any): boolean;
     getProjectionMatrix(eye: any, viewIndex: any): any;
-    getBasePoseMatrix(): any[];
-    getBaseViewMatrix(): any[];
+    getBasePoseMatrix(): any;
+    getBaseViewMatrix(): any;
     _getViewMatrixByIndex(viewIndex: any): any;
     getInputSources(): never[];
     getInputPose(inputSource: any, coordinateSystem: any, poseType: any): null;

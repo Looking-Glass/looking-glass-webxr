@@ -4,12 +4,13 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/webxr.umd.cjs",
-  "module": "./dist/webxr.js",
+  "main": "./dist/webxr.js",
+  "module": "./dist/webxr.cjs",
+  "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "import": "./dist/webxr.js",
-      "require": "./dist/webxr.umd.cjs"
+      "require": "./dist/webxr.cjs"
     }
   },
   "version": "0.4.0-alpha.4",

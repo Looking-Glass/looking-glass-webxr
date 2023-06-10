@@ -1,889 +1,381 @@
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
-const PRIVATE$j = Symbol("@@webxr-polyfill/EventTarget");
-class EventTarget$1 {
+var Nr = Object.defineProperty;
+var kr = (i, e, t) => e in i ? Nr(i, e, { enumerable: !0, configurable: !0, writable: !0, value: t }) : i[e] = t;
+var ye = (i, e, t) => (kr(i, typeof e != "symbol" ? e + "" : e, t), t);
+const mt = Symbol("@@webxr-polyfill/EventTarget");
+class li {
   constructor() {
-    this[PRIVATE$j] = {
+    this[mt] = {
       listeners: /* @__PURE__ */ new Map()
     };
   }
-  addEventListener(type, listener) {
-    if (typeof type !== "string") {
+  addEventListener(e, t) {
+    if (typeof e != "string")
       throw new Error("`type` must be a string");
-    }
-    if (typeof listener !== "function") {
+    if (typeof t != "function")
       throw new Error("`listener` must be a function");
-    }
-    const typedListeners = this[PRIVATE$j].listeners.get(type) || [];
-    typedListeners.push(listener);
-    this[PRIVATE$j].listeners.set(type, typedListeners);
+    const s = this[mt].listeners.get(e) || [];
+    s.push(t), this[mt].listeners.set(e, s);
   }
-  removeEventListener(type, listener) {
-    if (typeof type !== "string") {
+  removeEventListener(e, t) {
+    if (typeof e != "string")
       throw new Error("`type` must be a string");
-    }
-    if (typeof listener !== "function") {
+    if (typeof t != "function")
       throw new Error("`listener` must be a function");
-    }
-    const typedListeners = this[PRIVATE$j].listeners.get(type) || [];
-    for (let i = typedListeners.length; i >= 0; i--) {
-      if (typedListeners[i] === listener) {
-        typedListeners.pop();
-      }
-    }
+    const s = this[mt].listeners.get(e) || [];
+    for (let o = s.length; o >= 0; o--)
+      s[o] === t && s.pop();
   }
-  dispatchEvent(type, event) {
-    const typedListeners = this[PRIVATE$j].listeners.get(type) || [];
-    const queue = [];
-    for (let i = 0; i < typedListeners.length; i++) {
-      queue[i] = typedListeners[i];
-    }
-    for (let listener of queue) {
-      listener(event);
-    }
-    if (typeof this[`on${type}`] === "function") {
-      this[`on${type}`](event);
-    }
+  dispatchEvent(e, t) {
+    const s = this[mt].listeners.get(e) || [], o = [];
+    for (let h = 0; h < s.length; h++)
+      o[h] = s[h];
+    for (let h of o)
+      h(t);
+    typeof this[`on${e}`] == "function" && this[`on${e}`](t);
   }
 }
-const EPSILON$1 = 1e-6;
-let ARRAY_TYPE$1 = typeof Float32Array !== "undefined" ? Float32Array : Array;
-function create$5() {
-  let out = new ARRAY_TYPE$1(16);
-  if (ARRAY_TYPE$1 != Float32Array) {
-    out[1] = 0;
-    out[2] = 0;
-    out[3] = 0;
-    out[4] = 0;
-    out[6] = 0;
-    out[7] = 0;
-    out[8] = 0;
-    out[9] = 0;
-    out[11] = 0;
-    out[12] = 0;
-    out[13] = 0;
-    out[14] = 0;
-  }
-  out[0] = 1;
-  out[5] = 1;
-  out[10] = 1;
-  out[15] = 1;
-  return out;
+const Gr = 1e-6;
+let xe = typeof Float32Array < "u" ? Float32Array : Array;
+function qe() {
+  let i = new xe(16);
+  return xe != Float32Array && (i[1] = 0, i[2] = 0, i[3] = 0, i[4] = 0, i[6] = 0, i[7] = 0, i[8] = 0, i[9] = 0, i[11] = 0, i[12] = 0, i[13] = 0, i[14] = 0), i[0] = 1, i[5] = 1, i[10] = 1, i[15] = 1, i;
 }
-function copy$3(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  out[4] = a[4];
-  out[5] = a[5];
-  out[6] = a[6];
-  out[7] = a[7];
-  out[8] = a[8];
-  out[9] = a[9];
-  out[10] = a[10];
-  out[11] = a[11];
-  out[12] = a[12];
-  out[13] = a[13];
-  out[14] = a[14];
-  out[15] = a[15];
-  return out;
+function Vr(i, e) {
+  return i[0] = e[0], i[1] = e[1], i[2] = e[2], i[3] = e[3], i[4] = e[4], i[5] = e[5], i[6] = e[6], i[7] = e[7], i[8] = e[8], i[9] = e[9], i[10] = e[10], i[11] = e[11], i[12] = e[12], i[13] = e[13], i[14] = e[14], i[15] = e[15], i;
 }
-function identity(out) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = 1;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = 0;
-  out[10] = 1;
-  out[11] = 0;
-  out[12] = 0;
-  out[13] = 0;
-  out[14] = 0;
-  out[15] = 1;
-  return out;
+function et(i) {
+  return i[0] = 1, i[1] = 0, i[2] = 0, i[3] = 0, i[4] = 0, i[5] = 1, i[6] = 0, i[7] = 0, i[8] = 0, i[9] = 0, i[10] = 1, i[11] = 0, i[12] = 0, i[13] = 0, i[14] = 0, i[15] = 1, i;
 }
-function invert$2(out, a) {
-  let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
-  let a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
-  let a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
-  let a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
-  let b00 = a00 * a11 - a01 * a10;
-  let b01 = a00 * a12 - a02 * a10;
-  let b02 = a00 * a13 - a03 * a10;
-  let b03 = a01 * a12 - a02 * a11;
-  let b04 = a01 * a13 - a03 * a11;
-  let b05 = a02 * a13 - a03 * a12;
-  let b06 = a20 * a31 - a21 * a30;
-  let b07 = a20 * a32 - a22 * a30;
-  let b08 = a20 * a33 - a23 * a30;
-  let b09 = a21 * a32 - a22 * a31;
-  let b10 = a21 * a33 - a23 * a31;
-  let b11 = a22 * a33 - a23 * a32;
-  let det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-  if (!det) {
-    return null;
-  }
-  det = 1 / det;
-  out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-  out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-  out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-  out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
-  out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-  out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-  out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-  out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
-  out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-  out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-  out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-  out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
-  out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
-  out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
-  out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
-  out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
-  return out;
+function It(i, e) {
+  let t = e[0], s = e[1], o = e[2], h = e[3], d = e[4], u = e[5], m = e[6], v = e[7], y = e[8], _ = e[9], x = e[10], R = e[11], F = e[12], C = e[13], B = e[14], N = e[15], Q = t * u - s * d, P = t * m - o * d, I = t * v - h * d, G = s * m - o * u, O = s * v - h * u, W = o * v - h * m, z = y * C - _ * F, Z = y * B - x * F, K = y * N - R * F, D = _ * B - x * C, V = _ * N - R * C, L = x * N - R * B, M = Q * L - P * V + I * D + G * K - O * Z + W * z;
+  return M ? (M = 1 / M, i[0] = (u * L - m * V + v * D) * M, i[1] = (o * V - s * L - h * D) * M, i[2] = (C * W - B * O + N * G) * M, i[3] = (x * O - _ * W - R * G) * M, i[4] = (m * K - d * L - v * Z) * M, i[5] = (t * L - o * K + h * Z) * M, i[6] = (B * I - F * W - N * P) * M, i[7] = (y * W - x * I + R * P) * M, i[8] = (d * V - u * K + v * z) * M, i[9] = (s * K - t * V - h * z) * M, i[10] = (F * O - C * I + N * Q) * M, i[11] = (_ * I - y * O - R * Q) * M, i[12] = (u * Z - d * D - m * z) * M, i[13] = (t * D - s * Z + o * z) * M, i[14] = (C * P - F * G - B * Q) * M, i[15] = (y * G - _ * P + x * Q) * M, i) : null;
 }
-function multiply$1(out, a, b) {
-  let a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
-  let a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
-  let a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
-  let a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
-  let b0 = b[0], b1 = b[1], b2 = b[2], b3 = b[3];
-  out[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-  out[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-  out[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-  out[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
-  b0 = b[4];
-  b1 = b[5];
-  b2 = b[6];
-  b3 = b[7];
-  out[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-  out[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-  out[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-  out[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
-  b0 = b[8];
-  b1 = b[9];
-  b2 = b[10];
-  b3 = b[11];
-  out[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-  out[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-  out[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-  out[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
-  b0 = b[12];
-  b1 = b[13];
-  b2 = b[14];
-  b3 = b[15];
-  out[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-  out[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-  out[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-  out[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
-  return out;
+function tt(i, e, t) {
+  let s = e[0], o = e[1], h = e[2], d = e[3], u = e[4], m = e[5], v = e[6], y = e[7], _ = e[8], x = e[9], R = e[10], F = e[11], C = e[12], B = e[13], N = e[14], Q = e[15], P = t[0], I = t[1], G = t[2], O = t[3];
+  return i[0] = P * s + I * u + G * _ + O * C, i[1] = P * o + I * m + G * x + O * B, i[2] = P * h + I * v + G * R + O * N, i[3] = P * d + I * y + G * F + O * Q, P = t[4], I = t[5], G = t[6], O = t[7], i[4] = P * s + I * u + G * _ + O * C, i[5] = P * o + I * m + G * x + O * B, i[6] = P * h + I * v + G * R + O * N, i[7] = P * d + I * y + G * F + O * Q, P = t[8], I = t[9], G = t[10], O = t[11], i[8] = P * s + I * u + G * _ + O * C, i[9] = P * o + I * m + G * x + O * B, i[10] = P * h + I * v + G * R + O * N, i[11] = P * d + I * y + G * F + O * Q, P = t[12], I = t[13], G = t[14], O = t[15], i[12] = P * s + I * u + G * _ + O * C, i[13] = P * o + I * m + G * x + O * B, i[14] = P * h + I * v + G * R + O * N, i[15] = P * d + I * y + G * F + O * Q, i;
 }
-function fromRotationTranslation(out, q, v) {
-  let x = q[0], y = q[1], z = q[2], w = q[3];
-  let x2 = x + x;
-  let y2 = y + y;
-  let z2 = z + z;
-  let xx = x * x2;
-  let xy = x * y2;
-  let xz = x * z2;
-  let yy = y * y2;
-  let yz = y * z2;
-  let zz = z * z2;
-  let wx = w * x2;
-  let wy = w * y2;
-  let wz = w * z2;
-  out[0] = 1 - (yy + zz);
-  out[1] = xy + wz;
-  out[2] = xz - wy;
-  out[3] = 0;
-  out[4] = xy - wz;
-  out[5] = 1 - (xx + zz);
-  out[6] = yz + wx;
-  out[7] = 0;
-  out[8] = xz + wy;
-  out[9] = yz - wx;
-  out[10] = 1 - (xx + yy);
-  out[11] = 0;
-  out[12] = v[0];
-  out[13] = v[1];
-  out[14] = v[2];
-  out[15] = 1;
-  return out;
+function St(i, e, t) {
+  let s = e[0], o = e[1], h = e[2], d = e[3], u = s + s, m = o + o, v = h + h, y = s * u, _ = s * m, x = s * v, R = o * m, F = o * v, C = h * v, B = d * u, N = d * m, Q = d * v;
+  return i[0] = 1 - (R + C), i[1] = _ + Q, i[2] = x - N, i[3] = 0, i[4] = _ - Q, i[5] = 1 - (y + C), i[6] = F + B, i[7] = 0, i[8] = x + N, i[9] = F - B, i[10] = 1 - (y + R), i[11] = 0, i[12] = t[0], i[13] = t[1], i[14] = t[2], i[15] = 1, i;
 }
-function getTranslation(out, mat) {
-  out[0] = mat[12];
-  out[1] = mat[13];
-  out[2] = mat[14];
-  return out;
+function zi(i, e) {
+  return i[0] = e[12], i[1] = e[13], i[2] = e[14], i;
 }
-function getRotation(out, mat) {
-  let trace = mat[0] + mat[5] + mat[10];
-  let S = 0;
-  if (trace > 0) {
-    S = Math.sqrt(trace + 1) * 2;
-    out[3] = 0.25 * S;
-    out[0] = (mat[6] - mat[9]) / S;
-    out[1] = (mat[8] - mat[2]) / S;
-    out[2] = (mat[1] - mat[4]) / S;
-  } else if (mat[0] > mat[5] && mat[0] > mat[10]) {
-    S = Math.sqrt(1 + mat[0] - mat[5] - mat[10]) * 2;
-    out[3] = (mat[6] - mat[9]) / S;
-    out[0] = 0.25 * S;
-    out[1] = (mat[1] + mat[4]) / S;
-    out[2] = (mat[8] + mat[2]) / S;
-  } else if (mat[5] > mat[10]) {
-    S = Math.sqrt(1 + mat[5] - mat[0] - mat[10]) * 2;
-    out[3] = (mat[8] - mat[2]) / S;
-    out[0] = (mat[1] + mat[4]) / S;
-    out[1] = 0.25 * S;
-    out[2] = (mat[6] + mat[9]) / S;
-  } else {
-    S = Math.sqrt(1 + mat[10] - mat[0] - mat[5]) * 2;
-    out[3] = (mat[1] - mat[4]) / S;
-    out[0] = (mat[8] + mat[2]) / S;
-    out[1] = (mat[6] + mat[9]) / S;
-    out[2] = 0.25 * S;
-  }
-  return out;
+function Qi(i, e) {
+  let t = e[0] + e[5] + e[10], s = 0;
+  return t > 0 ? (s = Math.sqrt(t + 1) * 2, i[3] = 0.25 * s, i[0] = (e[6] - e[9]) / s, i[1] = (e[8] - e[2]) / s, i[2] = (e[1] - e[4]) / s) : e[0] > e[5] && e[0] > e[10] ? (s = Math.sqrt(1 + e[0] - e[5] - e[10]) * 2, i[3] = (e[6] - e[9]) / s, i[0] = 0.25 * s, i[1] = (e[1] + e[4]) / s, i[2] = (e[8] + e[2]) / s) : e[5] > e[10] ? (s = Math.sqrt(1 + e[5] - e[0] - e[10]) * 2, i[3] = (e[8] - e[2]) / s, i[0] = (e[1] + e[4]) / s, i[1] = 0.25 * s, i[2] = (e[6] + e[9]) / s) : (s = Math.sqrt(1 + e[10] - e[0] - e[5]) * 2, i[3] = (e[1] - e[4]) / s, i[0] = (e[8] + e[2]) / s, i[1] = (e[6] + e[9]) / s, i[2] = 0.25 * s), i;
 }
-function perspective$1(out, fovy, aspect, near, far) {
-  let f = 1 / Math.tan(fovy / 2), nf;
-  out[0] = f / aspect;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = f;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = 0;
-  out[11] = -1;
-  out[12] = 0;
-  out[13] = 0;
-  out[15] = 0;
-  if (far != null && far !== Infinity) {
-    nf = 1 / (near - far);
-    out[10] = (far + near) * nf;
-    out[14] = 2 * far * near * nf;
-  } else {
-    out[10] = -1;
-    out[14] = -2 * near;
-  }
-  return out;
+function Xi(i, e, t, s, o) {
+  let h = 1 / Math.tan(e / 2), d;
+  return i[0] = h / t, i[1] = 0, i[2] = 0, i[3] = 0, i[4] = 0, i[5] = h, i[6] = 0, i[7] = 0, i[8] = 0, i[9] = 0, i[11] = -1, i[12] = 0, i[13] = 0, i[15] = 0, o != null && o !== 1 / 0 ? (d = 1 / (s - o), i[10] = (o + s) * d, i[14] = 2 * o * s * d) : (i[10] = -1, i[14] = -2 * s), i;
 }
-function create$4() {
-  let out = new ARRAY_TYPE$1(3);
-  if (ARRAY_TYPE$1 != Float32Array) {
-    out[0] = 0;
-    out[1] = 0;
-    out[2] = 0;
-  }
-  return out;
+function ke() {
+  let i = new xe(3);
+  return xe != Float32Array && (i[0] = 0, i[1] = 0, i[2] = 0), i;
 }
-function clone$2(a) {
-  var out = new ARRAY_TYPE$1(3);
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  return out;
+function wi(i) {
+  var e = new xe(3);
+  return e[0] = i[0], e[1] = i[1], e[2] = i[2], e;
 }
-function length(a) {
-  let x = a[0];
-  let y = a[1];
-  let z = a[2];
-  return Math.sqrt(x * x + y * y + z * z);
+function Ur(i) {
+  let e = i[0], t = i[1], s = i[2];
+  return Math.sqrt(e * e + t * t + s * s);
 }
-function fromValues$2(x, y, z) {
-  let out = new ARRAY_TYPE$1(3);
-  out[0] = x;
-  out[1] = y;
-  out[2] = z;
-  return out;
+function Ie(i, e, t) {
+  let s = new xe(3);
+  return s[0] = i, s[1] = e, s[2] = t, s;
 }
-function copy$2(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  return out;
+function yi(i, e) {
+  return i[0] = e[0], i[1] = e[1], i[2] = e[2], i;
 }
-function add(out, a, b) {
-  out[0] = a[0] + b[0];
-  out[1] = a[1] + b[1];
-  out[2] = a[2] + b[2];
-  return out;
+function vt(i, e, t) {
+  return i[0] = e[0] + t[0], i[1] = e[1] + t[1], i[2] = e[2] + t[2], i;
 }
-function scale(out, a, b) {
-  out[0] = a[0] * b;
-  out[1] = a[1] * b;
-  out[2] = a[2] * b;
-  return out;
+function bi(i, e, t) {
+  return i[0] = e[0] * t, i[1] = e[1] * t, i[2] = e[2] * t, i;
 }
-function normalize$2(out, a) {
-  let x = a[0];
-  let y = a[1];
-  let z = a[2];
-  let len2 = x * x + y * y + z * z;
-  if (len2 > 0) {
-    len2 = 1 / Math.sqrt(len2);
-    out[0] = a[0] * len2;
-    out[1] = a[1] * len2;
-    out[2] = a[2] * len2;
-  }
-  return out;
+function ii(i, e) {
+  let t = e[0], s = e[1], o = e[2], h = t * t + s * s + o * o;
+  return h > 0 && (h = 1 / Math.sqrt(h), i[0] = e[0] * h, i[1] = e[1] * h, i[2] = e[2] * h), i;
 }
-function dot(a, b) {
-  return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+function ci(i, e) {
+  return i[0] * e[0] + i[1] * e[1] + i[2] * e[2];
 }
-function cross(out, a, b) {
-  let ax = a[0], ay = a[1], az = a[2];
-  let bx = b[0], by = b[1], bz = b[2];
-  out[0] = ay * bz - az * by;
-  out[1] = az * bx - ax * bz;
-  out[2] = ax * by - ay * bx;
-  return out;
+function Wt(i, e, t) {
+  let s = e[0], o = e[1], h = e[2], d = t[0], u = t[1], m = t[2];
+  return i[0] = o * m - h * u, i[1] = h * d - s * m, i[2] = s * u - o * d, i;
 }
-function transformQuat(out, a, q) {
-  let qx = q[0], qy = q[1], qz = q[2], qw = q[3];
-  let x = a[0], y = a[1], z = a[2];
-  let uvx = qy * z - qz * y, uvy = qz * x - qx * z, uvz = qx * y - qy * x;
-  let uuvx = qy * uvz - qz * uvy, uuvy = qz * uvx - qx * uvz, uuvz = qx * uvy - qy * uvx;
-  let w2 = qw * 2;
-  uvx *= w2;
-  uvy *= w2;
-  uvz *= w2;
-  uuvx *= 2;
-  uuvy *= 2;
-  uuvz *= 2;
-  out[0] = x + uvx + uuvx;
-  out[1] = y + uvy + uuvy;
-  out[2] = z + uvz + uuvz;
-  return out;
+function Je(i, e, t) {
+  let s = t[0], o = t[1], h = t[2], d = t[3], u = e[0], m = e[1], v = e[2], y = o * v - h * m, _ = h * u - s * v, x = s * m - o * u, R = o * x - h * _, F = h * y - s * x, C = s * _ - o * y, B = d * 2;
+  return y *= B, _ *= B, x *= B, R *= 2, F *= 2, C *= 2, i[0] = u + y + R, i[1] = m + _ + F, i[2] = v + x + C, i;
 }
-function angle(a, b) {
-  let tempA = fromValues$2(a[0], a[1], a[2]);
-  let tempB = fromValues$2(b[0], b[1], b[2]);
-  normalize$2(tempA, tempA);
-  normalize$2(tempB, tempB);
-  let cosine = dot(tempA, tempB);
-  if (cosine > 1) {
-    return 0;
-  } else if (cosine < -1) {
-    return Math.PI;
-  } else {
-    return Math.acos(cosine);
-  }
+function zr(i, e) {
+  let t = Ie(i[0], i[1], i[2]), s = Ie(e[0], e[1], e[2]);
+  ii(t, t), ii(s, s);
+  let o = ci(t, s);
+  return o > 1 ? 0 : o < -1 ? Math.PI : Math.acos(o);
 }
-const len = length;
+const Qr = Ur;
 (function() {
-  let vec = create$4();
-  return function(a, stride, offset, count, fn, arg) {
-    let i, l;
-    if (!stride) {
-      stride = 3;
-    }
-    if (!offset) {
-      offset = 0;
-    }
-    if (count) {
-      l = Math.min(count * stride + offset, a.length);
-    } else {
-      l = a.length;
-    }
-    for (i = offset; i < l; i += stride) {
-      vec[0] = a[i];
-      vec[1] = a[i + 1];
-      vec[2] = a[i + 2];
-      fn(vec, vec, arg);
-      a[i] = vec[0];
-      a[i + 1] = vec[1];
-      a[i + 2] = vec[2];
-    }
-    return a;
+  let i = ke();
+  return function(e, t, s, o, h, d) {
+    let u, m;
+    for (t || (t = 3), s || (s = 0), o ? m = Math.min(o * t + s, e.length) : m = e.length, u = s; u < m; u += t)
+      i[0] = e[u], i[1] = e[u + 1], i[2] = e[u + 2], h(i, i, d), e[u] = i[0], e[u + 1] = i[1], e[u + 2] = i[2];
+    return e;
   };
 })();
-function create$3() {
-  let out = new ARRAY_TYPE$1(9);
-  if (ARRAY_TYPE$1 != Float32Array) {
-    out[1] = 0;
-    out[2] = 0;
-    out[3] = 0;
-    out[5] = 0;
-    out[6] = 0;
-    out[7] = 0;
-  }
-  out[0] = 1;
-  out[4] = 1;
-  out[8] = 1;
-  return out;
+function Xr() {
+  let i = new xe(9);
+  return xe != Float32Array && (i[1] = 0, i[2] = 0, i[3] = 0, i[5] = 0, i[6] = 0, i[7] = 0), i[0] = 1, i[4] = 1, i[8] = 1, i;
 }
-function create$2() {
-  let out = new ARRAY_TYPE$1(4);
-  if (ARRAY_TYPE$1 != Float32Array) {
-    out[0] = 0;
-    out[1] = 0;
-    out[2] = 0;
-    out[3] = 0;
-  }
-  return out;
+function Wr() {
+  let i = new xe(4);
+  return xe != Float32Array && (i[0] = 0, i[1] = 0, i[2] = 0, i[3] = 0), i;
 }
-function clone$1(a) {
-  let out = new ARRAY_TYPE$1(4);
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  return out;
+function Hr(i) {
+  let e = new xe(4);
+  return e[0] = i[0], e[1] = i[1], e[2] = i[2], e[3] = i[3], e;
 }
-function fromValues$1(x, y, z, w) {
-  let out = new ARRAY_TYPE$1(4);
-  out[0] = x;
-  out[1] = y;
-  out[2] = z;
-  out[3] = w;
-  return out;
+function Yr(i, e, t, s) {
+  let o = new xe(4);
+  return o[0] = i, o[1] = e, o[2] = t, o[3] = s, o;
 }
-function copy$1(out, a) {
-  out[0] = a[0];
-  out[1] = a[1];
-  out[2] = a[2];
-  out[3] = a[3];
-  return out;
+function jr(i, e) {
+  return i[0] = e[0], i[1] = e[1], i[2] = e[2], i[3] = e[3], i;
 }
-function normalize$1(out, a) {
-  let x = a[0];
-  let y = a[1];
-  let z = a[2];
-  let w = a[3];
-  let len2 = x * x + y * y + z * z + w * w;
-  if (len2 > 0) {
-    len2 = 1 / Math.sqrt(len2);
-    out[0] = x * len2;
-    out[1] = y * len2;
-    out[2] = z * len2;
-    out[3] = w * len2;
-  }
-  return out;
+function Zr(i, e) {
+  let t = e[0], s = e[1], o = e[2], h = e[3], d = t * t + s * s + o * o + h * h;
+  return d > 0 && (d = 1 / Math.sqrt(d), i[0] = t * d, i[1] = s * d, i[2] = o * d, i[3] = h * d), i;
 }
 (function() {
-  let vec = create$2();
-  return function(a, stride, offset, count, fn, arg) {
-    let i, l;
-    if (!stride) {
-      stride = 4;
-    }
-    if (!offset) {
-      offset = 0;
-    }
-    if (count) {
-      l = Math.min(count * stride + offset, a.length);
-    } else {
-      l = a.length;
-    }
-    for (i = offset; i < l; i += stride) {
-      vec[0] = a[i];
-      vec[1] = a[i + 1];
-      vec[2] = a[i + 2];
-      vec[3] = a[i + 3];
-      fn(vec, vec, arg);
-      a[i] = vec[0];
-      a[i + 1] = vec[1];
-      a[i + 2] = vec[2];
-      a[i + 3] = vec[3];
-    }
-    return a;
+  let i = Wr();
+  return function(e, t, s, o, h, d) {
+    let u, m;
+    for (t || (t = 4), s || (s = 0), o ? m = Math.min(o * t + s, e.length) : m = e.length, u = s; u < m; u += t)
+      i[0] = e[u], i[1] = e[u + 1], i[2] = e[u + 2], i[3] = e[u + 3], h(i, i, d), e[u] = i[0], e[u + 1] = i[1], e[u + 2] = i[2], e[u + 3] = i[3];
+    return e;
   };
 })();
-function create$1() {
-  let out = new ARRAY_TYPE$1(4);
-  if (ARRAY_TYPE$1 != Float32Array) {
-    out[0] = 0;
-    out[1] = 0;
-    out[2] = 0;
+function De() {
+  let i = new xe(4);
+  return xe != Float32Array && (i[0] = 0, i[1] = 0, i[2] = 0), i[3] = 1, i;
+}
+function qr(i, e, t) {
+  t = t * 0.5;
+  let s = Math.sin(t);
+  return i[0] = s * e[0], i[1] = s * e[1], i[2] = s * e[2], i[3] = Math.cos(t), i;
+}
+function gi(i, e, t) {
+  let s = e[0], o = e[1], h = e[2], d = e[3], u = t[0], m = t[1], v = t[2], y = t[3];
+  return i[0] = s * y + d * u + o * v - h * m, i[1] = o * y + d * m + h * u - s * v, i[2] = h * y + d * v + s * m - o * u, i[3] = d * y - s * u - o * m - h * v, i;
+}
+function bt(i, e, t, s) {
+  let o = e[0], h = e[1], d = e[2], u = e[3], m = t[0], v = t[1], y = t[2], _ = t[3], x, R, F, C, B;
+  return R = o * m + h * v + d * y + u * _, R < 0 && (R = -R, m = -m, v = -v, y = -y, _ = -_), 1 - R > Gr ? (x = Math.acos(R), F = Math.sin(x), C = Math.sin((1 - s) * x) / F, B = Math.sin(s * x) / F) : (C = 1 - s, B = s), i[0] = C * o + B * m, i[1] = C * h + B * v, i[2] = C * d + B * y, i[3] = C * u + B * _, i;
+}
+function Ei(i, e) {
+  let t = e[0], s = e[1], o = e[2], h = e[3], d = t * t + s * s + o * o + h * h, u = d ? 1 / d : 0;
+  return i[0] = -t * u, i[1] = -s * u, i[2] = -o * u, i[3] = h * u, i;
+}
+function $r(i, e) {
+  let t = e[0] + e[4] + e[8], s;
+  if (t > 0)
+    s = Math.sqrt(t + 1), i[3] = 0.5 * s, s = 0.5 / s, i[0] = (e[5] - e[7]) * s, i[1] = (e[6] - e[2]) * s, i[2] = (e[1] - e[3]) * s;
+  else {
+    let o = 0;
+    e[4] > e[0] && (o = 1), e[8] > e[o * 3 + o] && (o = 2);
+    let h = (o + 1) % 3, d = (o + 2) % 3;
+    s = Math.sqrt(e[o * 3 + o] - e[h * 3 + h] - e[d * 3 + d] + 1), i[o] = 0.5 * s, s = 0.5 / s, i[3] = (e[h * 3 + d] - e[d * 3 + h]) * s, i[h] = (e[h * 3 + o] + e[o * 3 + h]) * s, i[d] = (e[d * 3 + o] + e[o * 3 + d]) * s;
   }
-  out[3] = 1;
-  return out;
+  return i;
 }
-function setAxisAngle(out, axis, rad) {
-  rad = rad * 0.5;
-  let s = Math.sin(rad);
-  out[0] = s * axis[0];
-  out[1] = s * axis[1];
-  out[2] = s * axis[2];
-  out[3] = Math.cos(rad);
-  return out;
+function Kr(i, e, t, s) {
+  let o = 0.5 * Math.PI / 180;
+  e *= o, t *= o, s *= o;
+  let h = Math.sin(e), d = Math.cos(e), u = Math.sin(t), m = Math.cos(t), v = Math.sin(s), y = Math.cos(s);
+  return i[0] = h * m * y - d * u * v, i[1] = d * u * y + h * m * v, i[2] = d * m * v - h * u * y, i[3] = d * m * y + h * u * v, i;
 }
-function multiply(out, a, b) {
-  let ax = a[0], ay = a[1], az = a[2], aw = a[3];
-  let bx = b[0], by = b[1], bz = b[2], bw = b[3];
-  out[0] = ax * bw + aw * bx + ay * bz - az * by;
-  out[1] = ay * bw + aw * by + az * bx - ax * bz;
-  out[2] = az * bw + aw * bz + ax * by - ay * bx;
-  out[3] = aw * bw - ax * bx - ay * by - az * bz;
-  return out;
-}
-function slerp(out, a, b, t) {
-  let ax = a[0], ay = a[1], az = a[2], aw = a[3];
-  let bx = b[0], by = b[1], bz = b[2], bw = b[3];
-  let omega, cosom, sinom, scale0, scale1;
-  cosom = ax * bx + ay * by + az * bz + aw * bw;
-  if (cosom < 0) {
-    cosom = -cosom;
-    bx = -bx;
-    by = -by;
-    bz = -bz;
-    bw = -bw;
-  }
-  if (1 - cosom > EPSILON$1) {
-    omega = Math.acos(cosom);
-    sinom = Math.sin(omega);
-    scale0 = Math.sin((1 - t) * omega) / sinom;
-    scale1 = Math.sin(t * omega) / sinom;
-  } else {
-    scale0 = 1 - t;
-    scale1 = t;
-  }
-  out[0] = scale0 * ax + scale1 * bx;
-  out[1] = scale0 * ay + scale1 * by;
-  out[2] = scale0 * az + scale1 * bz;
-  out[3] = scale0 * aw + scale1 * bw;
-  return out;
-}
-function invert$1(out, a) {
-  let a0 = a[0], a1 = a[1], a2 = a[2], a3 = a[3];
-  let dot2 = a0 * a0 + a1 * a1 + a2 * a2 + a3 * a3;
-  let invDot = dot2 ? 1 / dot2 : 0;
-  out[0] = -a0 * invDot;
-  out[1] = -a1 * invDot;
-  out[2] = -a2 * invDot;
-  out[3] = a3 * invDot;
-  return out;
-}
-function fromMat3(out, m) {
-  let fTrace = m[0] + m[4] + m[8];
-  let fRoot;
-  if (fTrace > 0) {
-    fRoot = Math.sqrt(fTrace + 1);
-    out[3] = 0.5 * fRoot;
-    fRoot = 0.5 / fRoot;
-    out[0] = (m[5] - m[7]) * fRoot;
-    out[1] = (m[6] - m[2]) * fRoot;
-    out[2] = (m[1] - m[3]) * fRoot;
-  } else {
-    let i = 0;
-    if (m[4] > m[0])
-      i = 1;
-    if (m[8] > m[i * 3 + i])
-      i = 2;
-    let j = (i + 1) % 3;
-    let k = (i + 2) % 3;
-    fRoot = Math.sqrt(m[i * 3 + i] - m[j * 3 + j] - m[k * 3 + k] + 1);
-    out[i] = 0.5 * fRoot;
-    fRoot = 0.5 / fRoot;
-    out[3] = (m[j * 3 + k] - m[k * 3 + j]) * fRoot;
-    out[j] = (m[j * 3 + i] + m[i * 3 + j]) * fRoot;
-    out[k] = (m[k * 3 + i] + m[i * 3 + k]) * fRoot;
-  }
-  return out;
-}
-function fromEuler(out, x, y, z) {
-  let halfToRad = 0.5 * Math.PI / 180;
-  x *= halfToRad;
-  y *= halfToRad;
-  z *= halfToRad;
-  let sx = Math.sin(x);
-  let cx = Math.cos(x);
-  let sy = Math.sin(y);
-  let cy = Math.cos(y);
-  let sz = Math.sin(z);
-  let cz = Math.cos(z);
-  out[0] = sx * cy * cz - cx * sy * sz;
-  out[1] = cx * sy * cz + sx * cy * sz;
-  out[2] = cx * cy * sz - sx * sy * cz;
-  out[3] = cx * cy * cz + sx * sy * sz;
-  return out;
-}
-const clone = clone$1;
-const fromValues = fromValues$1;
-const copy = copy$1;
-const normalize = normalize$1;
+const xi = Hr, Jr = Yr, Ht = jr, Bt = Zr;
 (function() {
-  let tmpvec3 = create$4();
-  let xUnitVec3 = fromValues$2(1, 0, 0);
-  let yUnitVec3 = fromValues$2(0, 1, 0);
-  return function(out, a, b) {
-    let dot$1 = dot(a, b);
-    if (dot$1 < -0.999999) {
-      cross(tmpvec3, xUnitVec3, a);
-      if (len(tmpvec3) < 1e-6)
-        cross(tmpvec3, yUnitVec3, a);
-      normalize$2(tmpvec3, tmpvec3);
-      setAxisAngle(out, tmpvec3, Math.PI);
-      return out;
-    } else if (dot$1 > 0.999999) {
-      out[0] = 0;
-      out[1] = 0;
-      out[2] = 0;
-      out[3] = 1;
-      return out;
-    } else {
-      cross(tmpvec3, a, b);
-      out[0] = tmpvec3[0];
-      out[1] = tmpvec3[1];
-      out[2] = tmpvec3[2];
-      out[3] = 1 + dot$1;
-      return normalize(out, out);
-    }
+  let i = ke(), e = Ie(1, 0, 0), t = Ie(0, 1, 0);
+  return function(s, o, h) {
+    let d = ci(o, h);
+    return d < -0.999999 ? (Wt(i, e, o), Qr(i) < 1e-6 && Wt(i, t, o), ii(i, i), qr(s, i, Math.PI), s) : d > 0.999999 ? (s[0] = 0, s[1] = 0, s[2] = 0, s[3] = 1, s) : (Wt(i, o, h), s[0] = i[0], s[1] = i[1], s[2] = i[2], s[3] = 1 + d, Bt(s, s));
   };
 })();
 (function() {
-  let temp1 = create$1();
-  let temp2 = create$1();
-  return function(out, a, b, c, d, t) {
-    slerp(temp1, a, d, t);
-    slerp(temp2, b, c, t);
-    slerp(out, temp1, temp2, 2 * t * (1 - t));
-    return out;
+  let i = De(), e = De();
+  return function(t, s, o, h, d, u) {
+    return bt(i, s, d, u), bt(e, o, h, u), bt(t, i, e, 2 * u * (1 - u)), t;
   };
 })();
 (function() {
-  let matr = create$3();
-  return function(out, view, right, up) {
-    matr[0] = right[0];
-    matr[3] = right[1];
-    matr[6] = right[2];
-    matr[1] = up[0];
-    matr[4] = up[1];
-    matr[7] = up[2];
-    matr[2] = -view[0];
-    matr[5] = -view[1];
-    matr[8] = -view[2];
-    return normalize(out, fromMat3(out, matr));
+  let i = Xr();
+  return function(e, t, s, o) {
+    return i[0] = s[0], i[3] = s[1], i[6] = s[2], i[1] = o[0], i[4] = o[1], i[7] = o[2], i[2] = -t[0], i[5] = -t[1], i[8] = -t[2], Bt(e, $r(e, i));
   };
 })();
-const PRIVATE$i = Symbol("@@webxr-polyfill/XRRigidTransform");
-class XRRigidTransform$1 {
+const ie = Symbol("@@webxr-polyfill/XRRigidTransform");
+class Ot {
   constructor() {
-    this[PRIVATE$i] = {
+    if (this[ie] = {
       matrix: null,
       position: null,
       orientation: null,
       inverse: null
-    };
-    if (arguments.length === 0) {
-      this[PRIVATE$i].matrix = identity(new Float32Array(16));
-    } else if (arguments.length === 1) {
-      if (arguments[0] instanceof Float32Array) {
-        this[PRIVATE$i].matrix = arguments[0];
-      } else {
-        this[PRIVATE$i].position = this._getPoint(arguments[0]);
-        this[PRIVATE$i].orientation = DOMPointReadOnly.fromPoint({
-          x: 0,
-          y: 0,
-          z: 0,
-          w: 1
-        });
-      }
-    } else if (arguments.length === 2) {
-      this[PRIVATE$i].position = this._getPoint(arguments[0]);
-      this[PRIVATE$i].orientation = this._getPoint(arguments[1]);
-    } else {
+    }, arguments.length === 0)
+      this[ie].matrix = et(new Float32Array(16));
+    else if (arguments.length === 1)
+      arguments[0] instanceof Float32Array ? this[ie].matrix = arguments[0] : (this[ie].position = this._getPoint(arguments[0]), this[ie].orientation = DOMPointReadOnly.fromPoint({
+        x: 0,
+        y: 0,
+        z: 0,
+        w: 1
+      }));
+    else if (arguments.length === 2)
+      this[ie].position = this._getPoint(arguments[0]), this[ie].orientation = this._getPoint(arguments[1]);
+    else
       throw new Error("Too many arguments!");
-    }
-    if (this[PRIVATE$i].matrix) {
-      let position = create$4();
-      getTranslation(position, this[PRIVATE$i].matrix);
-      this[PRIVATE$i].position = DOMPointReadOnly.fromPoint({
-        x: position[0],
-        y: position[1],
-        z: position[2]
+    if (this[ie].matrix) {
+      let e = ke();
+      zi(e, this[ie].matrix), this[ie].position = DOMPointReadOnly.fromPoint({
+        x: e[0],
+        y: e[1],
+        z: e[2]
       });
-      let orientation = create$1();
-      getRotation(orientation, this[PRIVATE$i].matrix);
-      this[PRIVATE$i].orientation = DOMPointReadOnly.fromPoint({
-        x: orientation[0],
-        y: orientation[1],
-        z: orientation[2],
-        w: orientation[3]
+      let t = De();
+      Qi(t, this[ie].matrix), this[ie].orientation = DOMPointReadOnly.fromPoint({
+        x: t[0],
+        y: t[1],
+        z: t[2],
+        w: t[3]
       });
-    } else {
-      this[PRIVATE$i].matrix = identity(new Float32Array(16));
-      fromRotationTranslation(
-        this[PRIVATE$i].matrix,
-        fromValues(
-          this[PRIVATE$i].orientation.x,
-          this[PRIVATE$i].orientation.y,
-          this[PRIVATE$i].orientation.z,
-          this[PRIVATE$i].orientation.w
+    } else
+      this[ie].matrix = et(new Float32Array(16)), St(
+        this[ie].matrix,
+        Jr(
+          this[ie].orientation.x,
+          this[ie].orientation.y,
+          this[ie].orientation.z,
+          this[ie].orientation.w
         ),
-        fromValues$2(
-          this[PRIVATE$i].position.x,
-          this[PRIVATE$i].position.y,
-          this[PRIVATE$i].position.z
+        Ie(
+          this[ie].position.x,
+          this[ie].position.y,
+          this[ie].position.z
         )
       );
-    }
   }
-  _getPoint(arg) {
-    if (arg instanceof DOMPointReadOnly) {
-      return arg;
-    }
-    return DOMPointReadOnly.fromPoint(arg);
+  _getPoint(e) {
+    return e instanceof DOMPointReadOnly ? e : DOMPointReadOnly.fromPoint(e);
   }
   get matrix() {
-    return this[PRIVATE$i].matrix;
+    return this[ie].matrix;
   }
   get position() {
-    return this[PRIVATE$i].position;
+    return this[ie].position;
   }
   get orientation() {
-    return this[PRIVATE$i].orientation;
+    return this[ie].orientation;
   }
   get inverse() {
-    if (this[PRIVATE$i].inverse === null) {
-      let invMatrix = identity(new Float32Array(16));
-      invert$2(invMatrix, this[PRIVATE$i].matrix);
-      this[PRIVATE$i].inverse = new XRRigidTransform$1(invMatrix);
-      this[PRIVATE$i].inverse[PRIVATE$i].inverse = this;
+    if (this[ie].inverse === null) {
+      let e = et(new Float32Array(16));
+      It(e, this[ie].matrix), this[ie].inverse = new Ot(e), this[ie].inverse[ie].inverse = this;
     }
-    return this[PRIVATE$i].inverse;
+    return this[ie].inverse;
   }
 }
-const PRIVATE$h = Symbol("@@webxr-polyfill/XRSpace");
-class XRSpace {
-  constructor(specialType = null, inputSource = null) {
-    this[PRIVATE$h] = {
-      specialType,
-      inputSource,
+const le = Symbol("@@webxr-polyfill/XRSpace");
+class it {
+  constructor(e = null, t = null) {
+    this[le] = {
+      specialType: e,
+      inputSource: t,
       baseMatrix: null,
       inverseBaseMatrix: null,
       lastFrameId: -1
     };
   }
   get _specialType() {
-    return this[PRIVATE$h].specialType;
+    return this[le].specialType;
   }
   get _inputSource() {
-    return this[PRIVATE$h].inputSource;
+    return this[le].inputSource;
   }
-  _ensurePoseUpdated(device, frameId) {
-    if (frameId == this[PRIVATE$h].lastFrameId)
-      return;
-    this[PRIVATE$h].lastFrameId = frameId;
-    this._onPoseUpdate(device);
+  _ensurePoseUpdated(e, t) {
+    t != this[le].lastFrameId && (this[le].lastFrameId = t, this._onPoseUpdate(e));
   }
-  _onPoseUpdate(device) {
-    if (this[PRIVATE$h].specialType == "viewer") {
-      this._baseMatrix = device.getBasePoseMatrix();
-    }
+  _onPoseUpdate(e) {
+    this[le].specialType == "viewer" && (this._baseMatrix = e.getBasePoseMatrix());
   }
-  set _baseMatrix(matrix) {
-    this[PRIVATE$h].baseMatrix = matrix;
-    this[PRIVATE$h].inverseBaseMatrix = null;
+  set _baseMatrix(e) {
+    this[le].baseMatrix = e, this[le].inverseBaseMatrix = null;
   }
   get _baseMatrix() {
-    if (!this[PRIVATE$h].baseMatrix) {
-      if (this[PRIVATE$h].inverseBaseMatrix) {
-        this[PRIVATE$h].baseMatrix = new Float32Array(16);
-        invert$2(this[PRIVATE$h].baseMatrix, this[PRIVATE$h].inverseBaseMatrix);
-      }
-    }
-    return this[PRIVATE$h].baseMatrix;
+    return this[le].baseMatrix || this[le].inverseBaseMatrix && (this[le].baseMatrix = new Float32Array(16), It(this[le].baseMatrix, this[le].inverseBaseMatrix)), this[le].baseMatrix;
   }
-  set _inverseBaseMatrix(matrix) {
-    this[PRIVATE$h].inverseBaseMatrix = matrix;
-    this[PRIVATE$h].baseMatrix = null;
+  set _inverseBaseMatrix(e) {
+    this[le].inverseBaseMatrix = e, this[le].baseMatrix = null;
   }
   get _inverseBaseMatrix() {
-    if (!this[PRIVATE$h].inverseBaseMatrix) {
-      if (this[PRIVATE$h].baseMatrix) {
-        this[PRIVATE$h].inverseBaseMatrix = new Float32Array(16);
-        invert$2(this[PRIVATE$h].inverseBaseMatrix, this[PRIVATE$h].baseMatrix);
-      }
-    }
-    return this[PRIVATE$h].inverseBaseMatrix;
+    return this[le].inverseBaseMatrix || this[le].baseMatrix && (this[le].inverseBaseMatrix = new Float32Array(16), It(this[le].inverseBaseMatrix, this[le].baseMatrix)), this[le].inverseBaseMatrix;
   }
-  _getSpaceRelativeTransform(space) {
-    if (!this._inverseBaseMatrix || !space._baseMatrix) {
+  _getSpaceRelativeTransform(e) {
+    if (!this._inverseBaseMatrix || !e._baseMatrix)
       return null;
-    }
-    let out = new Float32Array(16);
-    multiply$1(out, this._inverseBaseMatrix, space._baseMatrix);
-    return new XRRigidTransform$1(out);
+    let t = new Float32Array(16);
+    return tt(t, this._inverseBaseMatrix, e._baseMatrix), new Ot(t);
   }
 }
-const DEFAULT_EMULATION_HEIGHT = 1.6;
-const PRIVATE$g = Symbol("@@webxr-polyfill/XRReferenceSpace");
-const XRReferenceSpaceTypes = [
+const en = 1.6, Ve = Symbol("@@webxr-polyfill/XRReferenceSpace"), Lt = [
   "viewer",
   "local",
   "local-floor",
   "bounded-floor",
   "unbounded"
 ];
-function isFloor(type) {
-  return type === "bounded-floor" || type === "local-floor";
+function tn(i) {
+  return i === "bounded-floor" || i === "local-floor";
 }
-class XRReferenceSpace extends XRSpace {
-  constructor(type, transform = null) {
-    if (!XRReferenceSpaceTypes.includes(type)) {
-      throw new Error(`XRReferenceSpaceType must be one of ${XRReferenceSpaceTypes}`);
-    }
-    super(type);
-    if (type === "bounded-floor" && !transform) {
-      throw new Error(`XRReferenceSpace cannot use 'bounded-floor' type if the platform does not provide the floor level`);
-    }
-    if (isFloor(type) && !transform) {
-      transform = identity(new Float32Array(16));
-      transform[13] = DEFAULT_EMULATION_HEIGHT;
-    }
-    this._inverseBaseMatrix = transform || identity(new Float32Array(16));
-    this[PRIVATE$g] = {
-      type,
-      transform,
-      originOffset: identity(new Float32Array(16))
+class _t extends it {
+  constructor(e, t = null) {
+    if (!Lt.includes(e))
+      throw new Error(`XRReferenceSpaceType must be one of ${Lt}`);
+    if (super(e), e === "bounded-floor" && !t)
+      throw new Error("XRReferenceSpace cannot use 'bounded-floor' type if the platform does not provide the floor level");
+    tn(e) && !t && (t = et(new Float32Array(16)), t[13] = en), this._inverseBaseMatrix = t || et(new Float32Array(16)), this[Ve] = {
+      type: e,
+      transform: t,
+      originOffset: et(new Float32Array(16))
     };
   }
-  _transformBasePoseMatrix(out, pose) {
-    multiply$1(out, this._inverseBaseMatrix, pose);
+  _transformBasePoseMatrix(e, t) {
+    tt(e, this._inverseBaseMatrix, t);
   }
   _originOffsetMatrix() {
-    return this[PRIVATE$g].originOffset;
+    return this[Ve].originOffset;
   }
-  _adjustForOriginOffset(transformMatrix) {
-    let inverseOriginOffsetMatrix = new Float32Array(16);
-    invert$2(inverseOriginOffsetMatrix, this[PRIVATE$g].originOffset);
-    multiply$1(transformMatrix, inverseOriginOffsetMatrix, transformMatrix);
+  _adjustForOriginOffset(e) {
+    let t = new Float32Array(16);
+    It(t, this[Ve].originOffset), tt(e, t, e);
   }
-  _getSpaceRelativeTransform(space) {
-    let transform = super._getSpaceRelativeTransform(space);
-    this._adjustForOriginOffset(transform.matrix);
-    return new XRRigidTransform(transform.matrix);
+  _getSpaceRelativeTransform(e) {
+    let t = super._getSpaceRelativeTransform(e);
+    return this._adjustForOriginOffset(t.matrix), new XRRigidTransform(t.matrix);
   }
-  getOffsetReferenceSpace(additionalOffset) {
-    let newSpace = new XRReferenceSpace(
-      this[PRIVATE$g].type,
-      this[PRIVATE$g].transform,
-      this[PRIVATE$g].bounds
+  getOffsetReferenceSpace(e) {
+    let t = new _t(
+      this[Ve].type,
+      this[Ve].transform,
+      this[Ve].bounds
     );
-    multiply$1(newSpace[PRIVATE$g].originOffset, this[PRIVATE$g].originOffset, additionalOffset.matrix);
-    return newSpace;
+    return tt(t[Ve].originOffset, this[Ve].originOffset, e.matrix), t;
   }
 }
-const PRIVATE$f = Symbol("@@webxr-polyfill/XR");
-const XRSessionModes = ["inline", "immersive-vr", "immersive-ar"];
-const DEFAULT_SESSION_OPTIONS = {
-  "inline": {
+const ge = Symbol("@@webxr-polyfill/XR"), rn = ["inline", "immersive-vr", "immersive-ar"], nn = {
+  inline: {
     requiredFeatures: ["viewer"],
     optionalFeatures: []
   },
@@ -895,815 +387,575 @@ const DEFAULT_SESSION_OPTIONS = {
     requiredFeatures: ["viewer", "local"],
     optionalFeatures: []
   }
-};
-const POLYFILL_REQUEST_SESSION_ERROR = `Polyfill Error: Must call navigator.xr.isSessionSupported() with any XRSessionMode
+}, sn = `Polyfill Error: Must call navigator.xr.isSessionSupported() with any XRSessionMode
 or navigator.xr.requestSession('inline') prior to requesting an immersive
 session. This is a limitation specific to the WebXR Polyfill and does not apply
 to native implementations of the API.`;
-class XRSystem extends EventTarget$1 {
-  constructor(devicePromise) {
-    super();
-    this[PRIVATE$f] = {
+class Wi extends li {
+  constructor(e) {
+    super(), this[ge] = {
       device: null,
-      devicePromise,
+      devicePromise: e,
       immersiveSession: null,
       inlineSessions: /* @__PURE__ */ new Set()
-    };
-    devicePromise.then((device) => {
-      this[PRIVATE$f].device = device;
+    }, e.then((t) => {
+      this[ge].device = t;
     });
   }
-  async isSessionSupported(mode) {
-    if (!this[PRIVATE$f].device) {
-      await this[PRIVATE$f].devicePromise;
-    }
-    if (mode != "inline") {
-      return Promise.resolve(this[PRIVATE$f].device.isSessionSupported(mode));
-    }
-    return Promise.resolve(true);
+  async isSessionSupported(e) {
+    return this[ge].device || await this[ge].devicePromise, e != "inline" ? Promise.resolve(this[ge].device.isSessionSupported(e)) : Promise.resolve(!0);
   }
-  async requestSession(mode, options) {
-    if (!this[PRIVATE$f].device) {
-      if (mode != "inline") {
-        throw new Error(POLYFILL_REQUEST_SESSION_ERROR);
-      } else {
-        await this[PRIVATE$f].devicePromise;
-      }
+  async requestSession(e, t) {
+    if (!this[ge].device) {
+      if (e != "inline")
+        throw new Error(sn);
+      await this[ge].devicePromise;
     }
-    if (!XRSessionModes.includes(mode)) {
+    if (!rn.includes(e))
       throw new TypeError(
-        `The provided value '${mode}' is not a valid enum value of type XRSessionMode`
+        `The provided value '${e}' is not a valid enum value of type XRSessionMode`
       );
-    }
-    const defaultOptions = DEFAULT_SESSION_OPTIONS[mode];
-    const requiredFeatures = defaultOptions.requiredFeatures.concat(
-      options && options.requiredFeatures ? options.requiredFeatures : []
-    );
-    const optionalFeatures = defaultOptions.optionalFeatures.concat(
-      options && options.optionalFeatures ? options.optionalFeatures : []
-    );
-    const enabledFeatures = /* @__PURE__ */ new Set();
-    let requirementsFailed = false;
-    for (let feature of requiredFeatures) {
-      if (!this[PRIVATE$f].device.isFeatureSupported(feature)) {
-        console.error(`The required feature '${feature}' is not supported`);
-        requirementsFailed = true;
-      } else {
-        enabledFeatures.add(feature);
-      }
-    }
-    if (requirementsFailed) {
+    const s = nn[e], o = s.requiredFeatures.concat(
+      t && t.requiredFeatures ? t.requiredFeatures : []
+    ), h = s.optionalFeatures.concat(
+      t && t.optionalFeatures ? t.optionalFeatures : []
+    ), d = /* @__PURE__ */ new Set();
+    let u = !1;
+    for (let _ of o)
+      this[ge].device.isFeatureSupported(_) ? d.add(_) : (console.error(`The required feature '${_}' is not supported`), u = !0);
+    if (u)
       throw new DOMException("Session does not support some required features", "NotSupportedError");
-    }
-    for (let feature of optionalFeatures) {
-      if (!this[PRIVATE$f].device.isFeatureSupported(feature)) {
-        console.log(`The optional feature '${feature}' is not supported`);
-      } else {
-        enabledFeatures.add(feature);
-      }
-    }
-    const sessionId = await this[PRIVATE$f].device.requestSession(mode, enabledFeatures);
-    const session = new XRSession(this[PRIVATE$f].device, mode, sessionId);
-    if (mode == "inline") {
-      this[PRIVATE$f].inlineSessions.add(session);
-    } else {
-      this[PRIVATE$f].immersiveSession = session;
-    }
-    const onSessionEnd = () => {
-      if (mode == "inline") {
-        this[PRIVATE$f].inlineSessions.delete(session);
-      } else {
-        this[PRIVATE$f].immersiveSession = null;
-      }
-      session.removeEventListener("end", onSessionEnd);
+    for (let _ of h)
+      this[ge].device.isFeatureSupported(_) ? d.add(_) : console.log(`The optional feature '${_}' is not supported`);
+    const m = await this[ge].device.requestSession(e, d), v = new XRSession(this[ge].device, e, m);
+    e == "inline" ? this[ge].inlineSessions.add(v) : this[ge].immersiveSession = v;
+    const y = () => {
+      e == "inline" ? this[ge].inlineSessions.delete(v) : this[ge].immersiveSession = null, v.removeEventListener("end", y);
     };
-    session.addEventListener("end", onSessionEnd);
-    return session;
+    return v.addEventListener("end", y), v;
   }
 }
-const _global = typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {};
-let now;
-if ("performance" in _global === false) {
-  let startTime = Date.now();
-  now = () => Date.now() - startTime;
-} else {
-  now = () => performance.now();
+const Hi = typeof global < "u" ? global : typeof self < "u" ? self : typeof window < "u" ? window : {};
+let ri;
+if ("performance" in Hi)
+  ri = () => performance.now();
+else {
+  let i = Date.now();
+  ri = () => Date.now() - i;
 }
-const now$1 = now;
-const PRIVATE$e = Symbol("@@webxr-polyfill/XRPose");
-class XRPose$1 {
-  constructor(transform, emulatedPosition) {
-    this[PRIVATE$e] = {
-      transform,
-      emulatedPosition
+const Yi = ri, Yt = Symbol("@@webxr-polyfill/XRPose");
+class ji {
+  constructor(e, t) {
+    this[Yt] = {
+      transform: e,
+      emulatedPosition: t
     };
   }
   get transform() {
-    return this[PRIVATE$e].transform;
+    return this[Yt].transform;
   }
   get emulatedPosition() {
-    return this[PRIVATE$e].emulatedPosition;
+    return this[Yt].emulatedPosition;
   }
 }
-const PRIVATE$d = Symbol("@@webxr-polyfill/XRViewerPose");
-class XRViewerPose extends XRPose$1 {
-  constructor(transform, views, emulatedPosition = false) {
-    super(transform, emulatedPosition);
-    this[PRIVATE$d] = {
-      views
+const Si = Symbol("@@webxr-polyfill/XRViewerPose");
+class Zi extends ji {
+  constructor(e, t, s = !1) {
+    super(e, s), this[Si] = {
+      views: t
     };
   }
   get views() {
-    return this[PRIVATE$d].views;
+    return this[Si].views;
   }
 }
-const PRIVATE$c = Symbol("@@webxr-polyfill/XRViewport");
-class XRViewport {
-  constructor(target) {
-    this[PRIVATE$c] = { target };
+const wt = Symbol("@@webxr-polyfill/XRViewport");
+class qi {
+  constructor(e) {
+    this[wt] = { target: e };
   }
   get x() {
-    return this[PRIVATE$c].target.x;
+    return this[wt].target.x;
   }
   get y() {
-    return this[PRIVATE$c].target.y;
+    return this[wt].target.y;
   }
   get width() {
-    return this[PRIVATE$c].target.width;
+    return this[wt].target.width;
   }
   get height() {
-    return this[PRIVATE$c].target.height;
+    return this[wt].target.height;
   }
 }
-const XREyes = ["left", "right", "none"];
-const PRIVATE$b = Symbol("@@webxr-polyfill/XRView");
-class XRView {
-  constructor(device, transform, eye, sessionId, viewIndex) {
-    if (!XREyes.includes(eye)) {
-      throw new Error(`XREye must be one of: ${XREyes}`);
-    }
-    const temp = /* @__PURE__ */ Object.create(null);
-    const viewport = new XRViewport(temp);
-    this[PRIVATE$b] = {
-      device,
-      eye,
-      viewport,
-      temp,
-      sessionId,
-      transform,
-      viewIndex
+const _i = ["left", "right", "none"], Ne = Symbol("@@webxr-polyfill/XRView");
+class $i {
+  constructor(e, t, s, o, h) {
+    if (!_i.includes(s))
+      throw new Error(`XREye must be one of: ${_i}`);
+    const d = /* @__PURE__ */ Object.create(null), u = new qi(d);
+    this[Ne] = {
+      device: e,
+      eye: s,
+      viewport: u,
+      temp: d,
+      sessionId: o,
+      transform: t,
+      viewIndex: h
     };
   }
   get eye() {
-    return this[PRIVATE$b].eye;
+    return this[Ne].eye;
   }
   get projectionMatrix() {
-    return this[PRIVATE$b].device.getProjectionMatrix(this.eye, this[PRIVATE$b].viewIndex);
+    return this[Ne].device.getProjectionMatrix(this.eye, this[Ne].viewIndex);
   }
   get transform() {
-    return this[PRIVATE$b].transform;
+    return this[Ne].transform;
   }
-  _getViewport(layer) {
-    if (this[PRIVATE$b].device.getViewport(
-      this[PRIVATE$b].sessionId,
+  _getViewport(e) {
+    if (this[Ne].device.getViewport(
+      this[Ne].sessionId,
       this.eye,
-      layer,
-      this[PRIVATE$b].temp,
-      this[PRIVATE$b].viewIndex
-    )) {
-      return this[PRIVATE$b].viewport;
-    }
-    return void 0;
+      e,
+      this[Ne].temp,
+      this[Ne].viewIndex
+    ))
+      return this[Ne].viewport;
   }
 }
-const PRIVATE$a = Symbol("@@webxr-polyfill/XRFrame");
-const NON_ACTIVE_MSG = "XRFrame access outside the callback that produced it is invalid.";
-const NON_ANIMFRAME_MSG = "getViewerPose can only be called on XRFrame objects passed to XRSession.requestAnimationFrame callbacks.";
-let NEXT_FRAME_ID = 0;
-class XRFrame {
-  constructor(device, session, sessionId) {
-    this[PRIVATE$a] = {
-      id: ++NEXT_FRAME_ID,
-      active: false,
-      animationFrame: false,
-      device,
-      session,
-      sessionId
+const pe = Symbol("@@webxr-polyfill/XRFrame"), Ri = "XRFrame access outside the callback that produced it is invalid.", an = "getViewerPose can only be called on XRFrame objects passed to XRSession.requestAnimationFrame callbacks.";
+let on = 0;
+class ni {
+  constructor(e, t, s) {
+    this[pe] = {
+      id: ++on,
+      active: !1,
+      animationFrame: !1,
+      device: e,
+      session: t,
+      sessionId: s
     };
   }
   get session() {
-    return this[PRIVATE$a].session;
+    return this[pe].session;
   }
-  getViewerPose(referenceSpace) {
-    if (!this[PRIVATE$a].animationFrame) {
-      throw new DOMException(NON_ANIMFRAME_MSG, "InvalidStateError");
+  getViewerPose(e) {
+    if (!this[pe].animationFrame)
+      throw new DOMException(an, "InvalidStateError");
+    if (!this[pe].active)
+      throw new DOMException(Ri, "InvalidStateError");
+    const t = this[pe].device, s = this[pe].session;
+    s[b].viewerSpace._ensurePoseUpdated(t, this[pe].id), e._ensurePoseUpdated(t, this[pe].id);
+    let o = e._getSpaceRelativeTransform(s[b].viewerSpace);
+    const h = [];
+    for (const u of s[b].viewSpaces) {
+      u._ensurePoseUpdated(t, this[pe].id);
+      let m = e._getSpaceRelativeTransform(u), v = new $i(t, m, u.eye, this[pe].sessionId, u.viewIndex);
+      h.push(v);
     }
-    if (!this[PRIVATE$a].active) {
-      throw new DOMException(NON_ACTIVE_MSG, "InvalidStateError");
-    }
-    const device = this[PRIVATE$a].device;
-    const session = this[PRIVATE$a].session;
-    session[PRIVATE$5].viewerSpace._ensurePoseUpdated(device, this[PRIVATE$a].id);
-    referenceSpace._ensurePoseUpdated(device, this[PRIVATE$a].id);
-    let viewerTransform = referenceSpace._getSpaceRelativeTransform(session[PRIVATE$5].viewerSpace);
-    const views = [];
-    for (const viewSpace of session[PRIVATE$5].viewSpaces) {
-      viewSpace._ensurePoseUpdated(device, this[PRIVATE$a].id);
-      let viewTransform = referenceSpace._getSpaceRelativeTransform(viewSpace);
-      let view = new XRView(device, viewTransform, viewSpace.eye, this[PRIVATE$a].sessionId, viewSpace.viewIndex);
-      views.push(view);
-    }
-    let viewerPose = new XRViewerPose(viewerTransform, views, false);
-    return viewerPose;
+    return new Zi(o, h, !1);
   }
-  getPose(space, baseSpace) {
-    if (!this[PRIVATE$a].active) {
-      throw new DOMException(NON_ACTIVE_MSG, "InvalidStateError");
-    }
-    const device = this[PRIVATE$a].device;
-    if (space._specialType === "target-ray" || space._specialType === "grip") {
-      return device.getInputPose(
-        space._inputSource,
-        baseSpace,
-        space._specialType
+  getPose(e, t) {
+    if (!this[pe].active)
+      throw new DOMException(Ri, "InvalidStateError");
+    const s = this[pe].device;
+    if (e._specialType === "target-ray" || e._specialType === "grip")
+      return s.getInputPose(
+        e._inputSource,
+        t,
+        e._specialType
       );
-    } else {
-      space._ensurePoseUpdated(device, this[PRIVATE$a].id);
-      baseSpace._ensurePoseUpdated(device, this[PRIVATE$a].id);
-      let transform = baseSpace._getSpaceRelativeTransform(space);
-      if (!transform) {
-        return null;
-      }
-      return new XRPose(transform, false);
+    {
+      e._ensurePoseUpdated(s, this[pe].id), t._ensurePoseUpdated(s, this[pe].id);
+      let o = t._getSpaceRelativeTransform(e);
+      return o ? new XRPose(o, !1) : null;
     }
   }
 }
-const PRIVATE$9 = Symbol("@@webxr-polyfill/XRRenderState");
-const XRRenderStateInit = Object.freeze({
+const yt = Symbol("@@webxr-polyfill/XRRenderState"), ln = Object.freeze({
   depthNear: 0.1,
   depthFar: 1e3,
   inlineVerticalFieldOfView: null,
   baseLayer: null
 });
-class XRRenderState {
-  constructor(stateInit = {}) {
-    const config = Object.assign({}, XRRenderStateInit, stateInit);
-    this[PRIVATE$9] = { config };
+class si {
+  constructor(e = {}) {
+    const t = Object.assign({}, ln, e);
+    this[yt] = { config: t };
   }
   get depthNear() {
-    return this[PRIVATE$9].config.depthNear;
+    return this[yt].config.depthNear;
   }
   get depthFar() {
-    return this[PRIVATE$9].config.depthFar;
+    return this[yt].config.depthFar;
   }
   get inlineVerticalFieldOfView() {
-    return this[PRIVATE$9].config.inlineVerticalFieldOfView;
+    return this[yt].config.inlineVerticalFieldOfView;
   }
   get baseLayer() {
-    return this[PRIVATE$9].config.baseLayer;
+    return this[yt].config.baseLayer;
   }
 }
-const PRIVATE$8 = Symbol("@@webxr-polyfill/XRInputSourceEvent");
-class XRInputSourceEvent extends Event {
-  constructor(type, eventInitDict) {
-    super(type, eventInitDict);
-    this[PRIVATE$8] = {
-      frame: eventInitDict.frame,
-      inputSource: eventInitDict.inputSource
-    };
-    Object.setPrototypeOf(this, XRInputSourceEvent.prototype);
+const jt = Symbol("@@webxr-polyfill/XRInputSourceEvent");
+class Nt extends Event {
+  constructor(e, t) {
+    super(e, t), this[jt] = {
+      frame: t.frame,
+      inputSource: t.inputSource
+    }, Object.setPrototypeOf(this, Nt.prototype);
   }
   get frame() {
-    return this[PRIVATE$8].frame;
+    return this[jt].frame;
   }
   get inputSource() {
-    return this[PRIVATE$8].inputSource;
+    return this[jt].inputSource;
   }
 }
-const PRIVATE$7 = Symbol("@@webxr-polyfill/XRSessionEvent");
-class XRSessionEvent extends Event {
-  constructor(type, eventInitDict) {
-    super(type, eventInitDict);
-    this[PRIVATE$7] = {
-      session: eventInitDict.session
-    };
-    Object.setPrototypeOf(this, XRSessionEvent.prototype);
+const Mi = Symbol("@@webxr-polyfill/XRSessionEvent");
+class Rt extends Event {
+  constructor(e, t) {
+    super(e, t), this[Mi] = {
+      session: t.session
+    }, Object.setPrototypeOf(this, Rt.prototype);
   }
   get session() {
-    return this[PRIVATE$7].session;
+    return this[Mi].session;
   }
 }
-const PRIVATE$6 = Symbol("@@webxr-polyfill/XRInputSourcesChangeEvent");
-class XRInputSourcesChangeEvent extends Event {
-  constructor(type, eventInitDict) {
-    super(type, eventInitDict);
-    this[PRIVATE$6] = {
-      session: eventInitDict.session,
-      added: eventInitDict.added,
-      removed: eventInitDict.removed
-    };
-    Object.setPrototypeOf(this, XRInputSourcesChangeEvent.prototype);
+const Ct = Symbol("@@webxr-polyfill/XRInputSourcesChangeEvent");
+class kt extends Event {
+  constructor(e, t) {
+    super(e, t), this[Ct] = {
+      session: t.session,
+      added: t.added,
+      removed: t.removed
+    }, Object.setPrototypeOf(this, kt.prototype);
   }
   get session() {
-    return this[PRIVATE$6].session;
+    return this[Ct].session;
   }
   get added() {
-    return this[PRIVATE$6].added;
+    return this[Ct].added;
   }
   get removed() {
-    return this[PRIVATE$6].removed;
+    return this[Ct].removed;
   }
 }
-const PRIVATE$5 = Symbol("@@webxr-polyfill/XRSession");
-class XRViewSpace extends XRSpace {
-  constructor(eye) {
-    super(eye);
+const b = Symbol("@@webxr-polyfill/XRSession");
+class Zt extends it {
+  constructor(e) {
+    super(e);
   }
   get eye() {
     return this._specialType;
   }
-  _onPoseUpdate(device) {
-    this._inverseBaseMatrix = device.getBaseViewMatrix(this._specialType);
+  _onPoseUpdate(e) {
+    this._inverseBaseMatrix = e.getBaseViewMatrix(this._specialType);
   }
 }
-class XRSession$1 extends EventTarget$1 {
-  constructor(device, mode, id) {
+class Ki extends li {
+  constructor(e, t, s) {
     super();
-    let immersive = mode != "inline";
-    let initialRenderState = new XRRenderState({
-      inlineVerticalFieldOfView: immersive ? null : Math.PI * 0.5
+    let o = t != "inline", h = new si({
+      inlineVerticalFieldOfView: o ? null : Math.PI * 0.5
     });
-    const defaultViewSpaces = immersive ? [new XRViewSpace("left"), new XRViewSpace("right")] : [new XRViewSpace("none")];
-    Object.freeze(defaultViewSpaces);
-    this[PRIVATE$5] = {
-      device,
-      mode,
-      immersive,
-      ended: false,
-      suspended: false,
+    const d = o ? [new Zt("left"), new Zt("right")] : [new Zt("none")];
+    Object.freeze(d), this[b] = {
+      device: e,
+      mode: t,
+      immersive: o,
+      ended: !1,
+      suspended: !1,
       frameCallbacks: [],
       currentFrameCallbacks: null,
       frameHandle: 0,
       deviceFrameHandle: null,
-      id,
-      activeRenderState: initialRenderState,
+      id: s,
+      activeRenderState: h,
       pendingRenderState: null,
-      viewerSpace: new XRReferenceSpace("viewer"),
+      viewerSpace: new _t("viewer"),
       get viewSpaces() {
-        return device.getViewSpaces(mode) || defaultViewSpaces;
+        return e.getViewSpaces(t) || d;
       },
       currentInputSources: []
-    };
-    this[PRIVATE$5].onDeviceFrame = () => {
-      if (this[PRIVATE$5].ended || this[PRIVATE$5].suspended) {
+    }, this[b].onDeviceFrame = () => {
+      if (this[b].ended || this[b].suspended || (this[b].deviceFrameHandle = null, this[b].startDeviceFrameLoop(), this[b].pendingRenderState !== null && (this[b].activeRenderState = new si(this[b].pendingRenderState), this[b].pendingRenderState = null, this[b].activeRenderState.baseLayer && this[b].device.onBaseLayerSet(
+        this[b].id,
+        this[b].activeRenderState.baseLayer
+      )), this[b].activeRenderState.baseLayer === null))
         return;
-      }
-      this[PRIVATE$5].deviceFrameHandle = null;
-      this[PRIVATE$5].startDeviceFrameLoop();
-      if (this[PRIVATE$5].pendingRenderState !== null) {
-        this[PRIVATE$5].activeRenderState = new XRRenderState(this[PRIVATE$5].pendingRenderState);
-        this[PRIVATE$5].pendingRenderState = null;
-        if (this[PRIVATE$5].activeRenderState.baseLayer) {
-          this[PRIVATE$5].device.onBaseLayerSet(
-            this[PRIVATE$5].id,
-            this[PRIVATE$5].activeRenderState.baseLayer
-          );
-        }
-      }
-      if (this[PRIVATE$5].activeRenderState.baseLayer === null) {
-        return;
-      }
-      const frame = new XRFrame(device, this, this[PRIVATE$5].id);
-      const callbacks = this[PRIVATE$5].currentFrameCallbacks = this[PRIVATE$5].frameCallbacks;
-      this[PRIVATE$5].frameCallbacks = [];
-      frame[PRIVATE$a].active = true;
-      frame[PRIVATE$a].animationFrame = true;
-      this[PRIVATE$5].device.onFrameStart(this[PRIVATE$5].id, this[PRIVATE$5].activeRenderState);
-      this._checkInputSourcesChange();
-      const rightNow = now$1();
-      for (let i = 0; i < callbacks.length; i++) {
+      const u = new ni(e, this, this[b].id), m = this[b].currentFrameCallbacks = this[b].frameCallbacks;
+      this[b].frameCallbacks = [], u[pe].active = !0, u[pe].animationFrame = !0, this[b].device.onFrameStart(this[b].id, this[b].activeRenderState), this._checkInputSourcesChange();
+      const v = Yi();
+      for (let y = 0; y < m.length; y++)
         try {
-          if (!callbacks[i].cancelled && typeof callbacks[i].callback === "function") {
-            callbacks[i].callback(rightNow, frame);
-          }
-        } catch (err) {
-          console.error(err);
+          !m[y].cancelled && typeof m[y].callback == "function" && m[y].callback(v, u);
+        } catch (_) {
+          console.error(_);
         }
-      }
-      this[PRIVATE$5].currentFrameCallbacks = null;
-      frame[PRIVATE$a].active = false;
-      this[PRIVATE$5].device.onFrameEnd(this[PRIVATE$5].id);
-    };
-    this[PRIVATE$5].startDeviceFrameLoop = () => {
-      if (this[PRIVATE$5].deviceFrameHandle === null) {
-        this[PRIVATE$5].deviceFrameHandle = this[PRIVATE$5].device.requestAnimationFrame(
-          this[PRIVATE$5].onDeviceFrame
-        );
-      }
-    };
-    this[PRIVATE$5].stopDeviceFrameLoop = () => {
-      const handle = this[PRIVATE$5].deviceFrameHandle;
-      if (handle !== null) {
-        this[PRIVATE$5].device.cancelAnimationFrame(handle);
-        this[PRIVATE$5].deviceFrameHandle = null;
-      }
-    };
-    this[PRIVATE$5].onPresentationEnd = (sessionId) => {
-      if (sessionId !== this[PRIVATE$5].id) {
-        this[PRIVATE$5].suspended = false;
-        this[PRIVATE$5].startDeviceFrameLoop();
-        this.dispatchEvent("focus", { session: this });
+      this[b].currentFrameCallbacks = null, u[pe].active = !1, this[b].device.onFrameEnd(this[b].id);
+    }, this[b].startDeviceFrameLoop = () => {
+      this[b].deviceFrameHandle === null && (this[b].deviceFrameHandle = this[b].device.requestAnimationFrame(
+        this[b].onDeviceFrame
+      ));
+    }, this[b].stopDeviceFrameLoop = () => {
+      const u = this[b].deviceFrameHandle;
+      u !== null && (this[b].device.cancelAnimationFrame(u), this[b].deviceFrameHandle = null);
+    }, this[b].onPresentationEnd = (u) => {
+      if (u !== this[b].id) {
+        this[b].suspended = !1, this[b].startDeviceFrameLoop(), this.dispatchEvent("focus", { session: this });
         return;
       }
-      this[PRIVATE$5].ended = true;
-      this[PRIVATE$5].stopDeviceFrameLoop();
-      device.removeEventListener("@@webxr-polyfill/vr-present-end", this[PRIVATE$5].onPresentationEnd);
-      device.removeEventListener("@@webxr-polyfill/vr-present-start", this[PRIVATE$5].onPresentationStart);
-      device.removeEventListener("@@webxr-polyfill/input-select-start", this[PRIVATE$5].onSelectStart);
-      device.removeEventListener("@@webxr-polyfill/input-select-end", this[PRIVATE$5].onSelectEnd);
-      this.dispatchEvent("end", new XRSessionEvent("end", { session: this }));
-    };
-    device.addEventListener("@@webxr-polyfill/vr-present-end", this[PRIVATE$5].onPresentationEnd);
-    this[PRIVATE$5].onPresentationStart = (sessionId) => {
-      if (sessionId === this[PRIVATE$5].id) {
-        return;
-      }
-      this[PRIVATE$5].suspended = true;
-      this[PRIVATE$5].stopDeviceFrameLoop();
-      this.dispatchEvent("blur", { session: this });
-    };
-    device.addEventListener("@@webxr-polyfill/vr-present-start", this[PRIVATE$5].onPresentationStart);
-    this[PRIVATE$5].onSelectStart = (evt) => {
-      if (evt.sessionId !== this[PRIVATE$5].id) {
-        return;
-      }
-      this[PRIVATE$5].dispatchInputSourceEvent("selectstart", evt.inputSource);
-    };
-    device.addEventListener("@@webxr-polyfill/input-select-start", this[PRIVATE$5].onSelectStart);
-    this[PRIVATE$5].onSelectEnd = (evt) => {
-      if (evt.sessionId !== this[PRIVATE$5].id) {
-        return;
-      }
-      this[PRIVATE$5].dispatchInputSourceEvent("selectend", evt.inputSource);
-      this[PRIVATE$5].dispatchInputSourceEvent("select", evt.inputSource);
-    };
-    device.addEventListener("@@webxr-polyfill/input-select-end", this[PRIVATE$5].onSelectEnd);
-    this[PRIVATE$5].onSqueezeStart = (evt) => {
-      if (evt.sessionId !== this[PRIVATE$5].id) {
-        return;
-      }
-      this[PRIVATE$5].dispatchInputSourceEvent("squeezestart", evt.inputSource);
-    };
-    device.addEventListener("@@webxr-polyfill/input-squeeze-start", this[PRIVATE$5].onSqueezeStart);
-    this[PRIVATE$5].onSqueezeEnd = (evt) => {
-      if (evt.sessionId !== this[PRIVATE$5].id) {
-        return;
-      }
-      this[PRIVATE$5].dispatchInputSourceEvent("squeezeend", evt.inputSource);
-      this[PRIVATE$5].dispatchInputSourceEvent("squeeze", evt.inputSource);
-    };
-    device.addEventListener("@@webxr-polyfill/input-squeeze-end", this[PRIVATE$5].onSqueezeEnd);
-    this[PRIVATE$5].dispatchInputSourceEvent = (type, inputSource) => {
-      const frame = new XRFrame(device, this, this[PRIVATE$5].id);
-      const event = new XRInputSourceEvent(type, { frame, inputSource });
-      frame[PRIVATE$a].active = true;
-      this.dispatchEvent(type, event);
-      frame[PRIVATE$a].active = false;
-    };
-    this[PRIVATE$5].startDeviceFrameLoop();
-    this.onblur = void 0;
-    this.onfocus = void 0;
-    this.onresetpose = void 0;
-    this.onend = void 0;
-    this.onselect = void 0;
-    this.onselectstart = void 0;
-    this.onselectend = void 0;
+      this[b].ended = !0, this[b].stopDeviceFrameLoop(), e.removeEventListener("@@webxr-polyfill/vr-present-end", this[b].onPresentationEnd), e.removeEventListener("@@webxr-polyfill/vr-present-start", this[b].onPresentationStart), e.removeEventListener("@@webxr-polyfill/input-select-start", this[b].onSelectStart), e.removeEventListener("@@webxr-polyfill/input-select-end", this[b].onSelectEnd), this.dispatchEvent("end", new Rt("end", { session: this }));
+    }, e.addEventListener("@@webxr-polyfill/vr-present-end", this[b].onPresentationEnd), this[b].onPresentationStart = (u) => {
+      u !== this[b].id && (this[b].suspended = !0, this[b].stopDeviceFrameLoop(), this.dispatchEvent("blur", { session: this }));
+    }, e.addEventListener("@@webxr-polyfill/vr-present-start", this[b].onPresentationStart), this[b].onSelectStart = (u) => {
+      u.sessionId === this[b].id && this[b].dispatchInputSourceEvent("selectstart", u.inputSource);
+    }, e.addEventListener("@@webxr-polyfill/input-select-start", this[b].onSelectStart), this[b].onSelectEnd = (u) => {
+      u.sessionId === this[b].id && (this[b].dispatchInputSourceEvent("selectend", u.inputSource), this[b].dispatchInputSourceEvent("select", u.inputSource));
+    }, e.addEventListener("@@webxr-polyfill/input-select-end", this[b].onSelectEnd), this[b].onSqueezeStart = (u) => {
+      u.sessionId === this[b].id && this[b].dispatchInputSourceEvent("squeezestart", u.inputSource);
+    }, e.addEventListener("@@webxr-polyfill/input-squeeze-start", this[b].onSqueezeStart), this[b].onSqueezeEnd = (u) => {
+      u.sessionId === this[b].id && (this[b].dispatchInputSourceEvent("squeezeend", u.inputSource), this[b].dispatchInputSourceEvent("squeeze", u.inputSource));
+    }, e.addEventListener("@@webxr-polyfill/input-squeeze-end", this[b].onSqueezeEnd), this[b].dispatchInputSourceEvent = (u, m) => {
+      const v = new ni(e, this, this[b].id), y = new Nt(u, { frame: v, inputSource: m });
+      v[pe].active = !0, this.dispatchEvent(u, y), v[pe].active = !1;
+    }, this[b].startDeviceFrameLoop(), this.onblur = void 0, this.onfocus = void 0, this.onresetpose = void 0, this.onend = void 0, this.onselect = void 0, this.onselectstart = void 0, this.onselectend = void 0;
   }
   get renderState() {
-    return this[PRIVATE$5].activeRenderState;
+    return this[b].activeRenderState;
   }
   get environmentBlendMode() {
-    return this[PRIVATE$5].device.environmentBlendMode || "opaque";
+    return this[b].device.environmentBlendMode || "opaque";
   }
-  async requestReferenceSpace(type) {
-    if (this[PRIVATE$5].ended) {
+  async requestReferenceSpace(e) {
+    if (this[b].ended)
       return;
-    }
-    if (!XRReferenceSpaceTypes.includes(type)) {
-      throw new TypeError(`XRReferenceSpaceType must be one of ${XRReferenceSpaceTypes}`);
-    }
-    if (!this[PRIVATE$5].device.doesSessionSupportReferenceSpace(this[PRIVATE$5].id, type)) {
-      throw new DOMException(`The ${type} reference space is not supported by this session.`, "NotSupportedError");
-    }
-    if (type === "viewer") {
-      return this[PRIVATE$5].viewerSpace;
-    }
-    let transform = await this[PRIVATE$5].device.requestFrameOfReferenceTransform(type);
-    if (type === "bounded-floor") {
-      if (!transform) {
-        throw new DOMException(`${type} XRReferenceSpace not supported by this device.`, "NotSupportedError");
-      }
-      let bounds = this[PRIVATE$5].device.requestStageBounds();
-      if (!bounds) {
-        throw new DOMException(`${type} XRReferenceSpace not supported by this device.`, "NotSupportedError");
-      }
-      throw new DOMException(`The WebXR polyfill does not support the ${type} reference space yet.`, "NotSupportedError");
-    }
-    return new XRReferenceSpace(type, transform);
+    if (!Lt.includes(e))
+      throw new TypeError(`XRReferenceSpaceType must be one of ${Lt}`);
+    if (!this[b].device.doesSessionSupportReferenceSpace(this[b].id, e))
+      throw new DOMException(`The ${e} reference space is not supported by this session.`, "NotSupportedError");
+    if (e === "viewer")
+      return this[b].viewerSpace;
+    let t = await this[b].device.requestFrameOfReferenceTransform(e);
+    if (e === "bounded-floor")
+      throw t ? this[b].device.requestStageBounds() ? new DOMException(`The WebXR polyfill does not support the ${e} reference space yet.`, "NotSupportedError") : new DOMException(`${e} XRReferenceSpace not supported by this device.`, "NotSupportedError") : new DOMException(`${e} XRReferenceSpace not supported by this device.`, "NotSupportedError");
+    return new _t(e, t);
   }
-  requestAnimationFrame(callback) {
-    if (this[PRIVATE$5].ended) {
+  requestAnimationFrame(e) {
+    if (this[b].ended)
       return;
-    }
-    const handle = ++this[PRIVATE$5].frameHandle;
-    this[PRIVATE$5].frameCallbacks.push({
-      handle,
-      callback,
-      cancelled: false
-    });
-    return handle;
+    const t = ++this[b].frameHandle;
+    return this[b].frameCallbacks.push({
+      handle: t,
+      callback: e,
+      cancelled: !1
+    }), t;
   }
-  cancelAnimationFrame(handle) {
-    let callbacks = this[PRIVATE$5].frameCallbacks;
-    let index = callbacks.findIndex((d) => d && d.handle === handle);
-    if (index > -1) {
-      callbacks[index].cancelled = true;
-      callbacks.splice(index, 1);
-    }
-    callbacks = this[PRIVATE$5].currentFrameCallbacks;
-    if (callbacks) {
-      index = callbacks.findIndex((d) => d && d.handle === handle);
-      if (index > -1) {
-        callbacks[index].cancelled = true;
-      }
-    }
+  cancelAnimationFrame(e) {
+    let t = this[b].frameCallbacks, s = t.findIndex((o) => o && o.handle === e);
+    s > -1 && (t[s].cancelled = !0, t.splice(s, 1)), t = this[b].currentFrameCallbacks, t && (s = t.findIndex((o) => o && o.handle === e), s > -1 && (t[s].cancelled = !0));
   }
   get inputSources() {
-    return this[PRIVATE$5].device.getInputSources();
+    return this[b].device.getInputSources();
   }
   async end() {
-    if (this[PRIVATE$5].ended) {
-      return;
-    }
-    if (this[PRIVATE$5].immersive) {
-      this[PRIVATE$5].ended = true;
-      this[PRIVATE$5].device.removeEventListener(
+    if (!this[b].ended)
+      return this[b].immersive && (this[b].ended = !0, this[b].device.removeEventListener(
         "@@webxr-polyfill/vr-present-start",
-        this[PRIVATE$5].onPresentationStart
-      );
-      this[PRIVATE$5].device.removeEventListener(
+        this[b].onPresentationStart
+      ), this[b].device.removeEventListener(
         "@@webxr-polyfill/vr-present-end",
-        this[PRIVATE$5].onPresentationEnd
-      );
-      this[PRIVATE$5].device.removeEventListener(
+        this[b].onPresentationEnd
+      ), this[b].device.removeEventListener(
         "@@webxr-polyfill/input-select-start",
-        this[PRIVATE$5].onSelectStart
-      );
-      this[PRIVATE$5].device.removeEventListener(
+        this[b].onSelectStart
+      ), this[b].device.removeEventListener(
         "@@webxr-polyfill/input-select-end",
-        this[PRIVATE$5].onSelectEnd
-      );
-      this.dispatchEvent("end", new XRSessionEvent("end", { session: this }));
-    }
-    this[PRIVATE$5].stopDeviceFrameLoop();
-    return this[PRIVATE$5].device.endSession(this[PRIVATE$5].id);
+        this[b].onSelectEnd
+      ), this.dispatchEvent("end", new Rt("end", { session: this }))), this[b].stopDeviceFrameLoop(), this[b].device.endSession(this[b].id);
   }
-  updateRenderState(newState) {
-    if (this[PRIVATE$5].ended) {
-      const message = "Can't call updateRenderState on an XRSession that has already ended.";
-      throw new Error(message);
+  updateRenderState(e) {
+    if (this[b].ended) {
+      const s = "Can't call updateRenderState on an XRSession that has already ended.";
+      throw new Error(s);
     }
-    if (newState.baseLayer && newState.baseLayer._session !== this) {
-      const message = "Called updateRenderState with a base layer that was created by a different session.";
-      throw new Error(message);
+    if (e.baseLayer && e.baseLayer._session !== this) {
+      const s = "Called updateRenderState with a base layer that was created by a different session.";
+      throw new Error(s);
     }
-    const fovSet = newState.inlineVerticalFieldOfView !== null && newState.inlineVerticalFieldOfView !== void 0;
-    if (fovSet) {
-      if (this[PRIVATE$5].immersive) {
-        const message = "inlineVerticalFieldOfView must not be set for an XRRenderState passed to updateRenderState for an immersive session.";
-        throw new Error(message);
-      } else {
-        newState.inlineVerticalFieldOfView = Math.min(
+    if (e.inlineVerticalFieldOfView !== null && e.inlineVerticalFieldOfView !== void 0)
+      if (this[b].immersive) {
+        const s = "inlineVerticalFieldOfView must not be set for an XRRenderState passed to updateRenderState for an immersive session.";
+        throw new Error(s);
+      } else
+        e.inlineVerticalFieldOfView = Math.min(
           3.13,
-          Math.max(0.01, newState.inlineVerticalFieldOfView)
+          Math.max(0.01, e.inlineVerticalFieldOfView)
         );
-      }
-    }
-    if (this[PRIVATE$5].pendingRenderState === null) {
-      const activeRenderState = this[PRIVATE$5].activeRenderState;
-      this[PRIVATE$5].pendingRenderState = {
-        depthNear: activeRenderState.depthNear,
-        depthFar: activeRenderState.depthFar,
-        inlineVerticalFieldOfView: activeRenderState.inlineVerticalFieldOfView,
-        baseLayer: activeRenderState.baseLayer
+    if (this[b].pendingRenderState === null) {
+      const s = this[b].activeRenderState;
+      this[b].pendingRenderState = {
+        depthNear: s.depthNear,
+        depthFar: s.depthFar,
+        inlineVerticalFieldOfView: s.inlineVerticalFieldOfView,
+        baseLayer: s.baseLayer
       };
     }
-    Object.assign(this[PRIVATE$5].pendingRenderState, newState);
+    Object.assign(this[b].pendingRenderState, e);
   }
   _checkInputSourcesChange() {
-    const added = [];
-    const removed = [];
-    const newInputSources = this.inputSources;
-    const oldInputSources = this[PRIVATE$5].currentInputSources;
-    for (const newInputSource of newInputSources) {
-      if (!oldInputSources.includes(newInputSource)) {
-        added.push(newInputSource);
-      }
-    }
-    for (const oldInputSource of oldInputSources) {
-      if (!newInputSources.includes(oldInputSource)) {
-        removed.push(oldInputSource);
-      }
-    }
-    if (added.length > 0 || removed.length > 0) {
-      this.dispatchEvent("inputsourceschange", new XRInputSourcesChangeEvent("inputsourceschange", {
-        session: this,
-        added,
-        removed
-      }));
-    }
-    this[PRIVATE$5].currentInputSources.length = 0;
-    for (const newInputSource of newInputSources) {
-      this[PRIVATE$5].currentInputSources.push(newInputSource);
-    }
+    const e = [], t = [], s = this.inputSources, o = this[b].currentInputSources;
+    for (const h of s)
+      o.includes(h) || e.push(h);
+    for (const h of o)
+      s.includes(h) || t.push(h);
+    (e.length > 0 || t.length > 0) && this.dispatchEvent("inputsourceschange", new kt("inputsourceschange", {
+      session: this,
+      added: e,
+      removed: t
+    })), this[b].currentInputSources.length = 0;
+    for (const h of s)
+      this[b].currentInputSources.push(h);
   }
 }
-const PRIVATE$4 = Symbol("@@webxr-polyfill/XRInputSource");
-class XRInputSource {
-  constructor(impl) {
-    this[PRIVATE$4] = {
-      impl,
-      gripSpace: new XRSpace("grip", this),
-      targetRaySpace: new XRSpace("target-ray", this)
+const Ue = Symbol("@@webxr-polyfill/XRInputSource");
+class Ji {
+  constructor(e) {
+    this[Ue] = {
+      impl: e,
+      gripSpace: new it("grip", this),
+      targetRaySpace: new it("target-ray", this)
     };
   }
   get handedness() {
-    return this[PRIVATE$4].impl.handedness;
+    return this[Ue].impl.handedness;
   }
   get targetRayMode() {
-    return this[PRIVATE$4].impl.targetRayMode;
+    return this[Ue].impl.targetRayMode;
   }
   get gripSpace() {
-    let mode = this[PRIVATE$4].impl.targetRayMode;
-    if (mode === "gaze" || mode === "screen") {
-      return null;
-    }
-    return this[PRIVATE$4].gripSpace;
+    let e = this[Ue].impl.targetRayMode;
+    return e === "gaze" || e === "screen" ? null : this[Ue].gripSpace;
   }
   get targetRaySpace() {
-    return this[PRIVATE$4].targetRaySpace;
+    return this[Ue].targetRaySpace;
   }
   get profiles() {
-    return this[PRIVATE$4].impl.profiles;
+    return this[Ue].impl.profiles;
   }
   get gamepad() {
-    return this[PRIVATE$4].impl.gamepad;
+    return this[Ue].impl.gamepad;
   }
 }
-const POLYFILLED_XR_COMPATIBLE = Symbol("@@webxr-polyfill/polyfilled-xr-compatible");
-const XR_COMPATIBLE = Symbol("@@webxr-polyfill/xr-compatible");
-const PRIVATE$3 = Symbol("@@webxr-polyfill/XRWebGLLayer");
-const XRWebGLLayerInit = Object.freeze({
-  antialias: true,
-  depth: true,
-  stencil: false,
-  alpha: true,
-  multiview: false,
-  ignoreDepthValues: false,
+const er = Symbol("@@webxr-polyfill/polyfilled-xr-compatible"), hi = Symbol("@@webxr-polyfill/xr-compatible"), Ze = Symbol("@@webxr-polyfill/XRWebGLLayer"), cn = Object.freeze({
+  antialias: !0,
+  depth: !0,
+  stencil: !1,
+  alpha: !0,
+  multiview: !1,
+  ignoreDepthValues: !1,
   framebufferScaleFactor: 1
 });
-class XRWebGLLayer {
-  constructor(session, context, layerInit = {}) {
-    const config = Object.assign({}, XRWebGLLayerInit, layerInit);
-    if (!(session instanceof XRSession$1)) {
+class tr {
+  constructor(e, t, s = {}) {
+    const o = Object.assign({}, cn, s);
+    if (!(e instanceof Ki))
       throw new Error("session must be a XRSession");
-    }
-    if (session.ended) {
-      throw new Error(`InvalidStateError`);
-    }
-    if (context[POLYFILLED_XR_COMPATIBLE]) {
-      if (context[XR_COMPATIBLE] !== true) {
-        throw new Error(`InvalidStateError`);
-      }
-    }
-    this[PRIVATE$3] = {
-      context,
-      config,
-      session
+    if (e.ended)
+      throw new Error("InvalidStateError");
+    if (t[er] && t[hi] !== !0)
+      throw new Error("InvalidStateError");
+    this[Ze] = {
+      context: t,
+      config: o,
+      session: e
     };
   }
   get context() {
-    return this[PRIVATE$3].context;
+    return this[Ze].context;
   }
   get antialias() {
-    return this[PRIVATE$3].config.antialias;
+    return this[Ze].config.antialias;
   }
   get ignoreDepthValues() {
-    return true;
+    return !0;
   }
   get framebuffer() {
     return null;
   }
   get framebufferWidth() {
-    return this[PRIVATE$3].context.drawingBufferWidth;
+    return this[Ze].context.drawingBufferWidth;
   }
   get framebufferHeight() {
-    return this[PRIVATE$3].context.drawingBufferHeight;
+    return this[Ze].context.drawingBufferHeight;
   }
   get _session() {
-    return this[PRIVATE$3].session;
+    return this[Ze].session;
   }
-  getViewport(view) {
-    return view._getViewport(this);
+  getViewport(e) {
+    return e._getViewport(this);
   }
-  static getNativeFramebufferScaleFactor(session) {
-    if (!session) {
+  static getNativeFramebufferScaleFactor(e) {
+    if (!e)
       throw new TypeError("getNativeFramebufferScaleFactor must be passed a session.");
-    }
-    if (session[PRIVATE$5].ended) {
-      return 0;
-    }
-    return 1;
+    return e[b].ended ? 0 : 1;
   }
 }
-const PRIVATE$2 = Symbol("@@webxr-polyfill/XRReferenceSpaceEvent");
-class XRReferenceSpaceEvent extends Event {
-  constructor(type, eventInitDict) {
-    super(type, eventInitDict);
-    this[PRIVATE$2] = {
-      referenceSpace: eventInitDict.referenceSpace,
-      transform: eventInitDict.transform || null
-    };
-    Object.setPrototypeOf(this, XRReferenceSpaceEvent.prototype);
+const qt = Symbol("@@webxr-polyfill/XRReferenceSpaceEvent");
+class di extends Event {
+  constructor(e, t) {
+    super(e, t), this[qt] = {
+      referenceSpace: t.referenceSpace,
+      transform: t.transform || null
+    }, Object.setPrototypeOf(this, di.prototype);
   }
   get referenceSpace() {
-    return this[PRIVATE$2].referenceSpace;
+    return this[qt].referenceSpace;
   }
   get transform() {
-    return this[PRIVATE$2].transform;
+    return this[qt].transform;
   }
 }
-const API = {
-  XRSystem,
-  XRSession: XRSession$1,
-  XRSessionEvent,
-  XRFrame,
-  XRView,
-  XRViewport,
-  XRViewerPose,
-  XRWebGLLayer,
-  XRSpace,
-  XRReferenceSpace,
-  XRReferenceSpaceEvent,
-  XRInputSource,
-  XRInputSourceEvent,
-  XRInputSourcesChangeEvent,
-  XRRenderState,
-  XRRigidTransform: XRRigidTransform$1,
-  XRPose: XRPose$1
-};
-const polyfillMakeXRCompatible = (Context) => {
-  if (typeof Context.prototype.makeXRCompatible === "function")
-    ;
-  Context.prototype.makeXRCompatible = function() {
-    this[XR_COMPATIBLE] = true;
-    return Promise.resolve();
+const gt = {
+  XRSystem: Wi,
+  XRSession: Ki,
+  XRSessionEvent: Rt,
+  XRFrame: ni,
+  XRView: $i,
+  XRViewport: qi,
+  XRViewerPose: Zi,
+  XRWebGLLayer: tr,
+  XRSpace: it,
+  XRReferenceSpace: _t,
+  XRReferenceSpaceEvent: di,
+  XRInputSource: Ji,
+  XRInputSourceEvent: Nt,
+  XRInputSourcesChangeEvent: kt,
+  XRRenderState: si,
+  XRRigidTransform: Ot,
+  XRPose: ji
+}, Ti = (i) => (i.prototype.makeXRCompatible, i.prototype.makeXRCompatible = function() {
+  return this[hi] = !0, Promise.resolve();
+}, !0), Fi = (i) => {
+  const e = i.prototype.getContext;
+  i.prototype.getContext = function(t, s) {
+    const o = e.call(this, t, s);
+    return o && (o[er] = !0, s && "xrCompatible" in s && (o[hi] = s.xrCompatible)), o;
   };
-  return true;
+}, hn = (i) => !!(i.ImageBitmapRenderingContext && i.createImageBitmap), dn = (i) => {
+  var e = !1;
+  return function(t) {
+    (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(t) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(t.substr(0, 4))) && (e = !0);
+  }(i.navigator.userAgent || i.navigator.vendor || i.opera), e;
+}, An = (i) => {
+  i.style.display = "block", i.style.position = "absolute", i.style.width = i.style.height = "1px", i.style.top = i.style.left = "0px";
 };
-const polyfillGetContext = (Canvas) => {
-  const getContext = Canvas.prototype.getContext;
-  Canvas.prototype.getContext = function(contextType, glAttribs) {
-    const ctx = getContext.call(this, contextType, glAttribs);
-    if (ctx) {
-      ctx[POLYFILLED_XR_COMPATIBLE] = true;
-      if (glAttribs && "xrCompatible" in glAttribs) {
-        ctx[XR_COMPATIBLE] = glAttribs.xrCompatible;
-      }
-    }
-    return ctx;
-  };
-};
-const isImageBitmapSupported = (global2) => !!(global2.ImageBitmapRenderingContext && global2.createImageBitmap);
-const isMobile = (global2) => {
-  var check = false;
-  (function(a) {
-    if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
-      check = true;
-  })(global2.navigator.userAgent || global2.navigator.vendor || global2.opera);
-  return check;
-};
-const applyCanvasStylesForMinimalRendering = (canvas) => {
-  canvas.style.display = "block";
-  canvas.style.position = "absolute";
-  canvas.style.width = canvas.style.height = "1px";
-  canvas.style.top = canvas.style.left = "0px";
-};
-var commonjsGlobal$1 = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-function getDefaultExportFromCjs(x) {
-  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+var $t = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
+function un(i) {
+  return i && i.__esModule && Object.prototype.hasOwnProperty.call(i, "default") ? i.default : i;
 }
-var cardboardVrDisplay = { exports: {} };
+var ir = { exports: {} };
 /**
  * @license
  * cardboard-vr-display
@@ -1720,7 +972,7 @@ var cardboardVrDisplay = { exports: {} };
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-(function(module, exports) {
+(function(i, e) {
   /**
    * @license
    * gl-preserve-state
@@ -1783,1436 +1035,611 @@ var cardboardVrDisplay = { exports: {} };
    * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
    * THE SOFTWARE.
    */
-  (function(global2, factory) {
-    module.exports = factory();
-  })(commonjsGlobal$1, function() {
-    var classCallCheck = function(instance, Constructor) {
-      if (!(instance instanceof Constructor)) {
+  (function(t, s) {
+    i.exports = s();
+  })($t, function() {
+    var t = function(r, n) {
+      if (!(r instanceof n))
         throw new TypeError("Cannot call a class as a function");
-      }
-    };
-    var createClass = function() {
-      function defineProperties(target, props) {
-        for (var i = 0; i < props.length; i++) {
-          var descriptor = props[i];
-          descriptor.enumerable = descriptor.enumerable || false;
-          descriptor.configurable = true;
-          if ("value" in descriptor)
-            descriptor.writable = true;
-          Object.defineProperty(target, descriptor.key, descriptor);
+    }, s = function() {
+      function r(n, a) {
+        for (var l = 0; l < a.length; l++) {
+          var c = a[l];
+          c.enumerable = c.enumerable || !1, c.configurable = !0, "value" in c && (c.writable = !0), Object.defineProperty(n, c.key, c);
         }
       }
-      return function(Constructor, protoProps, staticProps) {
-        if (protoProps)
-          defineProperties(Constructor.prototype, protoProps);
-        if (staticProps)
-          defineProperties(Constructor, staticProps);
-        return Constructor;
+      return function(n, a, l) {
+        return a && r(n.prototype, a), l && r(n, l), n;
       };
-    }();
-    var slicedToArray = function() {
-      function sliceIterator(arr, i) {
-        var _arr = [];
-        var _n = true;
-        var _d = false;
-        var _e = void 0;
+    }(), o = function() {
+      function r(n, a) {
+        var l = [], c = !0, A = !1, f = void 0;
         try {
-          for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) {
-            _arr.push(_s.value);
-            if (i && _arr.length === i)
-              break;
-          }
-        } catch (err) {
-          _d = true;
-          _e = err;
+          for (var S = n[Symbol.iterator](), E; !(c = (E = S.next()).done) && (l.push(E.value), !(a && l.length === a)); c = !0)
+            ;
+        } catch (p) {
+          A = !0, f = p;
         } finally {
           try {
-            if (!_n && _i["return"])
-              _i["return"]();
+            !c && S.return && S.return();
           } finally {
-            if (_d)
-              throw _e;
+            if (A)
+              throw f;
           }
         }
-        return _arr;
+        return l;
       }
-      return function(arr, i) {
-        if (Array.isArray(arr)) {
-          return arr;
-        } else if (Symbol.iterator in Object(arr)) {
-          return sliceIterator(arr, i);
-        } else {
-          throw new TypeError("Invalid attempt to destructure non-iterable instance");
-        }
+      return function(n, a) {
+        if (Array.isArray(n))
+          return n;
+        if (Symbol.iterator in Object(n))
+          return r(n, a);
+        throw new TypeError("Invalid attempt to destructure non-iterable instance");
       };
-    }();
-    var MIN_TIMESTEP = 1e-3;
-    var MAX_TIMESTEP = 1;
-    var dataUri = function dataUri2(mimeType, svg) {
-      return "data:" + mimeType + "," + encodeURIComponent(svg);
-    };
-    var lerp = function lerp2(a, b, t) {
-      return a + (b - a) * t;
-    };
-    var isIOS = function() {
-      var isIOS2 = /iPad|iPhone|iPod/.test(navigator.platform);
+    }(), h = 1e-3, d = 1, u = function(n, a) {
+      return "data:" + n + "," + encodeURIComponent(a);
+    }, m = function(n, a, l) {
+      return n + (a - n) * l;
+    }, v = function() {
+      var r = /iPad|iPhone|iPod/.test(navigator.platform);
       return function() {
-        return isIOS2;
+        return r;
       };
-    }();
-    var isWebViewAndroid = function() {
-      var isWebViewAndroid2 = navigator.userAgent.indexOf("Version") !== -1 && navigator.userAgent.indexOf("Android") !== -1 && navigator.userAgent.indexOf("Chrome") !== -1;
+    }(), y = function() {
+      var r = navigator.userAgent.indexOf("Version") !== -1 && navigator.userAgent.indexOf("Android") !== -1 && navigator.userAgent.indexOf("Chrome") !== -1;
       return function() {
-        return isWebViewAndroid2;
+        return r;
       };
-    }();
-    var isSafari = function() {
-      var isSafari2 = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+    }(), _ = function() {
+      var r = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
       return function() {
-        return isSafari2;
+        return r;
       };
-    }();
-    var isFirefoxAndroid = function() {
-      var isFirefoxAndroid2 = navigator.userAgent.indexOf("Firefox") !== -1 && navigator.userAgent.indexOf("Android") !== -1;
+    }(), x = function() {
+      var r = navigator.userAgent.indexOf("Firefox") !== -1 && navigator.userAgent.indexOf("Android") !== -1;
       return function() {
-        return isFirefoxAndroid2;
+        return r;
       };
-    }();
-    var getChromeVersion = function() {
-      var match = navigator.userAgent.match(/.*Chrome\/([0-9]+)/);
-      var value = match ? parseInt(match[1], 10) : null;
+    }(), R = function() {
+      var r = navigator.userAgent.match(/.*Chrome\/([0-9]+)/), n = r ? parseInt(r[1], 10) : null;
       return function() {
-        return value;
+        return n;
       };
-    }();
-    var isSafariWithoutDeviceMotion = function() {
-      var value = false;
-      value = isIOS() && isSafari() && navigator.userAgent.indexOf("13_4") !== -1;
-      return function() {
-        return value;
+    }(), F = function() {
+      var r = !1;
+      return r = v() && _() && navigator.userAgent.indexOf("13_4") !== -1, function() {
+        return r;
       };
-    }();
-    var isChromeWithoutDeviceMotion = function() {
-      var value = false;
-      if (getChromeVersion() === 65) {
-        var match = navigator.userAgent.match(/.*Chrome\/([0-9\.]*)/);
-        if (match) {
-          var _match$1$split = match[1].split("."), _match$1$split2 = slicedToArray(_match$1$split, 4);
-          _match$1$split2[0];
-          _match$1$split2[1];
-          var branch = _match$1$split2[2], build = _match$1$split2[3];
-          value = parseInt(branch, 10) === 3325 && parseInt(build, 10) < 148;
+    }(), C = function() {
+      var r = !1;
+      if (R() === 65) {
+        var n = navigator.userAgent.match(/.*Chrome\/([0-9\.]*)/);
+        if (n) {
+          var a = n[1].split("."), l = o(a, 4);
+          l[0], l[1];
+          var c = l[2], A = l[3];
+          r = parseInt(c, 10) === 3325 && parseInt(A, 10) < 148;
         }
       }
       return function() {
-        return value;
+        return r;
       };
-    }();
-    var isR7 = function() {
-      var isR72 = navigator.userAgent.indexOf("R7 Build") !== -1;
+    }(), B = function() {
+      var r = navigator.userAgent.indexOf("R7 Build") !== -1;
       return function() {
-        return isR72;
+        return r;
       };
-    }();
-    var isLandscapeMode = function isLandscapeMode2() {
-      var rtn = window.orientation == 90 || window.orientation == -90;
-      return isR7() ? !rtn : rtn;
-    };
-    var isTimestampDeltaValid = function isTimestampDeltaValid2(timestampDeltaS) {
-      if (isNaN(timestampDeltaS)) {
-        return false;
-      }
-      if (timestampDeltaS <= MIN_TIMESTEP) {
-        return false;
-      }
-      if (timestampDeltaS > MAX_TIMESTEP) {
-        return false;
-      }
-      return true;
-    };
-    var getScreenWidth = function getScreenWidth2() {
+    }(), N = function() {
+      var n = window.orientation == 90 || window.orientation == -90;
+      return B() ? !n : n;
+    }, Q = function(n) {
+      return !(isNaN(n) || n <= h || n > d);
+    }, P = function() {
       return Math.max(window.screen.width, window.screen.height) * window.devicePixelRatio;
-    };
-    var getScreenHeight = function getScreenHeight2() {
+    }, I = function() {
       return Math.min(window.screen.width, window.screen.height) * window.devicePixelRatio;
-    };
-    var requestFullscreen = function requestFullscreen2(element) {
-      if (isWebViewAndroid()) {
-        return false;
-      }
-      if (element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if (element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-      } else if (element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if (element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-      } else {
-        return false;
-      }
-      return true;
-    };
-    var exitFullscreen = function exitFullscreen2() {
-      if (document.exitFullscreen) {
+    }, G = function(n) {
+      if (y())
+        return !1;
+      if (n.requestFullscreen)
+        n.requestFullscreen();
+      else if (n.webkitRequestFullscreen)
+        n.webkitRequestFullscreen();
+      else if (n.mozRequestFullScreen)
+        n.mozRequestFullScreen();
+      else if (n.msRequestFullscreen)
+        n.msRequestFullscreen();
+      else
+        return !1;
+      return !0;
+    }, O = function() {
+      if (document.exitFullscreen)
         document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
+      else if (document.webkitExitFullscreen)
         document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
+      else if (document.mozCancelFullScreen)
         document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
+      else if (document.msExitFullscreen)
         document.msExitFullscreen();
-      } else {
-        return false;
-      }
-      return true;
-    };
-    var getFullscreenElement = function getFullscreenElement2() {
+      else
+        return !1;
+      return !0;
+    }, W = function() {
       return document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
-    };
-    var linkProgram = function linkProgram2(gl, vertexSource, fragmentSource, attribLocationMap) {
-      var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-      gl.shaderSource(vertexShader, vertexSource);
-      gl.compileShader(vertexShader);
-      var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-      gl.shaderSource(fragmentShader, fragmentSource);
-      gl.compileShader(fragmentShader);
-      var program = gl.createProgram();
-      gl.attachShader(program, vertexShader);
-      gl.attachShader(program, fragmentShader);
-      for (var attribName in attribLocationMap) {
-        gl.bindAttribLocation(program, attribLocationMap[attribName], attribName);
+    }, z = function(n, a, l, c) {
+      var A = n.createShader(n.VERTEX_SHADER);
+      n.shaderSource(A, a), n.compileShader(A);
+      var f = n.createShader(n.FRAGMENT_SHADER);
+      n.shaderSource(f, l), n.compileShader(f);
+      var S = n.createProgram();
+      n.attachShader(S, A), n.attachShader(S, f);
+      for (var E in c)
+        n.bindAttribLocation(S, c[E], E);
+      return n.linkProgram(S), n.deleteShader(A), n.deleteShader(f), S;
+    }, Z = function(n, a) {
+      for (var l = {}, c = n.getProgramParameter(a, n.ACTIVE_UNIFORMS), A = "", f = 0; f < c; f++) {
+        var S = n.getActiveUniform(a, f);
+        A = S.name.replace("[0]", ""), l[A] = n.getUniformLocation(a, A);
       }
-      gl.linkProgram(program);
-      gl.deleteShader(vertexShader);
-      gl.deleteShader(fragmentShader);
-      return program;
-    };
-    var getProgramUniforms = function getProgramUniforms2(gl, program) {
-      var uniforms = {};
-      var uniformCount = gl.getProgramParameter(program, gl.ACTIVE_UNIFORMS);
-      var uniformName = "";
-      for (var i = 0; i < uniformCount; i++) {
-        var uniformInfo = gl.getActiveUniform(program, i);
-        uniformName = uniformInfo.name.replace("[0]", "");
-        uniforms[uniformName] = gl.getUniformLocation(program, uniformName);
-      }
-      return uniforms;
-    };
-    var orthoMatrix = function orthoMatrix2(out, left, right, bottom, top, near, far) {
-      var lr = 1 / (left - right), bt = 1 / (bottom - top), nf = 1 / (near - far);
-      out[0] = -2 * lr;
-      out[1] = 0;
-      out[2] = 0;
-      out[3] = 0;
-      out[4] = 0;
-      out[5] = -2 * bt;
-      out[6] = 0;
-      out[7] = 0;
-      out[8] = 0;
-      out[9] = 0;
-      out[10] = 2 * nf;
-      out[11] = 0;
-      out[12] = (left + right) * lr;
-      out[13] = (top + bottom) * bt;
-      out[14] = (far + near) * nf;
-      out[15] = 1;
-      return out;
-    };
-    var isMobile2 = function isMobile3() {
-      var check = false;
-      (function(a) {
-        if (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4)))
-          check = true;
-      })(navigator.userAgent || navigator.vendor || window.opera);
-      return check;
-    };
-    var extend = function extend2(dest, src) {
-      for (var key in src) {
-        if (src.hasOwnProperty(key)) {
-          dest[key] = src[key];
-        }
-      }
-      return dest;
-    };
-    var safariCssSizeWorkaround = function safariCssSizeWorkaround2(canvas) {
-      if (isIOS()) {
-        var width = canvas.style.width;
-        var height = canvas.style.height;
-        canvas.style.width = parseInt(width) + 1 + "px";
-        canvas.style.height = parseInt(height) + "px";
-        setTimeout(function() {
-          canvas.style.width = width;
-          canvas.style.height = height;
+      return l;
+    }, K = function(n, a, l, c, A, f, S) {
+      var E = 1 / (a - l), p = 1 / (c - A), w = 1 / (f - S);
+      return n[0] = -2 * E, n[1] = 0, n[2] = 0, n[3] = 0, n[4] = 0, n[5] = -2 * p, n[6] = 0, n[7] = 0, n[8] = 0, n[9] = 0, n[10] = 2 * w, n[11] = 0, n[12] = (a + l) * E, n[13] = (A + c) * p, n[14] = (S + f) * w, n[15] = 1, n;
+    }, D = function() {
+      var n = !1;
+      return function(a) {
+        (/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino/i.test(a) || /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0, 4))) && (n = !0);
+      }(navigator.userAgent || navigator.vendor || window.opera), n;
+    }, V = function(n, a) {
+      for (var l in a)
+        a.hasOwnProperty(l) && (n[l] = a[l]);
+      return n;
+    }, L = function(n) {
+      if (v()) {
+        var a = n.style.width, l = n.style.height;
+        n.style.width = parseInt(a) + 1 + "px", n.style.height = parseInt(l) + "px", setTimeout(function() {
+          n.style.width = a, n.style.height = l;
         }, 100);
       }
-      window.canvas = canvas;
-    };
-    var frameDataFromPose = function() {
-      var piOver180 = Math.PI / 180;
-      var rad45 = Math.PI * 0.25;
-      function mat4_perspectiveFromFieldOfView(out, fov, near, far) {
-        var upTan = Math.tan(fov ? fov.upDegrees * piOver180 : rad45), downTan = Math.tan(fov ? fov.downDegrees * piOver180 : rad45), leftTan = Math.tan(fov ? fov.leftDegrees * piOver180 : rad45), rightTan = Math.tan(fov ? fov.rightDegrees * piOver180 : rad45), xScale = 2 / (leftTan + rightTan), yScale = 2 / (upTan + downTan);
-        out[0] = xScale;
-        out[1] = 0;
-        out[2] = 0;
-        out[3] = 0;
-        out[4] = 0;
-        out[5] = yScale;
-        out[6] = 0;
-        out[7] = 0;
-        out[8] = -((leftTan - rightTan) * xScale * 0.5);
-        out[9] = (upTan - downTan) * yScale * 0.5;
-        out[10] = far / (near - far);
-        out[11] = -1;
-        out[12] = 0;
-        out[13] = 0;
-        out[14] = far * near / (near - far);
-        out[15] = 0;
-        return out;
+      window.canvas = n;
+    }, M = function() {
+      var r = Math.PI / 180, n = Math.PI * 0.25;
+      function a(p, w, T, k) {
+        var U = Math.tan(w ? w.upDegrees * r : n), X = Math.tan(w ? w.downDegrees * r : n), q = Math.tan(w ? w.leftDegrees * r : n), j = Math.tan(w ? w.rightDegrees * r : n), Y = 2 / (q + j), ne = 2 / (U + X);
+        return p[0] = Y, p[1] = 0, p[2] = 0, p[3] = 0, p[4] = 0, p[5] = ne, p[6] = 0, p[7] = 0, p[8] = -((q - j) * Y * 0.5), p[9] = (U - X) * ne * 0.5, p[10] = k / (T - k), p[11] = -1, p[12] = 0, p[13] = 0, p[14] = k * T / (T - k), p[15] = 0, p;
       }
-      function mat4_fromRotationTranslation(out, q, v) {
-        var x = q[0], y = q[1], z = q[2], w = q[3], x2 = x + x, y2 = y + y, z2 = z + z, xx = x * x2, xy = x * y2, xz = x * z2, yy = y * y2, yz = y * z2, zz = z * z2, wx = w * x2, wy = w * y2, wz = w * z2;
-        out[0] = 1 - (yy + zz);
-        out[1] = xy + wz;
-        out[2] = xz - wy;
-        out[3] = 0;
-        out[4] = xy - wz;
-        out[5] = 1 - (xx + zz);
-        out[6] = yz + wx;
-        out[7] = 0;
-        out[8] = xz + wy;
-        out[9] = yz - wx;
-        out[10] = 1 - (xx + yy);
-        out[11] = 0;
-        out[12] = v[0];
-        out[13] = v[1];
-        out[14] = v[2];
-        out[15] = 1;
-        return out;
+      function l(p, w, T) {
+        var k = w[0], U = w[1], X = w[2], q = w[3], j = k + k, Y = U + U, ne = X + X, he = k * j, ve = k * Y, oe = k * ne, we = U * Y, Se = U * ne, _e = X * ne, Re = q * j, Me = q * Y, Ge = q * ne;
+        return p[0] = 1 - (we + _e), p[1] = ve + Ge, p[2] = oe - Me, p[3] = 0, p[4] = ve - Ge, p[5] = 1 - (he + _e), p[6] = Se + Re, p[7] = 0, p[8] = oe + Me, p[9] = Se - Re, p[10] = 1 - (he + we), p[11] = 0, p[12] = T[0], p[13] = T[1], p[14] = T[2], p[15] = 1, p;
       }
-      function mat4_translate(out, a, v) {
-        var x = v[0], y = v[1], z = v[2], a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23;
-        if (a === out) {
-          out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
-          out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
-          out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
-          out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
-        } else {
-          a00 = a[0];
-          a01 = a[1];
-          a02 = a[2];
-          a03 = a[3];
-          a10 = a[4];
-          a11 = a[5];
-          a12 = a[6];
-          a13 = a[7];
-          a20 = a[8];
-          a21 = a[9];
-          a22 = a[10];
-          a23 = a[11];
-          out[0] = a00;
-          out[1] = a01;
-          out[2] = a02;
-          out[3] = a03;
-          out[4] = a10;
-          out[5] = a11;
-          out[6] = a12;
-          out[7] = a13;
-          out[8] = a20;
-          out[9] = a21;
-          out[10] = a22;
-          out[11] = a23;
-          out[12] = a00 * x + a10 * y + a20 * z + a[12];
-          out[13] = a01 * x + a11 * y + a21 * z + a[13];
-          out[14] = a02 * x + a12 * y + a22 * z + a[14];
-          out[15] = a03 * x + a13 * y + a23 * z + a[15];
-        }
-        return out;
+      function c(p, w, T) {
+        var k = T[0], U = T[1], X = T[2], q, j, Y, ne, he, ve, oe, we, Se, _e, Re, Me;
+        return w === p ? (p[12] = w[0] * k + w[4] * U + w[8] * X + w[12], p[13] = w[1] * k + w[5] * U + w[9] * X + w[13], p[14] = w[2] * k + w[6] * U + w[10] * X + w[14], p[15] = w[3] * k + w[7] * U + w[11] * X + w[15]) : (q = w[0], j = w[1], Y = w[2], ne = w[3], he = w[4], ve = w[5], oe = w[6], we = w[7], Se = w[8], _e = w[9], Re = w[10], Me = w[11], p[0] = q, p[1] = j, p[2] = Y, p[3] = ne, p[4] = he, p[5] = ve, p[6] = oe, p[7] = we, p[8] = Se, p[9] = _e, p[10] = Re, p[11] = Me, p[12] = q * k + he * U + Se * X + w[12], p[13] = j * k + ve * U + _e * X + w[13], p[14] = Y * k + oe * U + Re * X + w[14], p[15] = ne * k + we * U + Me * X + w[15]), p;
       }
-      function mat4_invert(out, a) {
-        var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3], a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7], a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11], a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15], b00 = a00 * a11 - a01 * a10, b01 = a00 * a12 - a02 * a10, b02 = a00 * a13 - a03 * a10, b03 = a01 * a12 - a02 * a11, b04 = a01 * a13 - a03 * a11, b05 = a02 * a13 - a03 * a12, b06 = a20 * a31 - a21 * a30, b07 = a20 * a32 - a22 * a30, b08 = a20 * a33 - a23 * a30, b09 = a21 * a32 - a22 * a31, b10 = a21 * a33 - a23 * a31, b11 = a22 * a33 - a23 * a32, det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-        if (!det) {
-          return null;
-        }
-        det = 1 / det;
-        out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-        out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-        out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-        out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
-        out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-        out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-        out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-        out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
-        out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-        out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-        out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-        out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
-        out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
-        out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
-        out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
-        out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
-        return out;
+      function A(p, w) {
+        var T = w[0], k = w[1], U = w[2], X = w[3], q = w[4], j = w[5], Y = w[6], ne = w[7], he = w[8], ve = w[9], oe = w[10], we = w[11], Se = w[12], _e = w[13], Re = w[14], Me = w[15], Ge = T * j - k * q, st = T * Y - U * q, at = T * ne - X * q, ot = k * Y - U * j, lt = k * ne - X * j, ct = U * ne - X * Y, ht = he * _e - ve * Se, dt = he * Re - oe * Se, At = he * Me - we * Se, ut = ve * Re - oe * _e, ft = ve * Me - we * _e, pt = oe * Me - we * Re, fe = Ge * pt - st * ft + at * ut + ot * At - lt * dt + ct * ht;
+        return fe ? (fe = 1 / fe, p[0] = (j * pt - Y * ft + ne * ut) * fe, p[1] = (U * ft - k * pt - X * ut) * fe, p[2] = (_e * ct - Re * lt + Me * ot) * fe, p[3] = (oe * lt - ve * ct - we * ot) * fe, p[4] = (Y * At - q * pt - ne * dt) * fe, p[5] = (T * pt - U * At + X * dt) * fe, p[6] = (Re * at - Se * ct - Me * st) * fe, p[7] = (he * ct - oe * at + we * st) * fe, p[8] = (q * ft - j * At + ne * ht) * fe, p[9] = (k * At - T * ft - X * ht) * fe, p[10] = (Se * lt - _e * at + Me * Ge) * fe, p[11] = (ve * at - he * lt - we * Ge) * fe, p[12] = (j * dt - q * ut - Y * ht) * fe, p[13] = (T * ut - k * dt + U * ht) * fe, p[14] = (_e * st - Se * ot - Re * Ge) * fe, p[15] = (he * ot - ve * st + oe * Ge) * fe, p) : null;
       }
-      var defaultOrientation = new Float32Array([0, 0, 0, 1]);
-      var defaultPosition = new Float32Array([0, 0, 0]);
-      function updateEyeMatrices(projection, view, pose, fov, offset, vrDisplay) {
-        mat4_perspectiveFromFieldOfView(projection, fov || null, vrDisplay.depthNear, vrDisplay.depthFar);
-        var orientation = pose.orientation || defaultOrientation;
-        var position = pose.position || defaultPosition;
-        mat4_fromRotationTranslation(view, orientation, position);
-        if (offset)
-          mat4_translate(view, view, offset);
-        mat4_invert(view, view);
+      var f = new Float32Array([0, 0, 0, 1]), S = new Float32Array([0, 0, 0]);
+      function E(p, w, T, k, U, X) {
+        a(p, k || null, X.depthNear, X.depthFar);
+        var q = T.orientation || f, j = T.position || S;
+        l(w, q, j), U && c(w, w, U), A(w, w);
       }
-      return function(frameData, pose, vrDisplay) {
-        if (!frameData || !pose)
-          return false;
-        frameData.pose = pose;
-        frameData.timestamp = pose.timestamp;
-        updateEyeMatrices(frameData.leftProjectionMatrix, frameData.leftViewMatrix, pose, vrDisplay._getFieldOfView("left"), vrDisplay._getEyeOffset("left"), vrDisplay);
-        updateEyeMatrices(frameData.rightProjectionMatrix, frameData.rightViewMatrix, pose, vrDisplay._getFieldOfView("right"), vrDisplay._getEyeOffset("right"), vrDisplay);
-        return true;
+      return function(p, w, T) {
+        return !p || !w ? !1 : (p.pose = w, p.timestamp = w.timestamp, E(p.leftProjectionMatrix, p.leftViewMatrix, w, T._getFieldOfView("left"), T._getEyeOffset("left"), T), E(p.rightProjectionMatrix, p.rightViewMatrix, w, T._getFieldOfView("right"), T._getEyeOffset("right"), T), !0);
       };
-    }();
-    var isInsideCrossOriginIFrame = function isInsideCrossOriginIFrame2() {
-      var isFramed = window.self !== window.top;
-      var refOrigin = getOriginFromUrl(document.referrer);
-      var thisOrigin = getOriginFromUrl(window.location.href);
-      return isFramed && refOrigin !== thisOrigin;
-    };
-    var getOriginFromUrl = function getOriginFromUrl2(url) {
-      var domainIdx;
-      var protoSepIdx = url.indexOf("://");
-      if (protoSepIdx !== -1) {
-        domainIdx = protoSepIdx + 3;
-      } else {
-        domainIdx = 0;
-      }
-      var domainEndIdx = url.indexOf("/", domainIdx);
-      if (domainEndIdx === -1) {
-        domainEndIdx = url.length;
-      }
-      return url.substring(0, domainEndIdx);
-    };
-    var getQuaternionAngle = function getQuaternionAngle2(quat) {
-      if (quat.w > 1) {
-        console.warn("getQuaternionAngle: w > 1");
-        return 0;
-      }
-      var angle2 = 2 * Math.acos(quat.w);
-      return angle2;
-    };
-    var warnOnce = function() {
-      var observedWarnings = {};
-      return function(key, message) {
-        if (observedWarnings[key] === void 0) {
-          console.warn("webvr-polyfill: " + message);
-          observedWarnings[key] = true;
-        }
+    }(), J = function() {
+      var n = window.self !== window.top, a = H(document.referrer), l = H(window.location.href);
+      return n && a !== l;
+    }, H = function(n) {
+      var a, l = n.indexOf("://");
+      l !== -1 ? a = l + 3 : a = 0;
+      var c = n.indexOf("/", a);
+      return c === -1 && (c = n.length), n.substring(0, c);
+    }, $ = function(n) {
+      if (n.w > 1)
+        return console.warn("getQuaternionAngle: w > 1"), 0;
+      var a = 2 * Math.acos(n.w);
+      return a;
+    }, Ee = function() {
+      var r = {};
+      return function(n, a) {
+        r[n] === void 0 && (console.warn("webvr-polyfill: " + a), r[n] = !0);
       };
-    }();
-    var deprecateWarning = function deprecateWarning2(deprecated, suggested) {
-      var alternative = suggested ? "Please use " + suggested + " instead." : "";
-      warnOnce(deprecated, deprecated + " has been deprecated. This may not work on native WebVR displays. " + alternative);
+    }(), Te = function(n, a) {
+      var l = a ? "Please use " + a + " instead." : "";
+      Ee(n, n + " has been deprecated. This may not work on native WebVR displays. " + l);
     };
-    function WGLUPreserveGLState(gl, bindings, callback) {
-      if (!bindings) {
-        callback(gl);
+    function $e(r, n, a) {
+      if (!n) {
+        a(r);
         return;
       }
-      var boundValues = [];
-      var activeTexture = null;
-      for (var i = 0; i < bindings.length; ++i) {
-        var binding = bindings[i];
-        switch (binding) {
-          case gl.TEXTURE_BINDING_2D:
-          case gl.TEXTURE_BINDING_CUBE_MAP:
-            var textureUnit = bindings[++i];
-            if (textureUnit < gl.TEXTURE0 || textureUnit > gl.TEXTURE31) {
-              console.error("TEXTURE_BINDING_2D or TEXTURE_BINDING_CUBE_MAP must be followed by a valid texture unit");
-              boundValues.push(null, null);
+      for (var l = [], c = null, A = 0; A < n.length; ++A) {
+        var f = n[A];
+        switch (f) {
+          case r.TEXTURE_BINDING_2D:
+          case r.TEXTURE_BINDING_CUBE_MAP:
+            var S = n[++A];
+            if (S < r.TEXTURE0 || S > r.TEXTURE31) {
+              console.error("TEXTURE_BINDING_2D or TEXTURE_BINDING_CUBE_MAP must be followed by a valid texture unit"), l.push(null, null);
               break;
             }
-            if (!activeTexture) {
-              activeTexture = gl.getParameter(gl.ACTIVE_TEXTURE);
-            }
-            gl.activeTexture(textureUnit);
-            boundValues.push(gl.getParameter(binding), null);
+            c || (c = r.getParameter(r.ACTIVE_TEXTURE)), r.activeTexture(S), l.push(r.getParameter(f), null);
             break;
-          case gl.ACTIVE_TEXTURE:
-            activeTexture = gl.getParameter(gl.ACTIVE_TEXTURE);
-            boundValues.push(null);
+          case r.ACTIVE_TEXTURE:
+            c = r.getParameter(r.ACTIVE_TEXTURE), l.push(null);
             break;
           default:
-            boundValues.push(gl.getParameter(binding));
+            l.push(r.getParameter(f));
             break;
         }
       }
-      callback(gl);
-      for (var i = 0; i < bindings.length; ++i) {
-        var binding = bindings[i];
-        var boundValue = boundValues[i];
-        switch (binding) {
-          case gl.ACTIVE_TEXTURE:
+      a(r);
+      for (var A = 0; A < n.length; ++A) {
+        var f = n[A], E = l[A];
+        switch (f) {
+          case r.ACTIVE_TEXTURE:
             break;
-          case gl.ARRAY_BUFFER_BINDING:
-            gl.bindBuffer(gl.ARRAY_BUFFER, boundValue);
+          case r.ARRAY_BUFFER_BINDING:
+            r.bindBuffer(r.ARRAY_BUFFER, E);
             break;
-          case gl.COLOR_CLEAR_VALUE:
-            gl.clearColor(boundValue[0], boundValue[1], boundValue[2], boundValue[3]);
+          case r.COLOR_CLEAR_VALUE:
+            r.clearColor(E[0], E[1], E[2], E[3]);
             break;
-          case gl.COLOR_WRITEMASK:
-            gl.colorMask(boundValue[0], boundValue[1], boundValue[2], boundValue[3]);
+          case r.COLOR_WRITEMASK:
+            r.colorMask(E[0], E[1], E[2], E[3]);
             break;
-          case gl.CURRENT_PROGRAM:
-            gl.useProgram(boundValue);
+          case r.CURRENT_PROGRAM:
+            r.useProgram(E);
             break;
-          case gl.ELEMENT_ARRAY_BUFFER_BINDING:
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, boundValue);
+          case r.ELEMENT_ARRAY_BUFFER_BINDING:
+            r.bindBuffer(r.ELEMENT_ARRAY_BUFFER, E);
             break;
-          case gl.FRAMEBUFFER_BINDING:
-            gl.bindFramebuffer(gl.FRAMEBUFFER, boundValue);
+          case r.FRAMEBUFFER_BINDING:
+            r.bindFramebuffer(r.FRAMEBUFFER, E);
             break;
-          case gl.RENDERBUFFER_BINDING:
-            gl.bindRenderbuffer(gl.RENDERBUFFER, boundValue);
+          case r.RENDERBUFFER_BINDING:
+            r.bindRenderbuffer(r.RENDERBUFFER, E);
             break;
-          case gl.TEXTURE_BINDING_2D:
-            var textureUnit = bindings[++i];
-            if (textureUnit < gl.TEXTURE0 || textureUnit > gl.TEXTURE31)
+          case r.TEXTURE_BINDING_2D:
+            var S = n[++A];
+            if (S < r.TEXTURE0 || S > r.TEXTURE31)
               break;
-            gl.activeTexture(textureUnit);
-            gl.bindTexture(gl.TEXTURE_2D, boundValue);
+            r.activeTexture(S), r.bindTexture(r.TEXTURE_2D, E);
             break;
-          case gl.TEXTURE_BINDING_CUBE_MAP:
-            var textureUnit = bindings[++i];
-            if (textureUnit < gl.TEXTURE0 || textureUnit > gl.TEXTURE31)
+          case r.TEXTURE_BINDING_CUBE_MAP:
+            var S = n[++A];
+            if (S < r.TEXTURE0 || S > r.TEXTURE31)
               break;
-            gl.activeTexture(textureUnit);
-            gl.bindTexture(gl.TEXTURE_CUBE_MAP, boundValue);
+            r.activeTexture(S), r.bindTexture(r.TEXTURE_CUBE_MAP, E);
             break;
-          case gl.VIEWPORT:
-            gl.viewport(boundValue[0], boundValue[1], boundValue[2], boundValue[3]);
+          case r.VIEWPORT:
+            r.viewport(E[0], E[1], E[2], E[3]);
             break;
-          case gl.BLEND:
-          case gl.CULL_FACE:
-          case gl.DEPTH_TEST:
-          case gl.SCISSOR_TEST:
-          case gl.STENCIL_TEST:
-            if (boundValue) {
-              gl.enable(binding);
-            } else {
-              gl.disable(binding);
-            }
+          case r.BLEND:
+          case r.CULL_FACE:
+          case r.DEPTH_TEST:
+          case r.SCISSOR_TEST:
+          case r.STENCIL_TEST:
+            E ? r.enable(f) : r.disable(f);
             break;
           default:
-            console.log("No GL restore behavior for 0x" + binding.toString(16));
+            console.log("No GL restore behavior for 0x" + f.toString(16));
             break;
         }
-        if (activeTexture) {
-          gl.activeTexture(activeTexture);
-        }
+        c && r.activeTexture(c);
       }
     }
-    var glPreserveState = WGLUPreserveGLState;
-    var distortionVS = ["attribute vec2 position;", "attribute vec3 texCoord;", "varying vec2 vTexCoord;", "uniform vec4 viewportOffsetScale[2];", "void main() {", "  vec4 viewport = viewportOffsetScale[int(texCoord.z)];", "  vTexCoord = (texCoord.xy * viewport.zw) + viewport.xy;", "  gl_Position = vec4( position, 1.0, 1.0 );", "}"].join("\n");
-    var distortionFS = ["precision mediump float;", "uniform sampler2D diffuse;", "varying vec2 vTexCoord;", "void main() {", "  gl_FragColor = texture2D(diffuse, vTexCoord);", "}"].join("\n");
-    function CardboardDistorter(gl, cardboardUI, bufferScale, dirtySubmitFrameBindings) {
-      this.gl = gl;
-      this.cardboardUI = cardboardUI;
-      this.bufferScale = bufferScale;
-      this.dirtySubmitFrameBindings = dirtySubmitFrameBindings;
-      this.ctxAttribs = gl.getContextAttributes();
-      this.instanceExt = gl.getExtension("ANGLE_instanced_arrays");
-      this.meshWidth = 20;
-      this.meshHeight = 20;
-      this.bufferWidth = gl.drawingBufferWidth;
-      this.bufferHeight = gl.drawingBufferHeight;
-      this.realBindFramebuffer = gl.bindFramebuffer;
-      this.realEnable = gl.enable;
-      this.realDisable = gl.disable;
-      this.realColorMask = gl.colorMask;
-      this.realClearColor = gl.clearColor;
-      this.realViewport = gl.viewport;
-      if (!isIOS()) {
-        this.realCanvasWidth = Object.getOwnPropertyDescriptor(gl.canvas.__proto__, "width");
-        this.realCanvasHeight = Object.getOwnPropertyDescriptor(gl.canvas.__proto__, "height");
-      }
-      this.isPatched = false;
-      this.lastBoundFramebuffer = null;
-      this.cullFace = false;
-      this.depthTest = false;
-      this.blend = false;
-      this.scissorTest = false;
-      this.stencilTest = false;
-      this.viewport = [0, 0, 0, 0];
-      this.colorMask = [true, true, true, true];
-      this.clearColor = [0, 0, 0, 0];
-      this.attribs = {
+    var Be = $e, Xe = ["attribute vec2 position;", "attribute vec3 texCoord;", "varying vec2 vTexCoord;", "uniform vec4 viewportOffsetScale[2];", "void main() {", "  vec4 viewport = viewportOffsetScale[int(texCoord.z)];", "  vTexCoord = (texCoord.xy * viewport.zw) + viewport.xy;", "  gl_Position = vec4( position, 1.0, 1.0 );", "}"].join(`
+`), g = ["precision mediump float;", "uniform sampler2D diffuse;", "varying vec2 vTexCoord;", "void main() {", "  gl_FragColor = texture2D(diffuse, vTexCoord);", "}"].join(`
+`);
+    function ee(r, n, a, l) {
+      this.gl = r, this.cardboardUI = n, this.bufferScale = a, this.dirtySubmitFrameBindings = l, this.ctxAttribs = r.getContextAttributes(), this.instanceExt = r.getExtension("ANGLE_instanced_arrays"), this.meshWidth = 20, this.meshHeight = 20, this.bufferWidth = r.drawingBufferWidth, this.bufferHeight = r.drawingBufferHeight, this.realBindFramebuffer = r.bindFramebuffer, this.realEnable = r.enable, this.realDisable = r.disable, this.realColorMask = r.colorMask, this.realClearColor = r.clearColor, this.realViewport = r.viewport, v() || (this.realCanvasWidth = Object.getOwnPropertyDescriptor(r.canvas.__proto__, "width"), this.realCanvasHeight = Object.getOwnPropertyDescriptor(r.canvas.__proto__, "height")), this.isPatched = !1, this.lastBoundFramebuffer = null, this.cullFace = !1, this.depthTest = !1, this.blend = !1, this.scissorTest = !1, this.stencilTest = !1, this.viewport = [0, 0, 0, 0], this.colorMask = [!0, !0, !0, !0], this.clearColor = [0, 0, 0, 0], this.attribs = {
         position: 0,
         texCoord: 1
-      };
-      this.program = linkProgram(gl, distortionVS, distortionFS, this.attribs);
-      this.uniforms = getProgramUniforms(gl, this.program);
-      this.viewportOffsetScale = new Float32Array(8);
-      this.setTextureBounds();
-      this.vertexBuffer = gl.createBuffer();
-      this.indexBuffer = gl.createBuffer();
-      this.indexCount = 0;
-      this.renderTarget = gl.createTexture();
-      this.framebuffer = gl.createFramebuffer();
-      this.depthStencilBuffer = null;
-      this.depthBuffer = null;
-      this.stencilBuffer = null;
-      if (this.ctxAttribs.depth && this.ctxAttribs.stencil) {
-        this.depthStencilBuffer = gl.createRenderbuffer();
-      } else if (this.ctxAttribs.depth) {
-        this.depthBuffer = gl.createRenderbuffer();
-      } else if (this.ctxAttribs.stencil) {
-        this.stencilBuffer = gl.createRenderbuffer();
-      }
-      this.patch();
-      this.onResize();
+      }, this.program = z(r, Xe, g, this.attribs), this.uniforms = Z(r, this.program), this.viewportOffsetScale = new Float32Array(8), this.setTextureBounds(), this.vertexBuffer = r.createBuffer(), this.indexBuffer = r.createBuffer(), this.indexCount = 0, this.renderTarget = r.createTexture(), this.framebuffer = r.createFramebuffer(), this.depthStencilBuffer = null, this.depthBuffer = null, this.stencilBuffer = null, this.ctxAttribs.depth && this.ctxAttribs.stencil ? this.depthStencilBuffer = r.createRenderbuffer() : this.ctxAttribs.depth ? this.depthBuffer = r.createRenderbuffer() : this.ctxAttribs.stencil && (this.stencilBuffer = r.createRenderbuffer()), this.patch(), this.onResize();
     }
-    CardboardDistorter.prototype.destroy = function() {
-      var gl = this.gl;
-      this.unpatch();
-      gl.deleteProgram(this.program);
-      gl.deleteBuffer(this.vertexBuffer);
-      gl.deleteBuffer(this.indexBuffer);
-      gl.deleteTexture(this.renderTarget);
-      gl.deleteFramebuffer(this.framebuffer);
-      if (this.depthStencilBuffer) {
-        gl.deleteRenderbuffer(this.depthStencilBuffer);
-      }
-      if (this.depthBuffer) {
-        gl.deleteRenderbuffer(this.depthBuffer);
-      }
-      if (this.stencilBuffer) {
-        gl.deleteRenderbuffer(this.stencilBuffer);
-      }
-      if (this.cardboardUI) {
-        this.cardboardUI.destroy();
-      }
-    };
-    CardboardDistorter.prototype.onResize = function() {
-      var gl = this.gl;
-      var self2 = this;
-      var glState = [gl.RENDERBUFFER_BINDING, gl.TEXTURE_BINDING_2D, gl.TEXTURE0];
-      glPreserveState(gl, glState, function(gl2) {
-        self2.realBindFramebuffer.call(gl2, gl2.FRAMEBUFFER, null);
-        if (self2.scissorTest) {
-          self2.realDisable.call(gl2, gl2.SCISSOR_TEST);
-        }
-        self2.realColorMask.call(gl2, true, true, true, true);
-        self2.realViewport.call(gl2, 0, 0, gl2.drawingBufferWidth, gl2.drawingBufferHeight);
-        self2.realClearColor.call(gl2, 0, 0, 0, 1);
-        gl2.clear(gl2.COLOR_BUFFER_BIT);
-        self2.realBindFramebuffer.call(gl2, gl2.FRAMEBUFFER, self2.framebuffer);
-        gl2.bindTexture(gl2.TEXTURE_2D, self2.renderTarget);
-        gl2.texImage2D(gl2.TEXTURE_2D, 0, self2.ctxAttribs.alpha ? gl2.RGBA : gl2.RGB, self2.bufferWidth, self2.bufferHeight, 0, self2.ctxAttribs.alpha ? gl2.RGBA : gl2.RGB, gl2.UNSIGNED_BYTE, null);
-        gl2.texParameteri(gl2.TEXTURE_2D, gl2.TEXTURE_MAG_FILTER, gl2.LINEAR);
-        gl2.texParameteri(gl2.TEXTURE_2D, gl2.TEXTURE_MIN_FILTER, gl2.LINEAR);
-        gl2.texParameteri(gl2.TEXTURE_2D, gl2.TEXTURE_WRAP_S, gl2.CLAMP_TO_EDGE);
-        gl2.texParameteri(gl2.TEXTURE_2D, gl2.TEXTURE_WRAP_T, gl2.CLAMP_TO_EDGE);
-        gl2.framebufferTexture2D(gl2.FRAMEBUFFER, gl2.COLOR_ATTACHMENT0, gl2.TEXTURE_2D, self2.renderTarget, 0);
-        if (self2.ctxAttribs.depth && self2.ctxAttribs.stencil) {
-          gl2.bindRenderbuffer(gl2.RENDERBUFFER, self2.depthStencilBuffer);
-          gl2.renderbufferStorage(gl2.RENDERBUFFER, gl2.DEPTH_STENCIL, self2.bufferWidth, self2.bufferHeight);
-          gl2.framebufferRenderbuffer(gl2.FRAMEBUFFER, gl2.DEPTH_STENCIL_ATTACHMENT, gl2.RENDERBUFFER, self2.depthStencilBuffer);
-        } else if (self2.ctxAttribs.depth) {
-          gl2.bindRenderbuffer(gl2.RENDERBUFFER, self2.depthBuffer);
-          gl2.renderbufferStorage(gl2.RENDERBUFFER, gl2.DEPTH_COMPONENT16, self2.bufferWidth, self2.bufferHeight);
-          gl2.framebufferRenderbuffer(gl2.FRAMEBUFFER, gl2.DEPTH_ATTACHMENT, gl2.RENDERBUFFER, self2.depthBuffer);
-        } else if (self2.ctxAttribs.stencil) {
-          gl2.bindRenderbuffer(gl2.RENDERBUFFER, self2.stencilBuffer);
-          gl2.renderbufferStorage(gl2.RENDERBUFFER, gl2.STENCIL_INDEX8, self2.bufferWidth, self2.bufferHeight);
-          gl2.framebufferRenderbuffer(gl2.FRAMEBUFFER, gl2.STENCIL_ATTACHMENT, gl2.RENDERBUFFER, self2.stencilBuffer);
-        }
-        if (!gl2.checkFramebufferStatus(gl2.FRAMEBUFFER) === gl2.FRAMEBUFFER_COMPLETE) {
-          console.error("Framebuffer incomplete!");
-        }
-        self2.realBindFramebuffer.call(gl2, gl2.FRAMEBUFFER, self2.lastBoundFramebuffer);
-        if (self2.scissorTest) {
-          self2.realEnable.call(gl2, gl2.SCISSOR_TEST);
-        }
-        self2.realColorMask.apply(gl2, self2.colorMask);
-        self2.realViewport.apply(gl2, self2.viewport);
-        self2.realClearColor.apply(gl2, self2.clearColor);
-      });
-      if (this.cardboardUI) {
-        this.cardboardUI.onResize();
-      }
-    };
-    CardboardDistorter.prototype.patch = function() {
-      if (this.isPatched) {
-        return;
-      }
-      var self2 = this;
-      var canvas = this.gl.canvas;
-      var gl = this.gl;
-      if (!isIOS()) {
-        canvas.width = getScreenWidth() * this.bufferScale;
-        canvas.height = getScreenHeight() * this.bufferScale;
-        Object.defineProperty(canvas, "width", {
-          configurable: true,
-          enumerable: true,
-          get: function get() {
-            return self2.bufferWidth;
-          },
-          set: function set2(value) {
-            self2.bufferWidth = value;
-            self2.realCanvasWidth.set.call(canvas, value);
-            self2.onResize();
-          }
-        });
-        Object.defineProperty(canvas, "height", {
-          configurable: true,
-          enumerable: true,
-          get: function get() {
-            return self2.bufferHeight;
-          },
-          set: function set2(value) {
-            self2.bufferHeight = value;
-            self2.realCanvasHeight.set.call(canvas, value);
-            self2.onResize();
-          }
-        });
-      }
-      this.lastBoundFramebuffer = gl.getParameter(gl.FRAMEBUFFER_BINDING);
-      if (this.lastBoundFramebuffer == null) {
-        this.lastBoundFramebuffer = this.framebuffer;
-        this.gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-      }
-      this.gl.bindFramebuffer = function(target, framebuffer) {
-        self2.lastBoundFramebuffer = framebuffer ? framebuffer : self2.framebuffer;
-        self2.realBindFramebuffer.call(gl, target, self2.lastBoundFramebuffer);
-      };
-      this.cullFace = gl.getParameter(gl.CULL_FACE);
-      this.depthTest = gl.getParameter(gl.DEPTH_TEST);
-      this.blend = gl.getParameter(gl.BLEND);
-      this.scissorTest = gl.getParameter(gl.SCISSOR_TEST);
-      this.stencilTest = gl.getParameter(gl.STENCIL_TEST);
-      gl.enable = function(pname) {
-        switch (pname) {
-          case gl.CULL_FACE:
-            self2.cullFace = true;
-            break;
-          case gl.DEPTH_TEST:
-            self2.depthTest = true;
-            break;
-          case gl.BLEND:
-            self2.blend = true;
-            break;
-          case gl.SCISSOR_TEST:
-            self2.scissorTest = true;
-            break;
-          case gl.STENCIL_TEST:
-            self2.stencilTest = true;
-            break;
-        }
-        self2.realEnable.call(gl, pname);
-      };
-      gl.disable = function(pname) {
-        switch (pname) {
-          case gl.CULL_FACE:
-            self2.cullFace = false;
-            break;
-          case gl.DEPTH_TEST:
-            self2.depthTest = false;
-            break;
-          case gl.BLEND:
-            self2.blend = false;
-            break;
-          case gl.SCISSOR_TEST:
-            self2.scissorTest = false;
-            break;
-          case gl.STENCIL_TEST:
-            self2.stencilTest = false;
-            break;
-        }
-        self2.realDisable.call(gl, pname);
-      };
-      this.colorMask = gl.getParameter(gl.COLOR_WRITEMASK);
-      gl.colorMask = function(r, g, b, a) {
-        self2.colorMask[0] = r;
-        self2.colorMask[1] = g;
-        self2.colorMask[2] = b;
-        self2.colorMask[3] = a;
-        self2.realColorMask.call(gl, r, g, b, a);
-      };
-      this.clearColor = gl.getParameter(gl.COLOR_CLEAR_VALUE);
-      gl.clearColor = function(r, g, b, a) {
-        self2.clearColor[0] = r;
-        self2.clearColor[1] = g;
-        self2.clearColor[2] = b;
-        self2.clearColor[3] = a;
-        self2.realClearColor.call(gl, r, g, b, a);
-      };
-      this.viewport = gl.getParameter(gl.VIEWPORT);
-      gl.viewport = function(x, y, w, h) {
-        self2.viewport[0] = x;
-        self2.viewport[1] = y;
-        self2.viewport[2] = w;
-        self2.viewport[3] = h;
-        self2.realViewport.call(gl, x, y, w, h);
-      };
-      this.isPatched = true;
-      safariCssSizeWorkaround(canvas);
-    };
-    CardboardDistorter.prototype.unpatch = function() {
+    ee.prototype.destroy = function() {
+      var r = this.gl;
+      this.unpatch(), r.deleteProgram(this.program), r.deleteBuffer(this.vertexBuffer), r.deleteBuffer(this.indexBuffer), r.deleteTexture(this.renderTarget), r.deleteFramebuffer(this.framebuffer), this.depthStencilBuffer && r.deleteRenderbuffer(this.depthStencilBuffer), this.depthBuffer && r.deleteRenderbuffer(this.depthBuffer), this.stencilBuffer && r.deleteRenderbuffer(this.stencilBuffer), this.cardboardUI && this.cardboardUI.destroy();
+    }, ee.prototype.onResize = function() {
+      var r = this.gl, n = this, a = [r.RENDERBUFFER_BINDING, r.TEXTURE_BINDING_2D, r.TEXTURE0];
+      Be(r, a, function(l) {
+        n.realBindFramebuffer.call(l, l.FRAMEBUFFER, null), n.scissorTest && n.realDisable.call(l, l.SCISSOR_TEST), n.realColorMask.call(l, !0, !0, !0, !0), n.realViewport.call(l, 0, 0, l.drawingBufferWidth, l.drawingBufferHeight), n.realClearColor.call(l, 0, 0, 0, 1), l.clear(l.COLOR_BUFFER_BIT), n.realBindFramebuffer.call(l, l.FRAMEBUFFER, n.framebuffer), l.bindTexture(l.TEXTURE_2D, n.renderTarget), l.texImage2D(l.TEXTURE_2D, 0, n.ctxAttribs.alpha ? l.RGBA : l.RGB, n.bufferWidth, n.bufferHeight, 0, n.ctxAttribs.alpha ? l.RGBA : l.RGB, l.UNSIGNED_BYTE, null), l.texParameteri(l.TEXTURE_2D, l.TEXTURE_MAG_FILTER, l.LINEAR), l.texParameteri(l.TEXTURE_2D, l.TEXTURE_MIN_FILTER, l.LINEAR), l.texParameteri(l.TEXTURE_2D, l.TEXTURE_WRAP_S, l.CLAMP_TO_EDGE), l.texParameteri(l.TEXTURE_2D, l.TEXTURE_WRAP_T, l.CLAMP_TO_EDGE), l.framebufferTexture2D(l.FRAMEBUFFER, l.COLOR_ATTACHMENT0, l.TEXTURE_2D, n.renderTarget, 0), n.ctxAttribs.depth && n.ctxAttribs.stencil ? (l.bindRenderbuffer(l.RENDERBUFFER, n.depthStencilBuffer), l.renderbufferStorage(l.RENDERBUFFER, l.DEPTH_STENCIL, n.bufferWidth, n.bufferHeight), l.framebufferRenderbuffer(l.FRAMEBUFFER, l.DEPTH_STENCIL_ATTACHMENT, l.RENDERBUFFER, n.depthStencilBuffer)) : n.ctxAttribs.depth ? (l.bindRenderbuffer(l.RENDERBUFFER, n.depthBuffer), l.renderbufferStorage(l.RENDERBUFFER, l.DEPTH_COMPONENT16, n.bufferWidth, n.bufferHeight), l.framebufferRenderbuffer(l.FRAMEBUFFER, l.DEPTH_ATTACHMENT, l.RENDERBUFFER, n.depthBuffer)) : n.ctxAttribs.stencil && (l.bindRenderbuffer(l.RENDERBUFFER, n.stencilBuffer), l.renderbufferStorage(l.RENDERBUFFER, l.STENCIL_INDEX8, n.bufferWidth, n.bufferHeight), l.framebufferRenderbuffer(l.FRAMEBUFFER, l.STENCIL_ATTACHMENT, l.RENDERBUFFER, n.stencilBuffer)), !l.checkFramebufferStatus(l.FRAMEBUFFER) === l.FRAMEBUFFER_COMPLETE && console.error("Framebuffer incomplete!"), n.realBindFramebuffer.call(l, l.FRAMEBUFFER, n.lastBoundFramebuffer), n.scissorTest && n.realEnable.call(l, l.SCISSOR_TEST), n.realColorMask.apply(l, n.colorMask), n.realViewport.apply(l, n.viewport), n.realClearColor.apply(l, n.clearColor);
+      }), this.cardboardUI && this.cardboardUI.onResize();
+    }, ee.prototype.patch = function() {
       if (!this.isPatched) {
-        return;
-      }
-      var gl = this.gl;
-      var canvas = this.gl.canvas;
-      if (!isIOS()) {
-        Object.defineProperty(canvas, "width", this.realCanvasWidth);
-        Object.defineProperty(canvas, "height", this.realCanvasHeight);
-      }
-      canvas.width = this.bufferWidth;
-      canvas.height = this.bufferHeight;
-      gl.bindFramebuffer = this.realBindFramebuffer;
-      gl.enable = this.realEnable;
-      gl.disable = this.realDisable;
-      gl.colorMask = this.realColorMask;
-      gl.clearColor = this.realClearColor;
-      gl.viewport = this.realViewport;
-      if (this.lastBoundFramebuffer == this.framebuffer) {
-        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      }
-      this.isPatched = false;
-      setTimeout(function() {
-        safariCssSizeWorkaround(canvas);
-      }, 1);
-    };
-    CardboardDistorter.prototype.setTextureBounds = function(leftBounds, rightBounds) {
-      if (!leftBounds) {
-        leftBounds = [0, 0, 0.5, 1];
-      }
-      if (!rightBounds) {
-        rightBounds = [0.5, 0, 0.5, 1];
-      }
-      this.viewportOffsetScale[0] = leftBounds[0];
-      this.viewportOffsetScale[1] = leftBounds[1];
-      this.viewportOffsetScale[2] = leftBounds[2];
-      this.viewportOffsetScale[3] = leftBounds[3];
-      this.viewportOffsetScale[4] = rightBounds[0];
-      this.viewportOffsetScale[5] = rightBounds[1];
-      this.viewportOffsetScale[6] = rightBounds[2];
-      this.viewportOffsetScale[7] = rightBounds[3];
-    };
-    CardboardDistorter.prototype.submitFrame = function() {
-      var gl = this.gl;
-      var self2 = this;
-      var glState = [];
-      if (!this.dirtySubmitFrameBindings) {
-        glState.push(gl.CURRENT_PROGRAM, gl.ARRAY_BUFFER_BINDING, gl.ELEMENT_ARRAY_BUFFER_BINDING, gl.TEXTURE_BINDING_2D, gl.TEXTURE0);
-      }
-      glPreserveState(gl, glState, function(gl2) {
-        self2.realBindFramebuffer.call(gl2, gl2.FRAMEBUFFER, null);
-        var positionDivisor = 0;
-        var texCoordDivisor = 0;
-        if (self2.instanceExt) {
-          positionDivisor = gl2.getVertexAttrib(self2.attribs.position, self2.instanceExt.VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE);
-          texCoordDivisor = gl2.getVertexAttrib(self2.attribs.texCoord, self2.instanceExt.VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE);
-        }
-        if (self2.cullFace) {
-          self2.realDisable.call(gl2, gl2.CULL_FACE);
-        }
-        if (self2.depthTest) {
-          self2.realDisable.call(gl2, gl2.DEPTH_TEST);
-        }
-        if (self2.blend) {
-          self2.realDisable.call(gl2, gl2.BLEND);
-        }
-        if (self2.scissorTest) {
-          self2.realDisable.call(gl2, gl2.SCISSOR_TEST);
-        }
-        if (self2.stencilTest) {
-          self2.realDisable.call(gl2, gl2.STENCIL_TEST);
-        }
-        self2.realColorMask.call(gl2, true, true, true, true);
-        self2.realViewport.call(gl2, 0, 0, gl2.drawingBufferWidth, gl2.drawingBufferHeight);
-        if (self2.ctxAttribs.alpha || isIOS()) {
-          self2.realClearColor.call(gl2, 0, 0, 0, 1);
-          gl2.clear(gl2.COLOR_BUFFER_BIT);
-        }
-        gl2.useProgram(self2.program);
-        gl2.bindBuffer(gl2.ELEMENT_ARRAY_BUFFER, self2.indexBuffer);
-        gl2.bindBuffer(gl2.ARRAY_BUFFER, self2.vertexBuffer);
-        gl2.enableVertexAttribArray(self2.attribs.position);
-        gl2.enableVertexAttribArray(self2.attribs.texCoord);
-        gl2.vertexAttribPointer(self2.attribs.position, 2, gl2.FLOAT, false, 20, 0);
-        gl2.vertexAttribPointer(self2.attribs.texCoord, 3, gl2.FLOAT, false, 20, 8);
-        if (self2.instanceExt) {
-          if (positionDivisor != 0) {
-            self2.instanceExt.vertexAttribDivisorANGLE(self2.attribs.position, 0);
+        var r = this, n = this.gl.canvas, a = this.gl;
+        v() || (n.width = P() * this.bufferScale, n.height = I() * this.bufferScale, Object.defineProperty(n, "width", {
+          configurable: !0,
+          enumerable: !0,
+          get: function() {
+            return r.bufferWidth;
+          },
+          set: function(c) {
+            r.bufferWidth = c, r.realCanvasWidth.set.call(n, c), r.onResize();
           }
-          if (texCoordDivisor != 0) {
-            self2.instanceExt.vertexAttribDivisorANGLE(self2.attribs.texCoord, 0);
+        }), Object.defineProperty(n, "height", {
+          configurable: !0,
+          enumerable: !0,
+          get: function() {
+            return r.bufferHeight;
+          },
+          set: function(c) {
+            r.bufferHeight = c, r.realCanvasHeight.set.call(n, c), r.onResize();
           }
-        }
-        gl2.activeTexture(gl2.TEXTURE0);
-        gl2.uniform1i(self2.uniforms.diffuse, 0);
-        gl2.bindTexture(gl2.TEXTURE_2D, self2.renderTarget);
-        gl2.uniform4fv(self2.uniforms.viewportOffsetScale, self2.viewportOffsetScale);
-        gl2.drawElements(gl2.TRIANGLES, self2.indexCount, gl2.UNSIGNED_SHORT, 0);
-        if (self2.cardboardUI) {
-          self2.cardboardUI.renderNoState();
-        }
-        self2.realBindFramebuffer.call(self2.gl, gl2.FRAMEBUFFER, self2.framebuffer);
-        if (!self2.ctxAttribs.preserveDrawingBuffer) {
-          self2.realClearColor.call(gl2, 0, 0, 0, 0);
-          gl2.clear(gl2.COLOR_BUFFER_BIT);
-        }
-        if (!self2.dirtySubmitFrameBindings) {
-          self2.realBindFramebuffer.call(gl2, gl2.FRAMEBUFFER, self2.lastBoundFramebuffer);
-        }
-        if (self2.cullFace) {
-          self2.realEnable.call(gl2, gl2.CULL_FACE);
-        }
-        if (self2.depthTest) {
-          self2.realEnable.call(gl2, gl2.DEPTH_TEST);
-        }
-        if (self2.blend) {
-          self2.realEnable.call(gl2, gl2.BLEND);
-        }
-        if (self2.scissorTest) {
-          self2.realEnable.call(gl2, gl2.SCISSOR_TEST);
-        }
-        if (self2.stencilTest) {
-          self2.realEnable.call(gl2, gl2.STENCIL_TEST);
-        }
-        self2.realColorMask.apply(gl2, self2.colorMask);
-        self2.realViewport.apply(gl2, self2.viewport);
-        if (self2.ctxAttribs.alpha || !self2.ctxAttribs.preserveDrawingBuffer) {
-          self2.realClearColor.apply(gl2, self2.clearColor);
-        }
-        if (self2.instanceExt) {
-          if (positionDivisor != 0) {
-            self2.instanceExt.vertexAttribDivisorANGLE(self2.attribs.position, positionDivisor);
+        })), this.lastBoundFramebuffer = a.getParameter(a.FRAMEBUFFER_BINDING), this.lastBoundFramebuffer == null && (this.lastBoundFramebuffer = this.framebuffer, this.gl.bindFramebuffer(a.FRAMEBUFFER, this.framebuffer)), this.gl.bindFramebuffer = function(l, c) {
+          r.lastBoundFramebuffer = c || r.framebuffer, r.realBindFramebuffer.call(a, l, r.lastBoundFramebuffer);
+        }, this.cullFace = a.getParameter(a.CULL_FACE), this.depthTest = a.getParameter(a.DEPTH_TEST), this.blend = a.getParameter(a.BLEND), this.scissorTest = a.getParameter(a.SCISSOR_TEST), this.stencilTest = a.getParameter(a.STENCIL_TEST), a.enable = function(l) {
+          switch (l) {
+            case a.CULL_FACE:
+              r.cullFace = !0;
+              break;
+            case a.DEPTH_TEST:
+              r.depthTest = !0;
+              break;
+            case a.BLEND:
+              r.blend = !0;
+              break;
+            case a.SCISSOR_TEST:
+              r.scissorTest = !0;
+              break;
+            case a.STENCIL_TEST:
+              r.stencilTest = !0;
+              break;
           }
-          if (texCoordDivisor != 0) {
-            self2.instanceExt.vertexAttribDivisorANGLE(self2.attribs.texCoord, texCoordDivisor);
+          r.realEnable.call(a, l);
+        }, a.disable = function(l) {
+          switch (l) {
+            case a.CULL_FACE:
+              r.cullFace = !1;
+              break;
+            case a.DEPTH_TEST:
+              r.depthTest = !1;
+              break;
+            case a.BLEND:
+              r.blend = !1;
+              break;
+            case a.SCISSOR_TEST:
+              r.scissorTest = !1;
+              break;
+            case a.STENCIL_TEST:
+              r.stencilTest = !1;
+              break;
           }
+          r.realDisable.call(a, l);
+        }, this.colorMask = a.getParameter(a.COLOR_WRITEMASK), a.colorMask = function(l, c, A, f) {
+          r.colorMask[0] = l, r.colorMask[1] = c, r.colorMask[2] = A, r.colorMask[3] = f, r.realColorMask.call(a, l, c, A, f);
+        }, this.clearColor = a.getParameter(a.COLOR_CLEAR_VALUE), a.clearColor = function(l, c, A, f) {
+          r.clearColor[0] = l, r.clearColor[1] = c, r.clearColor[2] = A, r.clearColor[3] = f, r.realClearColor.call(a, l, c, A, f);
+        }, this.viewport = a.getParameter(a.VIEWPORT), a.viewport = function(l, c, A, f) {
+          r.viewport[0] = l, r.viewport[1] = c, r.viewport[2] = A, r.viewport[3] = f, r.realViewport.call(a, l, c, A, f);
+        }, this.isPatched = !0, L(n);
+      }
+    }, ee.prototype.unpatch = function() {
+      if (!!this.isPatched) {
+        var r = this.gl, n = this.gl.canvas;
+        v() || (Object.defineProperty(n, "width", this.realCanvasWidth), Object.defineProperty(n, "height", this.realCanvasHeight)), n.width = this.bufferWidth, n.height = this.bufferHeight, r.bindFramebuffer = this.realBindFramebuffer, r.enable = this.realEnable, r.disable = this.realDisable, r.colorMask = this.realColorMask, r.clearColor = this.realClearColor, r.viewport = this.realViewport, this.lastBoundFramebuffer == this.framebuffer && r.bindFramebuffer(r.FRAMEBUFFER, null), this.isPatched = !1, setTimeout(function() {
+          L(n);
+        }, 1);
+      }
+    }, ee.prototype.setTextureBounds = function(r, n) {
+      r || (r = [0, 0, 0.5, 1]), n || (n = [0.5, 0, 0.5, 1]), this.viewportOffsetScale[0] = r[0], this.viewportOffsetScale[1] = r[1], this.viewportOffsetScale[2] = r[2], this.viewportOffsetScale[3] = r[3], this.viewportOffsetScale[4] = n[0], this.viewportOffsetScale[5] = n[1], this.viewportOffsetScale[6] = n[2], this.viewportOffsetScale[7] = n[3];
+    }, ee.prototype.submitFrame = function() {
+      var r = this.gl, n = this, a = [];
+      if (this.dirtySubmitFrameBindings || a.push(r.CURRENT_PROGRAM, r.ARRAY_BUFFER_BINDING, r.ELEMENT_ARRAY_BUFFER_BINDING, r.TEXTURE_BINDING_2D, r.TEXTURE0), Be(r, a, function(c) {
+        n.realBindFramebuffer.call(c, c.FRAMEBUFFER, null);
+        var A = 0, f = 0;
+        n.instanceExt && (A = c.getVertexAttrib(n.attribs.position, n.instanceExt.VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE), f = c.getVertexAttrib(n.attribs.texCoord, n.instanceExt.VERTEX_ATTRIB_ARRAY_DIVISOR_ANGLE)), n.cullFace && n.realDisable.call(c, c.CULL_FACE), n.depthTest && n.realDisable.call(c, c.DEPTH_TEST), n.blend && n.realDisable.call(c, c.BLEND), n.scissorTest && n.realDisable.call(c, c.SCISSOR_TEST), n.stencilTest && n.realDisable.call(c, c.STENCIL_TEST), n.realColorMask.call(c, !0, !0, !0, !0), n.realViewport.call(c, 0, 0, c.drawingBufferWidth, c.drawingBufferHeight), (n.ctxAttribs.alpha || v()) && (n.realClearColor.call(c, 0, 0, 0, 1), c.clear(c.COLOR_BUFFER_BIT)), c.useProgram(n.program), c.bindBuffer(c.ELEMENT_ARRAY_BUFFER, n.indexBuffer), c.bindBuffer(c.ARRAY_BUFFER, n.vertexBuffer), c.enableVertexAttribArray(n.attribs.position), c.enableVertexAttribArray(n.attribs.texCoord), c.vertexAttribPointer(n.attribs.position, 2, c.FLOAT, !1, 20, 0), c.vertexAttribPointer(n.attribs.texCoord, 3, c.FLOAT, !1, 20, 8), n.instanceExt && (A != 0 && n.instanceExt.vertexAttribDivisorANGLE(n.attribs.position, 0), f != 0 && n.instanceExt.vertexAttribDivisorANGLE(n.attribs.texCoord, 0)), c.activeTexture(c.TEXTURE0), c.uniform1i(n.uniforms.diffuse, 0), c.bindTexture(c.TEXTURE_2D, n.renderTarget), c.uniform4fv(n.uniforms.viewportOffsetScale, n.viewportOffsetScale), c.drawElements(c.TRIANGLES, n.indexCount, c.UNSIGNED_SHORT, 0), n.cardboardUI && n.cardboardUI.renderNoState(), n.realBindFramebuffer.call(n.gl, c.FRAMEBUFFER, n.framebuffer), n.ctxAttribs.preserveDrawingBuffer || (n.realClearColor.call(c, 0, 0, 0, 0), c.clear(c.COLOR_BUFFER_BIT)), n.dirtySubmitFrameBindings || n.realBindFramebuffer.call(c, c.FRAMEBUFFER, n.lastBoundFramebuffer), n.cullFace && n.realEnable.call(c, c.CULL_FACE), n.depthTest && n.realEnable.call(c, c.DEPTH_TEST), n.blend && n.realEnable.call(c, c.BLEND), n.scissorTest && n.realEnable.call(c, c.SCISSOR_TEST), n.stencilTest && n.realEnable.call(c, c.STENCIL_TEST), n.realColorMask.apply(c, n.colorMask), n.realViewport.apply(c, n.viewport), (n.ctxAttribs.alpha || !n.ctxAttribs.preserveDrawingBuffer) && n.realClearColor.apply(c, n.clearColor), n.instanceExt && (A != 0 && n.instanceExt.vertexAttribDivisorANGLE(n.attribs.position, A), f != 0 && n.instanceExt.vertexAttribDivisorANGLE(n.attribs.texCoord, f));
+      }), v()) {
+        var l = r.canvas;
+        (l.width != n.bufferWidth || l.height != n.bufferHeight) && (n.bufferWidth = l.width, n.bufferHeight = l.height, n.onResize());
+      }
+    }, ee.prototype.updateDeviceInfo = function(r) {
+      var n = this.gl, a = this, l = [n.ARRAY_BUFFER_BINDING, n.ELEMENT_ARRAY_BUFFER_BINDING];
+      Be(n, l, function(c) {
+        var A = a.computeMeshVertices_(a.meshWidth, a.meshHeight, r);
+        if (c.bindBuffer(c.ARRAY_BUFFER, a.vertexBuffer), c.bufferData(c.ARRAY_BUFFER, A, c.STATIC_DRAW), !a.indexCount) {
+          var f = a.computeMeshIndices_(a.meshWidth, a.meshHeight);
+          c.bindBuffer(c.ELEMENT_ARRAY_BUFFER, a.indexBuffer), c.bufferData(c.ELEMENT_ARRAY_BUFFER, f, c.STATIC_DRAW), a.indexCount = f.length;
         }
       });
-      if (isIOS()) {
-        var canvas = gl.canvas;
-        if (canvas.width != self2.bufferWidth || canvas.height != self2.bufferHeight) {
-          self2.bufferWidth = canvas.width;
-          self2.bufferHeight = canvas.height;
-          self2.onResize();
-        }
-      }
-    };
-    CardboardDistorter.prototype.updateDeviceInfo = function(deviceInfo) {
-      var gl = this.gl;
-      var self2 = this;
-      var glState = [gl.ARRAY_BUFFER_BINDING, gl.ELEMENT_ARRAY_BUFFER_BINDING];
-      glPreserveState(gl, glState, function(gl2) {
-        var vertices = self2.computeMeshVertices_(self2.meshWidth, self2.meshHeight, deviceInfo);
-        gl2.bindBuffer(gl2.ARRAY_BUFFER, self2.vertexBuffer);
-        gl2.bufferData(gl2.ARRAY_BUFFER, vertices, gl2.STATIC_DRAW);
-        if (!self2.indexCount) {
-          var indices = self2.computeMeshIndices_(self2.meshWidth, self2.meshHeight);
-          gl2.bindBuffer(gl2.ELEMENT_ARRAY_BUFFER, self2.indexBuffer);
-          gl2.bufferData(gl2.ELEMENT_ARRAY_BUFFER, indices, gl2.STATIC_DRAW);
-          self2.indexCount = indices.length;
-        }
-      });
-    };
-    CardboardDistorter.prototype.computeMeshVertices_ = function(width, height, deviceInfo) {
-      var vertices = new Float32Array(2 * width * height * 5);
-      var lensFrustum = deviceInfo.getLeftEyeVisibleTanAngles();
-      var noLensFrustum = deviceInfo.getLeftEyeNoLensTanAngles();
-      var viewport = deviceInfo.getLeftEyeVisibleScreenRect(noLensFrustum);
-      var vidx = 0;
-      for (var e = 0; e < 2; e++) {
-        for (var j = 0; j < height; j++) {
-          for (var i = 0; i < width; i++, vidx++) {
-            var u = i / (width - 1);
-            var v = j / (height - 1);
-            var s = u;
-            var t = v;
-            var x = lerp(lensFrustum[0], lensFrustum[2], u);
-            var y = lerp(lensFrustum[3], lensFrustum[1], v);
-            var d = Math.sqrt(x * x + y * y);
-            var r = deviceInfo.distortion.distortInverse(d);
-            var p = x * r / d;
-            var q = y * r / d;
-            u = (p - noLensFrustum[0]) / (noLensFrustum[2] - noLensFrustum[0]);
-            v = (q - noLensFrustum[3]) / (noLensFrustum[1] - noLensFrustum[3]);
-            u = (viewport.x + u * viewport.width - 0.5) * 2;
-            v = (viewport.y + v * viewport.height - 0.5) * 2;
-            vertices[vidx * 5 + 0] = u;
-            vertices[vidx * 5 + 1] = v;
-            vertices[vidx * 5 + 2] = s;
-            vertices[vidx * 5 + 3] = t;
-            vertices[vidx * 5 + 4] = e;
+    }, ee.prototype.computeMeshVertices_ = function(r, n, a) {
+      for (var l = new Float32Array(2 * r * n * 5), c = a.getLeftEyeVisibleTanAngles(), A = a.getLeftEyeNoLensTanAngles(), f = a.getLeftEyeVisibleScreenRect(A), S = 0, E = 0; E < 2; E++) {
+        for (var p = 0; p < n; p++)
+          for (var w = 0; w < r; w++, S++) {
+            var T = w / (r - 1), k = p / (n - 1), U = T, X = k, q = m(c[0], c[2], T), j = m(c[3], c[1], k), Y = Math.sqrt(q * q + j * j), ne = a.distortion.distortInverse(Y), he = q * ne / Y, ve = j * ne / Y;
+            T = (he - A[0]) / (A[2] - A[0]), k = (ve - A[3]) / (A[1] - A[3]), T = (f.x + T * f.width - 0.5) * 2, k = (f.y + k * f.height - 0.5) * 2, l[S * 5 + 0] = T, l[S * 5 + 1] = k, l[S * 5 + 2] = U, l[S * 5 + 3] = X, l[S * 5 + 4] = E;
           }
-        }
-        var w = lensFrustum[2] - lensFrustum[0];
-        lensFrustum[0] = -(w + lensFrustum[0]);
-        lensFrustum[2] = w - lensFrustum[2];
-        w = noLensFrustum[2] - noLensFrustum[0];
-        noLensFrustum[0] = -(w + noLensFrustum[0]);
-        noLensFrustum[2] = w - noLensFrustum[2];
-        viewport.x = 1 - (viewport.x + viewport.width);
+        var oe = c[2] - c[0];
+        c[0] = -(oe + c[0]), c[2] = oe - c[2], oe = A[2] - A[0], A[0] = -(oe + A[0]), A[2] = oe - A[2], f.x = 1 - (f.x + f.width);
       }
-      return vertices;
+      return l;
+    }, ee.prototype.computeMeshIndices_ = function(r, n) {
+      for (var a = new Uint16Array(2 * (r - 1) * (n - 1) * 6), l = r / 2, c = n / 2, A = 0, f = 0, S = 0; S < 2; S++)
+        for (var E = 0; E < n; E++)
+          for (var p = 0; p < r; p++, A++)
+            p == 0 || E == 0 || (p <= l == E <= c ? (a[f++] = A, a[f++] = A - r - 1, a[f++] = A - r, a[f++] = A - r - 1, a[f++] = A, a[f++] = A - 1) : (a[f++] = A - 1, a[f++] = A - r, a[f++] = A, a[f++] = A - r, a[f++] = A - 1, a[f++] = A - r - 1));
+      return a;
+    }, ee.prototype.getOwnPropertyDescriptor_ = function(r, n) {
+      var a = Object.getOwnPropertyDescriptor(r, n);
+      return (a.get === void 0 || a.set === void 0) && (a.configurable = !0, a.enumerable = !0, a.get = function() {
+        return this.getAttribute(n);
+      }, a.set = function(l) {
+        this.setAttribute(n, l);
+      }), a;
     };
-    CardboardDistorter.prototype.computeMeshIndices_ = function(width, height) {
-      var indices = new Uint16Array(2 * (width - 1) * (height - 1) * 6);
-      var halfwidth = width / 2;
-      var halfheight = height / 2;
-      var vidx = 0;
-      var iidx = 0;
-      for (var e = 0; e < 2; e++) {
-        for (var j = 0; j < height; j++) {
-          for (var i = 0; i < width; i++, vidx++) {
-            if (i == 0 || j == 0)
-              continue;
-            if (i <= halfwidth == j <= halfheight) {
-              indices[iidx++] = vidx;
-              indices[iidx++] = vidx - width - 1;
-              indices[iidx++] = vidx - width;
-              indices[iidx++] = vidx - width - 1;
-              indices[iidx++] = vidx;
-              indices[iidx++] = vidx - 1;
-            } else {
-              indices[iidx++] = vidx - 1;
-              indices[iidx++] = vidx - width;
-              indices[iidx++] = vidx;
-              indices[iidx++] = vidx - width;
-              indices[iidx++] = vidx - 1;
-              indices[iidx++] = vidx - width - 1;
-            }
-          }
-        }
-      }
-      return indices;
-    };
-    CardboardDistorter.prototype.getOwnPropertyDescriptor_ = function(proto, attrName) {
-      var descriptor = Object.getOwnPropertyDescriptor(proto, attrName);
-      if (descriptor.get === void 0 || descriptor.set === void 0) {
-        descriptor.configurable = true;
-        descriptor.enumerable = true;
-        descriptor.get = function() {
-          return this.getAttribute(attrName);
-        };
-        descriptor.set = function(val) {
-          this.setAttribute(attrName, val);
-        };
-      }
-      return descriptor;
-    };
-    var uiVS = ["attribute vec2 position;", "uniform mat4 projectionMat;", "void main() {", "  gl_Position = projectionMat * vec4( position, -1.0, 1.0 );", "}"].join("\n");
-    var uiFS = ["precision mediump float;", "uniform vec4 color;", "void main() {", "  gl_FragColor = color;", "}"].join("\n");
-    var DEG2RAD = Math.PI / 180;
-    var kAnglePerGearSection = 60;
-    var kOuterRimEndAngle = 12;
-    var kInnerRimBeginAngle = 20;
-    var kOuterRadius = 1;
-    var kMiddleRadius = 0.75;
-    var kInnerRadius = 0.3125;
-    var kCenterLineThicknessDp = 4;
-    var kButtonWidthDp = 28;
-    var kTouchSlopFactor = 1.5;
-    function CardboardUI(gl) {
-      this.gl = gl;
-      this.attribs = {
+    var ce = ["attribute vec2 position;", "uniform mat4 projectionMat;", "void main() {", "  gl_Position = projectionMat * vec4( position, -1.0, 1.0 );", "}"].join(`
+`), re = ["precision mediump float;", "uniform vec4 color;", "void main() {", "  gl_FragColor = color;", "}"].join(`
+`), de = Math.PI / 180, me = 60, Ke = 12, Mt = 20, Gt = 1, ui = 0.75, fi = 0.3125, hr = 4, We = 28, Vt = 1.5;
+    function He(r) {
+      this.gl = r, this.attribs = {
         position: 0
-      };
-      this.program = linkProgram(gl, uiVS, uiFS, this.attribs);
-      this.uniforms = getProgramUniforms(gl, this.program);
-      this.vertexBuffer = gl.createBuffer();
-      this.gearOffset = 0;
-      this.gearVertexCount = 0;
-      this.arrowOffset = 0;
-      this.arrowVertexCount = 0;
-      this.projMat = new Float32Array(16);
-      this.listener = null;
-      this.onResize();
+      }, this.program = z(r, ce, re, this.attribs), this.uniforms = Z(r, this.program), this.vertexBuffer = r.createBuffer(), this.gearOffset = 0, this.gearVertexCount = 0, this.arrowOffset = 0, this.arrowVertexCount = 0, this.projMat = new Float32Array(16), this.listener = null, this.onResize();
     }
-    CardboardUI.prototype.destroy = function() {
-      var gl = this.gl;
-      if (this.listener) {
-        gl.canvas.removeEventListener("click", this.listener, false);
-      }
-      gl.deleteProgram(this.program);
-      gl.deleteBuffer(this.vertexBuffer);
-    };
-    CardboardUI.prototype.listen = function(optionsCallback, backCallback) {
-      var canvas = this.gl.canvas;
-      this.listener = function(event) {
-        var midline = canvas.clientWidth / 2;
-        var buttonSize = kButtonWidthDp * kTouchSlopFactor;
-        if (event.clientX > midline - buttonSize && event.clientX < midline + buttonSize && event.clientY > canvas.clientHeight - buttonSize) {
-          optionsCallback(event);
-        } else if (event.clientX < buttonSize && event.clientY < buttonSize) {
-          backCallback(event);
+    He.prototype.destroy = function() {
+      var r = this.gl;
+      this.listener && r.canvas.removeEventListener("click", this.listener, !1), r.deleteProgram(this.program), r.deleteBuffer(this.vertexBuffer);
+    }, He.prototype.listen = function(r, n) {
+      var a = this.gl.canvas;
+      this.listener = function(l) {
+        var c = a.clientWidth / 2, A = We * Vt;
+        l.clientX > c - A && l.clientX < c + A && l.clientY > a.clientHeight - A ? r(l) : l.clientX < A && l.clientY < A && n(l);
+      }, a.addEventListener("click", this.listener, !1);
+    }, He.prototype.onResize = function() {
+      var r = this.gl, n = this, a = [r.ARRAY_BUFFER_BINDING];
+      Be(r, a, function(l) {
+        var c = [], A = l.drawingBufferWidth / 2, f = Math.max(screen.width, screen.height) * window.devicePixelRatio, S = l.drawingBufferWidth / f, E = S * window.devicePixelRatio, p = hr * E / 2, w = We * Vt * E, T = We * E / 2, k = (We * Vt - We) * E;
+        c.push(A - p, w), c.push(A - p, l.drawingBufferHeight), c.push(A + p, w), c.push(A + p, l.drawingBufferHeight), n.gearOffset = c.length / 2;
+        function U(ne, he) {
+          var ve = (90 - ne) * de, oe = Math.cos(ve), we = Math.sin(ve);
+          c.push(fi * oe * T + A, fi * we * T + T), c.push(he * oe * T + A, he * we * T + T);
         }
-      };
-      canvas.addEventListener("click", this.listener, false);
-    };
-    CardboardUI.prototype.onResize = function() {
-      var gl = this.gl;
-      var self2 = this;
-      var glState = [gl.ARRAY_BUFFER_BINDING];
-      glPreserveState(gl, glState, function(gl2) {
-        var vertices = [];
-        var midline = gl2.drawingBufferWidth / 2;
-        var physicalPixels = Math.max(screen.width, screen.height) * window.devicePixelRatio;
-        var scalingRatio = gl2.drawingBufferWidth / physicalPixels;
-        var dps = scalingRatio * window.devicePixelRatio;
-        var lineWidth = kCenterLineThicknessDp * dps / 2;
-        var buttonSize = kButtonWidthDp * kTouchSlopFactor * dps;
-        var buttonScale = kButtonWidthDp * dps / 2;
-        var buttonBorder = (kButtonWidthDp * kTouchSlopFactor - kButtonWidthDp) * dps;
-        vertices.push(midline - lineWidth, buttonSize);
-        vertices.push(midline - lineWidth, gl2.drawingBufferHeight);
-        vertices.push(midline + lineWidth, buttonSize);
-        vertices.push(midline + lineWidth, gl2.drawingBufferHeight);
-        self2.gearOffset = vertices.length / 2;
-        function addGearSegment(theta, r) {
-          var angle2 = (90 - theta) * DEG2RAD;
-          var x = Math.cos(angle2);
-          var y = Math.sin(angle2);
-          vertices.push(kInnerRadius * x * buttonScale + midline, kInnerRadius * y * buttonScale + buttonScale);
-          vertices.push(r * x * buttonScale + midline, r * y * buttonScale + buttonScale);
+        for (var X = 0; X <= 6; X++) {
+          var q = X * me;
+          U(q, Gt), U(q + Ke, Gt), U(q + Mt, ui), U(q + (me - Mt), ui), U(q + (me - Ke), Gt);
         }
-        for (var i = 0; i <= 6; i++) {
-          var segmentTheta = i * kAnglePerGearSection;
-          addGearSegment(segmentTheta, kOuterRadius);
-          addGearSegment(segmentTheta + kOuterRimEndAngle, kOuterRadius);
-          addGearSegment(segmentTheta + kInnerRimBeginAngle, kMiddleRadius);
-          addGearSegment(segmentTheta + (kAnglePerGearSection - kInnerRimBeginAngle), kMiddleRadius);
-          addGearSegment(segmentTheta + (kAnglePerGearSection - kOuterRimEndAngle), kOuterRadius);
+        n.gearVertexCount = c.length / 2 - n.gearOffset, n.arrowOffset = c.length / 2;
+        function j(ne, he) {
+          c.push(k + ne, l.drawingBufferHeight - k - he);
         }
-        self2.gearVertexCount = vertices.length / 2 - self2.gearOffset;
-        self2.arrowOffset = vertices.length / 2;
-        function addArrowVertex(x, y) {
-          vertices.push(buttonBorder + x, gl2.drawingBufferHeight - buttonBorder - y);
-        }
-        var angledLineWidth = lineWidth / Math.sin(45 * DEG2RAD);
-        addArrowVertex(0, buttonScale);
-        addArrowVertex(buttonScale, 0);
-        addArrowVertex(buttonScale + angledLineWidth, angledLineWidth);
-        addArrowVertex(angledLineWidth, buttonScale + angledLineWidth);
-        addArrowVertex(angledLineWidth, buttonScale - angledLineWidth);
-        addArrowVertex(0, buttonScale);
-        addArrowVertex(buttonScale, buttonScale * 2);
-        addArrowVertex(buttonScale + angledLineWidth, buttonScale * 2 - angledLineWidth);
-        addArrowVertex(angledLineWidth, buttonScale - angledLineWidth);
-        addArrowVertex(0, buttonScale);
-        addArrowVertex(angledLineWidth, buttonScale - lineWidth);
-        addArrowVertex(kButtonWidthDp * dps, buttonScale - lineWidth);
-        addArrowVertex(angledLineWidth, buttonScale + lineWidth);
-        addArrowVertex(kButtonWidthDp * dps, buttonScale + lineWidth);
-        self2.arrowVertexCount = vertices.length / 2 - self2.arrowOffset;
-        gl2.bindBuffer(gl2.ARRAY_BUFFER, self2.vertexBuffer);
-        gl2.bufferData(gl2.ARRAY_BUFFER, new Float32Array(vertices), gl2.STATIC_DRAW);
+        var Y = p / Math.sin(45 * de);
+        j(0, T), j(T, 0), j(T + Y, Y), j(Y, T + Y), j(Y, T - Y), j(0, T), j(T, T * 2), j(T + Y, T * 2 - Y), j(Y, T - Y), j(0, T), j(Y, T - p), j(We * E, T - p), j(Y, T + p), j(We * E, T + p), n.arrowVertexCount = c.length / 2 - n.arrowOffset, l.bindBuffer(l.ARRAY_BUFFER, n.vertexBuffer), l.bufferData(l.ARRAY_BUFFER, new Float32Array(c), l.STATIC_DRAW);
       });
-    };
-    CardboardUI.prototype.render = function() {
-      var gl = this.gl;
-      var self2 = this;
-      var glState = [gl.CULL_FACE, gl.DEPTH_TEST, gl.BLEND, gl.SCISSOR_TEST, gl.STENCIL_TEST, gl.COLOR_WRITEMASK, gl.VIEWPORT, gl.CURRENT_PROGRAM, gl.ARRAY_BUFFER_BINDING];
-      glPreserveState(gl, glState, function(gl2) {
-        gl2.disable(gl2.CULL_FACE);
-        gl2.disable(gl2.DEPTH_TEST);
-        gl2.disable(gl2.BLEND);
-        gl2.disable(gl2.SCISSOR_TEST);
-        gl2.disable(gl2.STENCIL_TEST);
-        gl2.colorMask(true, true, true, true);
-        gl2.viewport(0, 0, gl2.drawingBufferWidth, gl2.drawingBufferHeight);
-        self2.renderNoState();
+    }, He.prototype.render = function() {
+      var r = this.gl, n = this, a = [r.CULL_FACE, r.DEPTH_TEST, r.BLEND, r.SCISSOR_TEST, r.STENCIL_TEST, r.COLOR_WRITEMASK, r.VIEWPORT, r.CURRENT_PROGRAM, r.ARRAY_BUFFER_BINDING];
+      Be(r, a, function(l) {
+        l.disable(l.CULL_FACE), l.disable(l.DEPTH_TEST), l.disable(l.BLEND), l.disable(l.SCISSOR_TEST), l.disable(l.STENCIL_TEST), l.colorMask(!0, !0, !0, !0), l.viewport(0, 0, l.drawingBufferWidth, l.drawingBufferHeight), n.renderNoState();
       });
+    }, He.prototype.renderNoState = function() {
+      var r = this.gl;
+      r.useProgram(this.program), r.bindBuffer(r.ARRAY_BUFFER, this.vertexBuffer), r.enableVertexAttribArray(this.attribs.position), r.vertexAttribPointer(this.attribs.position, 2, r.FLOAT, !1, 8, 0), r.uniform4f(this.uniforms.color, 1, 1, 1, 1), K(this.projMat, 0, r.drawingBufferWidth, 0, r.drawingBufferHeight, 0.1, 1024), r.uniformMatrix4fv(this.uniforms.projectionMat, !1, this.projMat), r.drawArrays(r.TRIANGLE_STRIP, 0, 4), r.drawArrays(r.TRIANGLE_STRIP, this.gearOffset, this.gearVertexCount), r.drawArrays(r.TRIANGLE_STRIP, this.arrowOffset, this.arrowVertexCount);
     };
-    CardboardUI.prototype.renderNoState = function() {
-      var gl = this.gl;
-      gl.useProgram(this.program);
-      gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-      gl.enableVertexAttribArray(this.attribs.position);
-      gl.vertexAttribPointer(this.attribs.position, 2, gl.FLOAT, false, 8, 0);
-      gl.uniform4f(this.uniforms.color, 1, 1, 1, 1);
-      orthoMatrix(this.projMat, 0, gl.drawingBufferWidth, 0, gl.drawingBufferHeight, 0.1, 1024);
-      gl.uniformMatrix4fv(this.uniforms.projectionMat, false, this.projMat);
-      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      gl.drawArrays(gl.TRIANGLE_STRIP, this.gearOffset, this.gearVertexCount);
-      gl.drawArrays(gl.TRIANGLE_STRIP, this.arrowOffset, this.arrowVertexCount);
-    };
-    function Distortion(coefficients) {
-      this.coefficients = coefficients;
+    function Tt(r) {
+      this.coefficients = r;
     }
-    Distortion.prototype.distortInverse = function(radius) {
-      var r0 = 0;
-      var r1 = 1;
-      var dr0 = radius - this.distort(r0);
-      while (Math.abs(r1 - r0) > 1e-4) {
-        var dr1 = radius - this.distort(r1);
-        var r2 = r1 - dr1 * ((r1 - r0) / (dr1 - dr0));
-        r0 = r1;
-        r1 = r2;
-        dr0 = dr1;
+    Tt.prototype.distortInverse = function(r) {
+      for (var n = 0, a = 1, l = r - this.distort(n); Math.abs(a - n) > 1e-4; ) {
+        var c = r - this.distort(a), A = a - c * ((a - n) / (c - l));
+        n = a, a = A, l = c;
       }
-      return r1;
+      return a;
+    }, Tt.prototype.distort = function(r) {
+      for (var n = r * r, a = 0, l = 0; l < this.coefficients.length; l++)
+        a = n * (a + this.coefficients[l]);
+      return (a + 1) * r;
     };
-    Distortion.prototype.distort = function(radius) {
-      var r2 = radius * radius;
-      var ret = 0;
-      for (var i = 0; i < this.coefficients.length; i++) {
-        ret = r2 * (ret + this.coefficients[i]);
-      }
-      return (ret + 1) * radius;
+    var Le = Math.PI / 180, Oe = 180 / Math.PI, ae = function(n, a, l) {
+      this.x = n || 0, this.y = a || 0, this.z = l || 0;
     };
-    var degToRad = Math.PI / 180;
-    var radToDeg = 180 / Math.PI;
-    var Vector3 = function Vector32(x, y, z) {
-      this.x = x || 0;
-      this.y = y || 0;
-      this.z = z || 0;
-    };
-    Vector3.prototype = {
-      constructor: Vector3,
-      set: function set2(x, y, z) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        return this;
+    ae.prototype = {
+      constructor: ae,
+      set: function(n, a, l) {
+        return this.x = n, this.y = a, this.z = l, this;
       },
-      copy: function copy2(v) {
-        this.x = v.x;
-        this.y = v.y;
-        this.z = v.z;
-        return this;
+      copy: function(n) {
+        return this.x = n.x, this.y = n.y, this.z = n.z, this;
       },
-      length: function length2() {
+      length: function() {
         return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
       },
-      normalize: function normalize2() {
-        var scalar = this.length();
-        if (scalar !== 0) {
-          var invScalar = 1 / scalar;
-          this.multiplyScalar(invScalar);
-        } else {
-          this.x = 0;
-          this.y = 0;
-          this.z = 0;
-        }
+      normalize: function() {
+        var n = this.length();
+        if (n !== 0) {
+          var a = 1 / n;
+          this.multiplyScalar(a);
+        } else
+          this.x = 0, this.y = 0, this.z = 0;
         return this;
       },
-      multiplyScalar: function multiplyScalar(scalar) {
-        this.x *= scalar;
-        this.y *= scalar;
-        this.z *= scalar;
+      multiplyScalar: function(n) {
+        this.x *= n, this.y *= n, this.z *= n;
       },
-      applyQuaternion: function applyQuaternion(q) {
-        var x = this.x;
-        var y = this.y;
-        var z = this.z;
-        var qx = q.x;
-        var qy = q.y;
-        var qz = q.z;
-        var qw = q.w;
-        var ix = qw * x + qy * z - qz * y;
-        var iy = qw * y + qz * x - qx * z;
-        var iz = qw * z + qx * y - qy * x;
-        var iw = -qx * x - qy * y - qz * z;
-        this.x = ix * qw + iw * -qx + iy * -qz - iz * -qy;
-        this.y = iy * qw + iw * -qy + iz * -qx - ix * -qz;
-        this.z = iz * qw + iw * -qz + ix * -qy - iy * -qx;
-        return this;
+      applyQuaternion: function(n) {
+        var a = this.x, l = this.y, c = this.z, A = n.x, f = n.y, S = n.z, E = n.w, p = E * a + f * c - S * l, w = E * l + S * a - A * c, T = E * c + A * l - f * a, k = -A * a - f * l - S * c;
+        return this.x = p * E + k * -A + w * -S - T * -f, this.y = w * E + k * -f + T * -A - p * -S, this.z = T * E + k * -S + p * -f - w * -A, this;
       },
-      dot: function dot2(v) {
-        return this.x * v.x + this.y * v.y + this.z * v.z;
+      dot: function(n) {
+        return this.x * n.x + this.y * n.y + this.z * n.z;
       },
-      crossVectors: function crossVectors(a, b) {
-        var ax = a.x, ay = a.y, az = a.z;
-        var bx = b.x, by = b.y, bz = b.z;
-        this.x = ay * bz - az * by;
-        this.y = az * bx - ax * bz;
-        this.z = ax * by - ay * bx;
-        return this;
+      crossVectors: function(n, a) {
+        var l = n.x, c = n.y, A = n.z, f = a.x, S = a.y, E = a.z;
+        return this.x = c * E - A * S, this.y = A * f - l * E, this.z = l * S - c * f, this;
       }
     };
-    var Quaternion = function Quaternion2(x, y, z, w) {
-      this.x = x || 0;
-      this.y = y || 0;
-      this.z = z || 0;
-      this.w = w !== void 0 ? w : 1;
+    var te = function(n, a, l, c) {
+      this.x = n || 0, this.y = a || 0, this.z = l || 0, this.w = c !== void 0 ? c : 1;
     };
-    Quaternion.prototype = {
-      constructor: Quaternion,
-      set: function set2(x, y, z, w) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.w = w;
-        return this;
+    te.prototype = {
+      constructor: te,
+      set: function(n, a, l, c) {
+        return this.x = n, this.y = a, this.z = l, this.w = c, this;
       },
-      copy: function copy2(quaternion) {
-        this.x = quaternion.x;
-        this.y = quaternion.y;
-        this.z = quaternion.z;
-        this.w = quaternion.w;
-        return this;
+      copy: function(n) {
+        return this.x = n.x, this.y = n.y, this.z = n.z, this.w = n.w, this;
       },
-      setFromEulerXYZ: function setFromEulerXYZ(x, y, z) {
-        var c1 = Math.cos(x / 2);
-        var c2 = Math.cos(y / 2);
-        var c3 = Math.cos(z / 2);
-        var s1 = Math.sin(x / 2);
-        var s2 = Math.sin(y / 2);
-        var s3 = Math.sin(z / 2);
-        this.x = s1 * c2 * c3 + c1 * s2 * s3;
-        this.y = c1 * s2 * c3 - s1 * c2 * s3;
-        this.z = c1 * c2 * s3 + s1 * s2 * c3;
-        this.w = c1 * c2 * c3 - s1 * s2 * s3;
-        return this;
+      setFromEulerXYZ: function(n, a, l) {
+        var c = Math.cos(n / 2), A = Math.cos(a / 2), f = Math.cos(l / 2), S = Math.sin(n / 2), E = Math.sin(a / 2), p = Math.sin(l / 2);
+        return this.x = S * A * f + c * E * p, this.y = c * E * f - S * A * p, this.z = c * A * p + S * E * f, this.w = c * A * f - S * E * p, this;
       },
-      setFromEulerYXZ: function setFromEulerYXZ(x, y, z) {
-        var c1 = Math.cos(x / 2);
-        var c2 = Math.cos(y / 2);
-        var c3 = Math.cos(z / 2);
-        var s1 = Math.sin(x / 2);
-        var s2 = Math.sin(y / 2);
-        var s3 = Math.sin(z / 2);
-        this.x = s1 * c2 * c3 + c1 * s2 * s3;
-        this.y = c1 * s2 * c3 - s1 * c2 * s3;
-        this.z = c1 * c2 * s3 - s1 * s2 * c3;
-        this.w = c1 * c2 * c3 + s1 * s2 * s3;
-        return this;
+      setFromEulerYXZ: function(n, a, l) {
+        var c = Math.cos(n / 2), A = Math.cos(a / 2), f = Math.cos(l / 2), S = Math.sin(n / 2), E = Math.sin(a / 2), p = Math.sin(l / 2);
+        return this.x = S * A * f + c * E * p, this.y = c * E * f - S * A * p, this.z = c * A * p - S * E * f, this.w = c * A * f + S * E * p, this;
       },
-      setFromAxisAngle: function setFromAxisAngle(axis, angle2) {
-        var halfAngle = angle2 / 2, s = Math.sin(halfAngle);
-        this.x = axis.x * s;
-        this.y = axis.y * s;
-        this.z = axis.z * s;
-        this.w = Math.cos(halfAngle);
-        return this;
+      setFromAxisAngle: function(n, a) {
+        var l = a / 2, c = Math.sin(l);
+        return this.x = n.x * c, this.y = n.y * c, this.z = n.z * c, this.w = Math.cos(l), this;
       },
-      multiply: function multiply2(q) {
-        return this.multiplyQuaternions(this, q);
+      multiply: function(n) {
+        return this.multiplyQuaternions(this, n);
       },
-      multiplyQuaternions: function multiplyQuaternions(a, b) {
-        var qax = a.x, qay = a.y, qaz = a.z, qaw = a.w;
-        var qbx = b.x, qby = b.y, qbz = b.z, qbw = b.w;
-        this.x = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
-        this.y = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
-        this.z = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
-        this.w = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
-        return this;
+      multiplyQuaternions: function(n, a) {
+        var l = n.x, c = n.y, A = n.z, f = n.w, S = a.x, E = a.y, p = a.z, w = a.w;
+        return this.x = l * w + f * S + c * p - A * E, this.y = c * w + f * E + A * S - l * p, this.z = A * w + f * p + l * E - c * S, this.w = f * w - l * S - c * E - A * p, this;
       },
-      inverse: function inverse() {
-        this.x *= -1;
-        this.y *= -1;
-        this.z *= -1;
-        this.normalize();
-        return this;
+      inverse: function() {
+        return this.x *= -1, this.y *= -1, this.z *= -1, this.normalize(), this;
       },
-      normalize: function normalize2() {
-        var l = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
-        if (l === 0) {
-          this.x = 0;
-          this.y = 0;
-          this.z = 0;
-          this.w = 1;
-        } else {
-          l = 1 / l;
-          this.x = this.x * l;
-          this.y = this.y * l;
-          this.z = this.z * l;
-          this.w = this.w * l;
-        }
-        return this;
+      normalize: function() {
+        var n = Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z + this.w * this.w);
+        return n === 0 ? (this.x = 0, this.y = 0, this.z = 0, this.w = 1) : (n = 1 / n, this.x = this.x * n, this.y = this.y * n, this.z = this.z * n, this.w = this.w * n), this;
       },
-      slerp: function slerp2(qb, t) {
-        if (t === 0)
+      slerp: function(n, a) {
+        if (a === 0)
           return this;
-        if (t === 1)
-          return this.copy(qb);
-        var x = this.x, y = this.y, z = this.z, w = this.w;
-        var cosHalfTheta = w * qb.w + x * qb.x + y * qb.y + z * qb.z;
-        if (cosHalfTheta < 0) {
-          this.w = -qb.w;
-          this.x = -qb.x;
-          this.y = -qb.y;
-          this.z = -qb.z;
-          cosHalfTheta = -cosHalfTheta;
-        } else {
-          this.copy(qb);
-        }
-        if (cosHalfTheta >= 1) {
-          this.w = w;
-          this.x = x;
-          this.y = y;
-          this.z = z;
-          return this;
-        }
-        var halfTheta = Math.acos(cosHalfTheta);
-        var sinHalfTheta = Math.sqrt(1 - cosHalfTheta * cosHalfTheta);
-        if (Math.abs(sinHalfTheta) < 1e-3) {
-          this.w = 0.5 * (w + this.w);
-          this.x = 0.5 * (x + this.x);
-          this.y = 0.5 * (y + this.y);
-          this.z = 0.5 * (z + this.z);
-          return this;
-        }
-        var ratioA = Math.sin((1 - t) * halfTheta) / sinHalfTheta, ratioB = Math.sin(t * halfTheta) / sinHalfTheta;
-        this.w = w * ratioA + this.w * ratioB;
-        this.x = x * ratioA + this.x * ratioB;
-        this.y = y * ratioA + this.y * ratioB;
-        this.z = z * ratioA + this.z * ratioB;
-        return this;
+        if (a === 1)
+          return this.copy(n);
+        var l = this.x, c = this.y, A = this.z, f = this.w, S = f * n.w + l * n.x + c * n.y + A * n.z;
+        if (S < 0 ? (this.w = -n.w, this.x = -n.x, this.y = -n.y, this.z = -n.z, S = -S) : this.copy(n), S >= 1)
+          return this.w = f, this.x = l, this.y = c, this.z = A, this;
+        var E = Math.acos(S), p = Math.sqrt(1 - S * S);
+        if (Math.abs(p) < 1e-3)
+          return this.w = 0.5 * (f + this.w), this.x = 0.5 * (l + this.x), this.y = 0.5 * (c + this.y), this.z = 0.5 * (A + this.z), this;
+        var w = Math.sin((1 - a) * E) / p, T = Math.sin(a * E) / p;
+        return this.w = f * w + this.w * T, this.x = l * w + this.x * T, this.y = c * w + this.y * T, this.z = A * w + this.z * T, this;
       },
       setFromUnitVectors: function() {
-        var v1, r;
-        var EPS = 1e-6;
-        return function(vFrom, vTo) {
-          if (v1 === void 0)
-            v1 = new Vector3();
-          r = vFrom.dot(vTo) + 1;
-          if (r < EPS) {
-            r = 0;
-            if (Math.abs(vFrom.x) > Math.abs(vFrom.z)) {
-              v1.set(-vFrom.y, vFrom.x, 0);
-            } else {
-              v1.set(0, -vFrom.z, vFrom.y);
-            }
-          } else {
-            v1.crossVectors(vFrom, vTo);
-          }
-          this.x = v1.x;
-          this.y = v1.y;
-          this.z = v1.z;
-          this.w = r;
-          this.normalize();
-          return this;
+        var r, n, a = 1e-6;
+        return function(l, c) {
+          return r === void 0 && (r = new ae()), n = l.dot(c) + 1, n < a ? (n = 0, Math.abs(l.x) > Math.abs(l.z) ? r.set(-l.y, l.x, 0) : r.set(0, -l.z, l.y)) : r.crossVectors(l, c), this.x = r.x, this.y = r.y, this.z = r.z, this.w = n, this.normalize(), this;
         };
       }()
     };
-    function Device(params) {
-      this.width = params.width || getScreenWidth();
-      this.height = params.height || getScreenHeight();
-      this.widthMeters = params.widthMeters;
-      this.heightMeters = params.heightMeters;
-      this.bevelMeters = params.bevelMeters;
+    function Ut(r) {
+      this.width = r.width || P(), this.height = r.height || I(), this.widthMeters = r.widthMeters, this.heightMeters = r.heightMeters, this.bevelMeters = r.bevelMeters;
     }
-    var DEFAULT_ANDROID = new Device({
+    var dr = new Ut({
       widthMeters: 0.11,
       heightMeters: 0.062,
       bevelMeters: 4e-3
-    });
-    var DEFAULT_IOS = new Device({
+    }), Ar = new Ut({
       widthMeters: 0.1038,
       heightMeters: 0.0584,
       bevelMeters: 4e-3
-    });
-    var Viewers = {
-      CardboardV1: new CardboardViewer({
+    }), zt = {
+      CardboardV1: new Qt({
         id: "CardboardV1",
         label: "Cardboard I/O 2014",
         fov: 40,
@@ -3222,7 +1649,7 @@ var cardboardVrDisplay = { exports: {} };
         distortionCoefficients: [0.441, 0.156],
         inverseCoefficients: [-0.4410035, 0.42756155, -0.4804439, 0.5460139, -0.58821183, 0.5733938, -0.48303202, 0.33299083, -0.17573841, 0.0651772, -0.01488963, 1559834e-9]
       }),
-      CardboardV2: new CardboardViewer({
+      CardboardV2: new Qt({
         id: "CardboardV2",
         label: "Cardboard I/O 2015",
         fov: 60,
@@ -3233,1542 +1660,714 @@ var cardboardVrDisplay = { exports: {} };
         inverseCoefficients: [-0.33836704, -0.18162185, 0.862655, -1.2462051, 1.0560602, -0.58208317, 0.21609078, -0.05444823, 9177956e-9, -9904169e-10, 6183535e-11, -16981803e-13]
       })
     };
-    function DeviceInfo(deviceParams, additionalViewers) {
-      this.viewer = Viewers.CardboardV2;
-      this.updateDeviceParams(deviceParams);
-      this.distortion = new Distortion(this.viewer.distortionCoefficients);
-      for (var i = 0; i < additionalViewers.length; i++) {
-        var viewer = additionalViewers[i];
-        Viewers[viewer.id] = new CardboardViewer(viewer);
+    function Ae(r, n) {
+      this.viewer = zt.CardboardV2, this.updateDeviceParams(r), this.distortion = new Tt(this.viewer.distortionCoefficients);
+      for (var a = 0; a < n.length; a++) {
+        var l = n[a];
+        zt[l.id] = new Qt(l);
       }
     }
-    DeviceInfo.prototype.updateDeviceParams = function(deviceParams) {
-      this.device = this.determineDevice_(deviceParams) || this.device;
-    };
-    DeviceInfo.prototype.getDevice = function() {
+    Ae.prototype.updateDeviceParams = function(r) {
+      this.device = this.determineDevice_(r) || this.device;
+    }, Ae.prototype.getDevice = function() {
       return this.device;
-    };
-    DeviceInfo.prototype.setViewer = function(viewer) {
-      this.viewer = viewer;
-      this.distortion = new Distortion(this.viewer.distortionCoefficients);
-    };
-    DeviceInfo.prototype.determineDevice_ = function(deviceParams) {
-      if (!deviceParams) {
-        if (isIOS()) {
-          console.warn("Using fallback iOS device measurements.");
-          return DEFAULT_IOS;
-        } else {
-          console.warn("Using fallback Android device measurements.");
-          return DEFAULT_ANDROID;
-        }
-      }
-      var METERS_PER_INCH = 0.0254;
-      var metersPerPixelX = METERS_PER_INCH / deviceParams.xdpi;
-      var metersPerPixelY = METERS_PER_INCH / deviceParams.ydpi;
-      var width = getScreenWidth();
-      var height = getScreenHeight();
-      return new Device({
-        widthMeters: metersPerPixelX * width,
-        heightMeters: metersPerPixelY * height,
-        bevelMeters: deviceParams.bevelMm * 1e-3
+    }, Ae.prototype.setViewer = function(r) {
+      this.viewer = r, this.distortion = new Tt(this.viewer.distortionCoefficients);
+    }, Ae.prototype.determineDevice_ = function(r) {
+      if (!r)
+        return v() ? (console.warn("Using fallback iOS device measurements."), Ar) : (console.warn("Using fallback Android device measurements."), dr);
+      var n = 0.0254, a = n / r.xdpi, l = n / r.ydpi, c = P(), A = I();
+      return new Ut({
+        widthMeters: a * c,
+        heightMeters: l * A,
+        bevelMeters: r.bevelMm * 1e-3
       });
-    };
-    DeviceInfo.prototype.getDistortedFieldOfViewLeftEye = function() {
-      var viewer = this.viewer;
-      var device = this.device;
-      var distortion = this.distortion;
-      var eyeToScreenDistance = viewer.screenLensDistance;
-      var outerDist = (device.widthMeters - viewer.interLensDistance) / 2;
-      var innerDist = viewer.interLensDistance / 2;
-      var bottomDist = viewer.baselineLensDistance - device.bevelMeters;
-      var topDist = device.heightMeters - bottomDist;
-      var outerAngle = radToDeg * Math.atan(distortion.distort(outerDist / eyeToScreenDistance));
-      var innerAngle = radToDeg * Math.atan(distortion.distort(innerDist / eyeToScreenDistance));
-      var bottomAngle = radToDeg * Math.atan(distortion.distort(bottomDist / eyeToScreenDistance));
-      var topAngle = radToDeg * Math.atan(distortion.distort(topDist / eyeToScreenDistance));
+    }, Ae.prototype.getDistortedFieldOfViewLeftEye = function() {
+      var r = this.viewer, n = this.device, a = this.distortion, l = r.screenLensDistance, c = (n.widthMeters - r.interLensDistance) / 2, A = r.interLensDistance / 2, f = r.baselineLensDistance - n.bevelMeters, S = n.heightMeters - f, E = Oe * Math.atan(a.distort(c / l)), p = Oe * Math.atan(a.distort(A / l)), w = Oe * Math.atan(a.distort(f / l)), T = Oe * Math.atan(a.distort(S / l));
       return {
-        leftDegrees: Math.min(outerAngle, viewer.fov),
-        rightDegrees: Math.min(innerAngle, viewer.fov),
-        downDegrees: Math.min(bottomAngle, viewer.fov),
-        upDegrees: Math.min(topAngle, viewer.fov)
+        leftDegrees: Math.min(E, r.fov),
+        rightDegrees: Math.min(p, r.fov),
+        downDegrees: Math.min(w, r.fov),
+        upDegrees: Math.min(T, r.fov)
+      };
+    }, Ae.prototype.getLeftEyeVisibleTanAngles = function() {
+      var r = this.viewer, n = this.device, a = this.distortion, l = Math.tan(-Le * r.fov), c = Math.tan(Le * r.fov), A = Math.tan(Le * r.fov), f = Math.tan(-Le * r.fov), S = n.widthMeters / 4, E = n.heightMeters / 2, p = r.baselineLensDistance - n.bevelMeters - E, w = r.interLensDistance / 2 - S, T = -p, k = r.screenLensDistance, U = a.distort((w - S) / k), X = a.distort((T + E) / k), q = a.distort((w + S) / k), j = a.distort((T - E) / k), Y = new Float32Array(4);
+      return Y[0] = Math.max(l, U), Y[1] = Math.min(c, X), Y[2] = Math.min(A, q), Y[3] = Math.max(f, j), Y;
+    }, Ae.prototype.getLeftEyeNoLensTanAngles = function() {
+      var r = this.viewer, n = this.device, a = this.distortion, l = new Float32Array(4), c = a.distortInverse(Math.tan(-Le * r.fov)), A = a.distortInverse(Math.tan(Le * r.fov)), f = a.distortInverse(Math.tan(Le * r.fov)), S = a.distortInverse(Math.tan(-Le * r.fov)), E = n.widthMeters / 4, p = n.heightMeters / 2, w = r.baselineLensDistance - n.bevelMeters - p, T = r.interLensDistance / 2 - E, k = -w, U = r.screenLensDistance, X = (T - E) / U, q = (k + p) / U, j = (T + E) / U, Y = (k - p) / U;
+      return l[0] = Math.max(c, X), l[1] = Math.min(A, q), l[2] = Math.min(f, j), l[3] = Math.max(S, Y), l;
+    }, Ae.prototype.getLeftEyeVisibleScreenRect = function(r) {
+      var n = this.viewer, a = this.device, l = n.screenLensDistance, c = (a.widthMeters - n.interLensDistance) / 2, A = n.baselineLensDistance - a.bevelMeters, f = (r[0] * l + c) / a.widthMeters, S = (r[1] * l + A) / a.heightMeters, E = (r[2] * l + c) / a.widthMeters, p = (r[3] * l + A) / a.heightMeters;
+      return {
+        x: f,
+        y: p,
+        width: E - f,
+        height: S - p
+      };
+    }, Ae.prototype.getFieldOfViewLeftEye = function(r) {
+      return r ? this.getUndistortedFieldOfViewLeftEye() : this.getDistortedFieldOfViewLeftEye();
+    }, Ae.prototype.getFieldOfViewRightEye = function(r) {
+      var n = this.getFieldOfViewLeftEye(r);
+      return {
+        leftDegrees: n.rightDegrees,
+        rightDegrees: n.leftDegrees,
+        upDegrees: n.upDegrees,
+        downDegrees: n.downDegrees
+      };
+    }, Ae.prototype.getUndistortedFieldOfViewLeftEye = function() {
+      var r = this.getUndistortedParams_();
+      return {
+        leftDegrees: Oe * Math.atan(r.outerDist),
+        rightDegrees: Oe * Math.atan(r.innerDist),
+        downDegrees: Oe * Math.atan(r.bottomDist),
+        upDegrees: Oe * Math.atan(r.topDist)
+      };
+    }, Ae.prototype.getUndistortedViewportLeftEye = function() {
+      var r = this.getUndistortedParams_(), n = this.viewer, a = this.device, l = n.screenLensDistance, c = a.widthMeters / l, A = a.heightMeters / l, f = a.width / c, S = a.height / A, E = Math.round((r.eyePosX - r.outerDist) * f), p = Math.round((r.eyePosY - r.bottomDist) * S);
+      return {
+        x: E,
+        y: p,
+        width: Math.round((r.eyePosX + r.innerDist) * f) - E,
+        height: Math.round((r.eyePosY + r.topDist) * S) - p
+      };
+    }, Ae.prototype.getUndistortedParams_ = function() {
+      var r = this.viewer, n = this.device, a = this.distortion, l = r.screenLensDistance, c = r.interLensDistance / 2 / l, A = n.widthMeters / l, f = n.heightMeters / l, S = A / 2 - c, E = (r.baselineLensDistance - n.bevelMeters) / l, p = r.fov, w = a.distortInverse(Math.tan(Le * p)), T = Math.min(S, w), k = Math.min(c, w), U = Math.min(E, w), X = Math.min(f - E, w);
+      return {
+        outerDist: T,
+        innerDist: k,
+        topDist: X,
+        bottomDist: U,
+        eyePosX: S,
+        eyePosY: E
       };
     };
-    DeviceInfo.prototype.getLeftEyeVisibleTanAngles = function() {
-      var viewer = this.viewer;
-      var device = this.device;
-      var distortion = this.distortion;
-      var fovLeft = Math.tan(-degToRad * viewer.fov);
-      var fovTop = Math.tan(degToRad * viewer.fov);
-      var fovRight = Math.tan(degToRad * viewer.fov);
-      var fovBottom = Math.tan(-degToRad * viewer.fov);
-      var halfWidth = device.widthMeters / 4;
-      var halfHeight = device.heightMeters / 2;
-      var verticalLensOffset = viewer.baselineLensDistance - device.bevelMeters - halfHeight;
-      var centerX = viewer.interLensDistance / 2 - halfWidth;
-      var centerY = -verticalLensOffset;
-      var centerZ = viewer.screenLensDistance;
-      var screenLeft = distortion.distort((centerX - halfWidth) / centerZ);
-      var screenTop = distortion.distort((centerY + halfHeight) / centerZ);
-      var screenRight = distortion.distort((centerX + halfWidth) / centerZ);
-      var screenBottom = distortion.distort((centerY - halfHeight) / centerZ);
-      var result = new Float32Array(4);
-      result[0] = Math.max(fovLeft, screenLeft);
-      result[1] = Math.min(fovTop, screenTop);
-      result[2] = Math.min(fovRight, screenRight);
-      result[3] = Math.max(fovBottom, screenBottom);
-      return result;
-    };
-    DeviceInfo.prototype.getLeftEyeNoLensTanAngles = function() {
-      var viewer = this.viewer;
-      var device = this.device;
-      var distortion = this.distortion;
-      var result = new Float32Array(4);
-      var fovLeft = distortion.distortInverse(Math.tan(-degToRad * viewer.fov));
-      var fovTop = distortion.distortInverse(Math.tan(degToRad * viewer.fov));
-      var fovRight = distortion.distortInverse(Math.tan(degToRad * viewer.fov));
-      var fovBottom = distortion.distortInverse(Math.tan(-degToRad * viewer.fov));
-      var halfWidth = device.widthMeters / 4;
-      var halfHeight = device.heightMeters / 2;
-      var verticalLensOffset = viewer.baselineLensDistance - device.bevelMeters - halfHeight;
-      var centerX = viewer.interLensDistance / 2 - halfWidth;
-      var centerY = -verticalLensOffset;
-      var centerZ = viewer.screenLensDistance;
-      var screenLeft = (centerX - halfWidth) / centerZ;
-      var screenTop = (centerY + halfHeight) / centerZ;
-      var screenRight = (centerX + halfWidth) / centerZ;
-      var screenBottom = (centerY - halfHeight) / centerZ;
-      result[0] = Math.max(fovLeft, screenLeft);
-      result[1] = Math.min(fovTop, screenTop);
-      result[2] = Math.min(fovRight, screenRight);
-      result[3] = Math.max(fovBottom, screenBottom);
-      return result;
-    };
-    DeviceInfo.prototype.getLeftEyeVisibleScreenRect = function(undistortedFrustum) {
-      var viewer = this.viewer;
-      var device = this.device;
-      var dist = viewer.screenLensDistance;
-      var eyeX = (device.widthMeters - viewer.interLensDistance) / 2;
-      var eyeY = viewer.baselineLensDistance - device.bevelMeters;
-      var left = (undistortedFrustum[0] * dist + eyeX) / device.widthMeters;
-      var top = (undistortedFrustum[1] * dist + eyeY) / device.heightMeters;
-      var right = (undistortedFrustum[2] * dist + eyeX) / device.widthMeters;
-      var bottom = (undistortedFrustum[3] * dist + eyeY) / device.heightMeters;
-      return {
-        x: left,
-        y: bottom,
-        width: right - left,
-        height: top - bottom
-      };
-    };
-    DeviceInfo.prototype.getFieldOfViewLeftEye = function(opt_isUndistorted) {
-      return opt_isUndistorted ? this.getUndistortedFieldOfViewLeftEye() : this.getDistortedFieldOfViewLeftEye();
-    };
-    DeviceInfo.prototype.getFieldOfViewRightEye = function(opt_isUndistorted) {
-      var fov = this.getFieldOfViewLeftEye(opt_isUndistorted);
-      return {
-        leftDegrees: fov.rightDegrees,
-        rightDegrees: fov.leftDegrees,
-        upDegrees: fov.upDegrees,
-        downDegrees: fov.downDegrees
-      };
-    };
-    DeviceInfo.prototype.getUndistortedFieldOfViewLeftEye = function() {
-      var p = this.getUndistortedParams_();
-      return {
-        leftDegrees: radToDeg * Math.atan(p.outerDist),
-        rightDegrees: radToDeg * Math.atan(p.innerDist),
-        downDegrees: radToDeg * Math.atan(p.bottomDist),
-        upDegrees: radToDeg * Math.atan(p.topDist)
-      };
-    };
-    DeviceInfo.prototype.getUndistortedViewportLeftEye = function() {
-      var p = this.getUndistortedParams_();
-      var viewer = this.viewer;
-      var device = this.device;
-      var eyeToScreenDistance = viewer.screenLensDistance;
-      var screenWidth = device.widthMeters / eyeToScreenDistance;
-      var screenHeight = device.heightMeters / eyeToScreenDistance;
-      var xPxPerTanAngle = device.width / screenWidth;
-      var yPxPerTanAngle = device.height / screenHeight;
-      var x = Math.round((p.eyePosX - p.outerDist) * xPxPerTanAngle);
-      var y = Math.round((p.eyePosY - p.bottomDist) * yPxPerTanAngle);
-      return {
-        x,
-        y,
-        width: Math.round((p.eyePosX + p.innerDist) * xPxPerTanAngle) - x,
-        height: Math.round((p.eyePosY + p.topDist) * yPxPerTanAngle) - y
-      };
-    };
-    DeviceInfo.prototype.getUndistortedParams_ = function() {
-      var viewer = this.viewer;
-      var device = this.device;
-      var distortion = this.distortion;
-      var eyeToScreenDistance = viewer.screenLensDistance;
-      var halfLensDistance = viewer.interLensDistance / 2 / eyeToScreenDistance;
-      var screenWidth = device.widthMeters / eyeToScreenDistance;
-      var screenHeight = device.heightMeters / eyeToScreenDistance;
-      var eyePosX = screenWidth / 2 - halfLensDistance;
-      var eyePosY = (viewer.baselineLensDistance - device.bevelMeters) / eyeToScreenDistance;
-      var maxFov = viewer.fov;
-      var viewerMax = distortion.distortInverse(Math.tan(degToRad * maxFov));
-      var outerDist = Math.min(eyePosX, viewerMax);
-      var innerDist = Math.min(halfLensDistance, viewerMax);
-      var bottomDist = Math.min(eyePosY, viewerMax);
-      var topDist = Math.min(screenHeight - eyePosY, viewerMax);
-      return {
-        outerDist,
-        innerDist,
-        topDist,
-        bottomDist,
-        eyePosX,
-        eyePosY
-      };
-    };
-    function CardboardViewer(params) {
-      this.id = params.id;
-      this.label = params.label;
-      this.fov = params.fov;
-      this.interLensDistance = params.interLensDistance;
-      this.baselineLensDistance = params.baselineLensDistance;
-      this.screenLensDistance = params.screenLensDistance;
-      this.distortionCoefficients = params.distortionCoefficients;
-      this.inverseCoefficients = params.inverseCoefficients;
+    function Qt(r) {
+      this.id = r.id, this.label = r.label, this.fov = r.fov, this.interLensDistance = r.interLensDistance, this.baselineLensDistance = r.baselineLensDistance, this.screenLensDistance = r.screenLensDistance, this.distortionCoefficients = r.distortionCoefficients, this.inverseCoefficients = r.inverseCoefficients;
     }
-    DeviceInfo.Viewers = Viewers;
-    var format = 1;
-    var last_updated = "2019-11-09T17:36:14Z";
-    var devices = [{ "type": "android", "rules": [{ "mdmh": "asus/*/Nexus 7/*" }, { "ua": "Nexus 7" }], "dpi": [320.8, 323], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "asus/*/ASUS_X00PD/*" }, { "ua": "ASUS_X00PD" }], "dpi": 245, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "asus/*/ASUS_X008D/*" }, { "ua": "ASUS_X008D" }], "dpi": 282, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "asus/*/ASUS_Z00AD/*" }, { "ua": "ASUS_Z00AD" }], "dpi": [403, 404.6], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Google/*/Pixel 2 XL/*" }, { "ua": "Pixel 2 XL" }], "dpi": 537.9, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Google/*/Pixel 3 XL/*" }, { "ua": "Pixel 3 XL" }], "dpi": [558.5, 553.8], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Google/*/Pixel XL/*" }, { "ua": "Pixel XL" }], "dpi": [537.9, 533], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Google/*/Pixel 3/*" }, { "ua": "Pixel 3" }], "dpi": 442.4, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Google/*/Pixel 2/*" }, { "ua": "Pixel 2" }], "dpi": 441, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "Google/*/Pixel/*" }, { "ua": "Pixel" }], "dpi": [432.6, 436.7], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "HTC/*/HTC6435LVW/*" }, { "ua": "HTC6435LVW" }], "dpi": [449.7, 443.3], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "HTC/*/HTC One XL/*" }, { "ua": "HTC One XL" }], "dpi": [315.3, 314.6], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "htc/*/Nexus 9/*" }, { "ua": "Nexus 9" }], "dpi": 289, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "HTC/*/HTC One M9/*" }, { "ua": "HTC One M9" }], "dpi": [442.5, 443.3], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "HTC/*/HTC One_M8/*" }, { "ua": "HTC One_M8" }], "dpi": [449.7, 447.4], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "HTC/*/HTC One/*" }, { "ua": "HTC One" }], "dpi": 472.8, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Huawei/*/Nexus 6P/*" }, { "ua": "Nexus 6P" }], "dpi": [515.1, 518], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Huawei/*/BLN-L24/*" }, { "ua": "HONORBLN-L24" }], "dpi": 480, "bw": 4, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "Huawei/*/BKL-L09/*" }, { "ua": "BKL-L09" }], "dpi": 403, "bw": 3.47, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "LENOVO/*/Lenovo PB2-690Y/*" }, { "ua": "Lenovo PB2-690Y" }], "dpi": [457.2, 454.713], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/Nexus 5X/*" }, { "ua": "Nexus 5X" }], "dpi": [422, 419.9], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/LGMS345/*" }, { "ua": "LGMS345" }], "dpi": [221.7, 219.1], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/LG-D800/*" }, { "ua": "LG-D800" }], "dpi": [422, 424.1], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/LG-D850/*" }, { "ua": "LG-D850" }], "dpi": [537.9, 541.9], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/VS985 4G/*" }, { "ua": "VS985 4G" }], "dpi": [537.9, 535.6], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/Nexus 5/*" }, { "ua": "Nexus 5 B" }], "dpi": [442.4, 444.8], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/Nexus 4/*" }, { "ua": "Nexus 4" }], "dpi": [319.8, 318.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/LG-P769/*" }, { "ua": "LG-P769" }], "dpi": [240.6, 247.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/LGMS323/*" }, { "ua": "LGMS323" }], "dpi": [206.6, 204.6], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "LGE/*/LGLS996/*" }, { "ua": "LGLS996" }], "dpi": [403.4, 401.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Micromax/*/4560MMX/*" }, { "ua": "4560MMX" }], "dpi": [240, 219.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Micromax/*/A250/*" }, { "ua": "Micromax A250" }], "dpi": [480, 446.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Micromax/*/Micromax AQ4501/*" }, { "ua": "Micromax AQ4501" }], "dpi": 240, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/G5/*" }, { "ua": "Moto G (5) Plus" }], "dpi": [403.4, 403], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/DROID RAZR/*" }, { "ua": "DROID RAZR" }], "dpi": [368.1, 256.7], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT830C/*" }, { "ua": "XT830C" }], "dpi": [254, 255.9], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1021/*" }, { "ua": "XT1021" }], "dpi": [254, 256.7], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1023/*" }, { "ua": "XT1023" }], "dpi": [254, 256.7], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1028/*" }, { "ua": "XT1028" }], "dpi": [326.6, 327.6], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1034/*" }, { "ua": "XT1034" }], "dpi": [326.6, 328.4], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1053/*" }, { "ua": "XT1053" }], "dpi": [315.3, 316.1], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1562/*" }, { "ua": "XT1562" }], "dpi": [403.4, 402.7], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/Nexus 6/*" }, { "ua": "Nexus 6 B" }], "dpi": [494.3, 489.7], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1063/*" }, { "ua": "XT1063" }], "dpi": [295, 296.6], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1064/*" }, { "ua": "XT1064" }], "dpi": [295, 295.6], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1092/*" }, { "ua": "XT1092" }], "dpi": [422, 424.1], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/XT1095/*" }, { "ua": "XT1095" }], "dpi": [422, 423.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "motorola/*/G4/*" }, { "ua": "Moto G (4)" }], "dpi": 401, "bw": 4, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/A0001/*" }, { "ua": "A0001" }], "dpi": [403.4, 401], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONE E1001/*" }, { "ua": "ONE E1001" }], "dpi": [442.4, 441.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONE E1003/*" }, { "ua": "ONE E1003" }], "dpi": [442.4, 441.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONE E1005/*" }, { "ua": "ONE E1005" }], "dpi": [442.4, 441.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONE A2001/*" }, { "ua": "ONE A2001" }], "dpi": [391.9, 405.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONE A2003/*" }, { "ua": "ONE A2003" }], "dpi": [391.9, 405.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONE A2005/*" }, { "ua": "ONE A2005" }], "dpi": [391.9, 405.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONEPLUS A3000/*" }, { "ua": "ONEPLUS A3000" }], "dpi": 401, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONEPLUS A3003/*" }, { "ua": "ONEPLUS A3003" }], "dpi": 401, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONEPLUS A3010/*" }, { "ua": "ONEPLUS A3010" }], "dpi": 401, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONEPLUS A5000/*" }, { "ua": "ONEPLUS A5000 " }], "dpi": [403.411, 399.737], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONE A5010/*" }, { "ua": "ONEPLUS A5010" }], "dpi": [403, 400], "bw": 2, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONEPLUS A6000/*" }, { "ua": "ONEPLUS A6000" }], "dpi": 401, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONEPLUS A6003/*" }, { "ua": "ONEPLUS A6003" }], "dpi": 401, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONEPLUS A6010/*" }, { "ua": "ONEPLUS A6010" }], "dpi": 401, "bw": 2, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "OnePlus/*/ONEPLUS A6013/*" }, { "ua": "ONEPLUS A6013" }], "dpi": 401, "bw": 2, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "OPPO/*/X909/*" }, { "ua": "X909" }], "dpi": [442.4, 444.1], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/GT-I9082/*" }, { "ua": "GT-I9082" }], "dpi": [184.7, 185.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G360P/*" }, { "ua": "SM-G360P" }], "dpi": [196.7, 205.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/Nexus S/*" }, { "ua": "Nexus S" }], "dpi": [234.5, 229.8], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/GT-I9300/*" }, { "ua": "GT-I9300" }], "dpi": [304.8, 303.9], "bw": 5, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-T230NU/*" }, { "ua": "SM-T230NU" }], "dpi": 216, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SGH-T399/*" }, { "ua": "SGH-T399" }], "dpi": [217.7, 231.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SGH-M919/*" }, { "ua": "SGH-M919" }], "dpi": [440.8, 437.7], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-N9005/*" }, { "ua": "SM-N9005" }], "dpi": [386.4, 387], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SAMSUNG-SM-N900A/*" }, { "ua": "SAMSUNG-SM-N900A" }], "dpi": [386.4, 387.7], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/GT-I9500/*" }, { "ua": "GT-I9500" }], "dpi": [442.5, 443.3], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/GT-I9505/*" }, { "ua": "GT-I9505" }], "dpi": 439.4, "bw": 4, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G900F/*" }, { "ua": "SM-G900F" }], "dpi": [415.6, 431.6], "bw": 5, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G900M/*" }, { "ua": "SM-G900M" }], "dpi": [415.6, 431.6], "bw": 5, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G800F/*" }, { "ua": "SM-G800F" }], "dpi": 326.8, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G906S/*" }, { "ua": "SM-G906S" }], "dpi": [562.7, 572.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/GT-I9300/*" }, { "ua": "GT-I9300" }], "dpi": [306.7, 304.8], "bw": 5, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-T535/*" }, { "ua": "SM-T535" }], "dpi": [142.6, 136.4], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-N920C/*" }, { "ua": "SM-N920C" }], "dpi": [515.1, 518.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-N920P/*" }, { "ua": "SM-N920P" }], "dpi": [386.3655, 390.144], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-N920W8/*" }, { "ua": "SM-N920W8" }], "dpi": [515.1, 518.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/GT-I9300I/*" }, { "ua": "GT-I9300I" }], "dpi": [304.8, 305.8], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/GT-I9195/*" }, { "ua": "GT-I9195" }], "dpi": [249.4, 256.7], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SPH-L520/*" }, { "ua": "SPH-L520" }], "dpi": [249.4, 255.9], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SAMSUNG-SGH-I717/*" }, { "ua": "SAMSUNG-SGH-I717" }], "dpi": 285.8, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SPH-D710/*" }, { "ua": "SPH-D710" }], "dpi": [217.7, 204.2], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/GT-N7100/*" }, { "ua": "GT-N7100" }], "dpi": 265.1, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SCH-I605/*" }, { "ua": "SCH-I605" }], "dpi": 265.1, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/Galaxy Nexus/*" }, { "ua": "Galaxy Nexus" }], "dpi": [315.3, 314.2], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-N910H/*" }, { "ua": "SM-N910H" }], "dpi": [515.1, 518], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-N910C/*" }, { "ua": "SM-N910C" }], "dpi": [515.2, 520.2], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G130M/*" }, { "ua": "SM-G130M" }], "dpi": [165.9, 164.8], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G928I/*" }, { "ua": "SM-G928I" }], "dpi": [515.1, 518.4], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G920F/*" }, { "ua": "SM-G920F" }], "dpi": 580.6, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G920P/*" }, { "ua": "SM-G920P" }], "dpi": [522.5, 577], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G925F/*" }, { "ua": "SM-G925F" }], "dpi": 580.6, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G925V/*" }, { "ua": "SM-G925V" }], "dpi": [522.5, 576.6], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G930F/*" }, { "ua": "SM-G930F" }], "dpi": 576.6, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G935F/*" }, { "ua": "SM-G935F" }], "dpi": 533, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G950F/*" }, { "ua": "SM-G950F" }], "dpi": [562.707, 565.293], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G955U/*" }, { "ua": "SM-G955U" }], "dpi": [522.514, 525.762], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G955F/*" }, { "ua": "SM-G955F" }], "dpi": [522.514, 525.762], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G960F/*" }, { "ua": "SM-G960F" }], "dpi": [569.575, 571.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G9600/*" }, { "ua": "SM-G9600" }], "dpi": [569.575, 571.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G960T/*" }, { "ua": "SM-G960T" }], "dpi": [569.575, 571.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G960N/*" }, { "ua": "SM-G960N" }], "dpi": [569.575, 571.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G960U/*" }, { "ua": "SM-G960U" }], "dpi": [569.575, 571.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G9608/*" }, { "ua": "SM-G9608" }], "dpi": [569.575, 571.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G960FD/*" }, { "ua": "SM-G960FD" }], "dpi": [569.575, 571.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G960W/*" }, { "ua": "SM-G960W" }], "dpi": [569.575, 571.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G965F/*" }, { "ua": "SM-G965F" }], "dpi": 529, "bw": 2, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Sony/*/C6903/*" }, { "ua": "C6903" }], "dpi": [442.5, 443.3], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "Sony/*/D6653/*" }, { "ua": "D6653" }], "dpi": [428.6, 427.6], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Sony/*/E6653/*" }, { "ua": "E6653" }], "dpi": [428.6, 425.7], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Sony/*/E6853/*" }, { "ua": "E6853" }], "dpi": [403.4, 401.9], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Sony/*/SGP321/*" }, { "ua": "SGP321" }], "dpi": [224.7, 224.1], "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "TCT/*/ALCATEL ONE TOUCH Fierce/*" }, { "ua": "ALCATEL ONE TOUCH Fierce" }], "dpi": [240, 247.5], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "THL/*/thl 5000/*" }, { "ua": "thl 5000" }], "dpi": [480, 443.3], "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Fly/*/IQ4412/*" }, { "ua": "IQ4412" }], "dpi": 307.9, "bw": 3, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "ZTE/*/ZTE Blade L2/*" }, { "ua": "ZTE Blade L2" }], "dpi": 240, "bw": 3, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "BENEVE/*/VR518/*" }, { "ua": "VR518" }], "dpi": 480, "bw": 3, "ac": 500 }, { "type": "ios", "rules": [{ "res": [640, 960] }], "dpi": [325.1, 328.4], "bw": 4, "ac": 1e3 }, { "type": "ios", "rules": [{ "res": [640, 1136] }], "dpi": [317.1, 320.2], "bw": 3, "ac": 1e3 }, { "type": "ios", "rules": [{ "res": [750, 1334] }], "dpi": 326.4, "bw": 4, "ac": 1e3 }, { "type": "ios", "rules": [{ "res": [1242, 2208] }], "dpi": [453.6, 458.4], "bw": 4, "ac": 1e3 }, { "type": "ios", "rules": [{ "res": [1125, 2001] }], "dpi": [410.9, 415.4], "bw": 4, "ac": 1e3 }, { "type": "ios", "rules": [{ "res": [1125, 2436] }], "dpi": 458, "bw": 4, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "Huawei/*/EML-L29/*" }, { "ua": "EML-L29" }], "dpi": 428, "bw": 3.45, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "Nokia/*/Nokia 7.1/*" }, { "ua": "Nokia 7.1" }], "dpi": [432, 431.9], "bw": 3, "ac": 500 }, { "type": "ios", "rules": [{ "res": [1242, 2688] }], "dpi": 458, "bw": 4, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G570M/*" }, { "ua": "SM-G570M" }], "dpi": 320, "bw": 3.684, "ac": 1e3 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G970F/*" }, { "ua": "SM-G970F" }], "dpi": 438, "bw": 2.281, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G973F/*" }, { "ua": "SM-G973F" }], "dpi": 550, "bw": 2.002, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G975F/*" }, { "ua": "SM-G975F" }], "dpi": 522, "bw": 2.054, "ac": 500 }, { "type": "android", "rules": [{ "mdmh": "samsung/*/SM-G977F/*" }, { "ua": "SM-G977F" }], "dpi": 505, "bw": 2.334, "ac": 500 }, { "type": "ios", "rules": [{ "res": [828, 1792] }], "dpi": 326, "bw": 5, "ac": 500 }];
-    var DPDB_CACHE = {
-      format,
-      last_updated,
-      devices
+    Ae.Viewers = zt;
+    var ur = 1, fr = "2019-11-09T17:36:14Z", pr = [{ type: "android", rules: [{ mdmh: "asus/*/Nexus 7/*" }, { ua: "Nexus 7" }], dpi: [320.8, 323], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "asus/*/ASUS_X00PD/*" }, { ua: "ASUS_X00PD" }], dpi: 245, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "asus/*/ASUS_X008D/*" }, { ua: "ASUS_X008D" }], dpi: 282, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "asus/*/ASUS_Z00AD/*" }, { ua: "ASUS_Z00AD" }], dpi: [403, 404.6], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Google/*/Pixel 2 XL/*" }, { ua: "Pixel 2 XL" }], dpi: 537.9, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Google/*/Pixel 3 XL/*" }, { ua: "Pixel 3 XL" }], dpi: [558.5, 553.8], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Google/*/Pixel XL/*" }, { ua: "Pixel XL" }], dpi: [537.9, 533], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Google/*/Pixel 3/*" }, { ua: "Pixel 3" }], dpi: 442.4, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Google/*/Pixel 2/*" }, { ua: "Pixel 2" }], dpi: 441, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "Google/*/Pixel/*" }, { ua: "Pixel" }], dpi: [432.6, 436.7], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "HTC/*/HTC6435LVW/*" }, { ua: "HTC6435LVW" }], dpi: [449.7, 443.3], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "HTC/*/HTC One XL/*" }, { ua: "HTC One XL" }], dpi: [315.3, 314.6], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "htc/*/Nexus 9/*" }, { ua: "Nexus 9" }], dpi: 289, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "HTC/*/HTC One M9/*" }, { ua: "HTC One M9" }], dpi: [442.5, 443.3], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "HTC/*/HTC One_M8/*" }, { ua: "HTC One_M8" }], dpi: [449.7, 447.4], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "HTC/*/HTC One/*" }, { ua: "HTC One" }], dpi: 472.8, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Huawei/*/Nexus 6P/*" }, { ua: "Nexus 6P" }], dpi: [515.1, 518], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Huawei/*/BLN-L24/*" }, { ua: "HONORBLN-L24" }], dpi: 480, bw: 4, ac: 500 }, { type: "android", rules: [{ mdmh: "Huawei/*/BKL-L09/*" }, { ua: "BKL-L09" }], dpi: 403, bw: 3.47, ac: 500 }, { type: "android", rules: [{ mdmh: "LENOVO/*/Lenovo PB2-690Y/*" }, { ua: "Lenovo PB2-690Y" }], dpi: [457.2, 454.713], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "LGE/*/Nexus 5X/*" }, { ua: "Nexus 5X" }], dpi: [422, 419.9], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "LGE/*/LGMS345/*" }, { ua: "LGMS345" }], dpi: [221.7, 219.1], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "LGE/*/LG-D800/*" }, { ua: "LG-D800" }], dpi: [422, 424.1], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "LGE/*/LG-D850/*" }, { ua: "LG-D850" }], dpi: [537.9, 541.9], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "LGE/*/VS985 4G/*" }, { ua: "VS985 4G" }], dpi: [537.9, 535.6], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "LGE/*/Nexus 5/*" }, { ua: "Nexus 5 B" }], dpi: [442.4, 444.8], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "LGE/*/Nexus 4/*" }, { ua: "Nexus 4" }], dpi: [319.8, 318.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "LGE/*/LG-P769/*" }, { ua: "LG-P769" }], dpi: [240.6, 247.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "LGE/*/LGMS323/*" }, { ua: "LGMS323" }], dpi: [206.6, 204.6], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "LGE/*/LGLS996/*" }, { ua: "LGLS996" }], dpi: [403.4, 401.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Micromax/*/4560MMX/*" }, { ua: "4560MMX" }], dpi: [240, 219.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Micromax/*/A250/*" }, { ua: "Micromax A250" }], dpi: [480, 446.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Micromax/*/Micromax AQ4501/*" }, { ua: "Micromax AQ4501" }], dpi: 240, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "motorola/*/G5/*" }, { ua: "Moto G (5) Plus" }], dpi: [403.4, 403], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/DROID RAZR/*" }, { ua: "DROID RAZR" }], dpi: [368.1, 256.7], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/XT830C/*" }, { ua: "XT830C" }], dpi: [254, 255.9], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1021/*" }, { ua: "XT1021" }], dpi: [254, 256.7], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1023/*" }, { ua: "XT1023" }], dpi: [254, 256.7], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1028/*" }, { ua: "XT1028" }], dpi: [326.6, 327.6], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1034/*" }, { ua: "XT1034" }], dpi: [326.6, 328.4], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1053/*" }, { ua: "XT1053" }], dpi: [315.3, 316.1], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1562/*" }, { ua: "XT1562" }], dpi: [403.4, 402.7], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/Nexus 6/*" }, { ua: "Nexus 6 B" }], dpi: [494.3, 489.7], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1063/*" }, { ua: "XT1063" }], dpi: [295, 296.6], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1064/*" }, { ua: "XT1064" }], dpi: [295, 295.6], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1092/*" }, { ua: "XT1092" }], dpi: [422, 424.1], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "motorola/*/XT1095/*" }, { ua: "XT1095" }], dpi: [422, 423.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "motorola/*/G4/*" }, { ua: "Moto G (4)" }], dpi: 401, bw: 4, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/A0001/*" }, { ua: "A0001" }], dpi: [403.4, 401], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONE E1001/*" }, { ua: "ONE E1001" }], dpi: [442.4, 441.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONE E1003/*" }, { ua: "ONE E1003" }], dpi: [442.4, 441.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONE E1005/*" }, { ua: "ONE E1005" }], dpi: [442.4, 441.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONE A2001/*" }, { ua: "ONE A2001" }], dpi: [391.9, 405.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONE A2003/*" }, { ua: "ONE A2003" }], dpi: [391.9, 405.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONE A2005/*" }, { ua: "ONE A2005" }], dpi: [391.9, 405.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONEPLUS A3000/*" }, { ua: "ONEPLUS A3000" }], dpi: 401, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONEPLUS A3003/*" }, { ua: "ONEPLUS A3003" }], dpi: 401, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONEPLUS A3010/*" }, { ua: "ONEPLUS A3010" }], dpi: 401, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONEPLUS A5000/*" }, { ua: "ONEPLUS A5000 " }], dpi: [403.411, 399.737], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONE A5010/*" }, { ua: "ONEPLUS A5010" }], dpi: [403, 400], bw: 2, ac: 1e3 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONEPLUS A6000/*" }, { ua: "ONEPLUS A6000" }], dpi: 401, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONEPLUS A6003/*" }, { ua: "ONEPLUS A6003" }], dpi: 401, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONEPLUS A6010/*" }, { ua: "ONEPLUS A6010" }], dpi: 401, bw: 2, ac: 500 }, { type: "android", rules: [{ mdmh: "OnePlus/*/ONEPLUS A6013/*" }, { ua: "ONEPLUS A6013" }], dpi: 401, bw: 2, ac: 500 }, { type: "android", rules: [{ mdmh: "OPPO/*/X909/*" }, { ua: "X909" }], dpi: [442.4, 444.1], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/GT-I9082/*" }, { ua: "GT-I9082" }], dpi: [184.7, 185.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G360P/*" }, { ua: "SM-G360P" }], dpi: [196.7, 205.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/Nexus S/*" }, { ua: "Nexus S" }], dpi: [234.5, 229.8], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/GT-I9300/*" }, { ua: "GT-I9300" }], dpi: [304.8, 303.9], bw: 5, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-T230NU/*" }, { ua: "SM-T230NU" }], dpi: 216, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SGH-T399/*" }, { ua: "SGH-T399" }], dpi: [217.7, 231.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SGH-M919/*" }, { ua: "SGH-M919" }], dpi: [440.8, 437.7], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-N9005/*" }, { ua: "SM-N9005" }], dpi: [386.4, 387], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SAMSUNG-SM-N900A/*" }, { ua: "SAMSUNG-SM-N900A" }], dpi: [386.4, 387.7], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/GT-I9500/*" }, { ua: "GT-I9500" }], dpi: [442.5, 443.3], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/GT-I9505/*" }, { ua: "GT-I9505" }], dpi: 439.4, bw: 4, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G900F/*" }, { ua: "SM-G900F" }], dpi: [415.6, 431.6], bw: 5, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G900M/*" }, { ua: "SM-G900M" }], dpi: [415.6, 431.6], bw: 5, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G800F/*" }, { ua: "SM-G800F" }], dpi: 326.8, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G906S/*" }, { ua: "SM-G906S" }], dpi: [562.7, 572.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/GT-I9300/*" }, { ua: "GT-I9300" }], dpi: [306.7, 304.8], bw: 5, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-T535/*" }, { ua: "SM-T535" }], dpi: [142.6, 136.4], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-N920C/*" }, { ua: "SM-N920C" }], dpi: [515.1, 518.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-N920P/*" }, { ua: "SM-N920P" }], dpi: [386.3655, 390.144], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-N920W8/*" }, { ua: "SM-N920W8" }], dpi: [515.1, 518.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/GT-I9300I/*" }, { ua: "GT-I9300I" }], dpi: [304.8, 305.8], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/GT-I9195/*" }, { ua: "GT-I9195" }], dpi: [249.4, 256.7], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SPH-L520/*" }, { ua: "SPH-L520" }], dpi: [249.4, 255.9], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SAMSUNG-SGH-I717/*" }, { ua: "SAMSUNG-SGH-I717" }], dpi: 285.8, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SPH-D710/*" }, { ua: "SPH-D710" }], dpi: [217.7, 204.2], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/GT-N7100/*" }, { ua: "GT-N7100" }], dpi: 265.1, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SCH-I605/*" }, { ua: "SCH-I605" }], dpi: 265.1, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/Galaxy Nexus/*" }, { ua: "Galaxy Nexus" }], dpi: [315.3, 314.2], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-N910H/*" }, { ua: "SM-N910H" }], dpi: [515.1, 518], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-N910C/*" }, { ua: "SM-N910C" }], dpi: [515.2, 520.2], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G130M/*" }, { ua: "SM-G130M" }], dpi: [165.9, 164.8], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G928I/*" }, { ua: "SM-G928I" }], dpi: [515.1, 518.4], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G920F/*" }, { ua: "SM-G920F" }], dpi: 580.6, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G920P/*" }, { ua: "SM-G920P" }], dpi: [522.5, 577], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G925F/*" }, { ua: "SM-G925F" }], dpi: 580.6, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G925V/*" }, { ua: "SM-G925V" }], dpi: [522.5, 576.6], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G930F/*" }, { ua: "SM-G930F" }], dpi: 576.6, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G935F/*" }, { ua: "SM-G935F" }], dpi: 533, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G950F/*" }, { ua: "SM-G950F" }], dpi: [562.707, 565.293], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G955U/*" }, { ua: "SM-G955U" }], dpi: [522.514, 525.762], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G955F/*" }, { ua: "SM-G955F" }], dpi: [522.514, 525.762], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G960F/*" }, { ua: "SM-G960F" }], dpi: [569.575, 571.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G9600/*" }, { ua: "SM-G9600" }], dpi: [569.575, 571.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G960T/*" }, { ua: "SM-G960T" }], dpi: [569.575, 571.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G960N/*" }, { ua: "SM-G960N" }], dpi: [569.575, 571.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G960U/*" }, { ua: "SM-G960U" }], dpi: [569.575, 571.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G9608/*" }, { ua: "SM-G9608" }], dpi: [569.575, 571.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G960FD/*" }, { ua: "SM-G960FD" }], dpi: [569.575, 571.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G960W/*" }, { ua: "SM-G960W" }], dpi: [569.575, 571.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G965F/*" }, { ua: "SM-G965F" }], dpi: 529, bw: 2, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Sony/*/C6903/*" }, { ua: "C6903" }], dpi: [442.5, 443.3], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "Sony/*/D6653/*" }, { ua: "D6653" }], dpi: [428.6, 427.6], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Sony/*/E6653/*" }, { ua: "E6653" }], dpi: [428.6, 425.7], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Sony/*/E6853/*" }, { ua: "E6853" }], dpi: [403.4, 401.9], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Sony/*/SGP321/*" }, { ua: "SGP321" }], dpi: [224.7, 224.1], bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "TCT/*/ALCATEL ONE TOUCH Fierce/*" }, { ua: "ALCATEL ONE TOUCH Fierce" }], dpi: [240, 247.5], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "THL/*/thl 5000/*" }, { ua: "thl 5000" }], dpi: [480, 443.3], bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Fly/*/IQ4412/*" }, { ua: "IQ4412" }], dpi: 307.9, bw: 3, ac: 1e3 }, { type: "android", rules: [{ mdmh: "ZTE/*/ZTE Blade L2/*" }, { ua: "ZTE Blade L2" }], dpi: 240, bw: 3, ac: 500 }, { type: "android", rules: [{ mdmh: "BENEVE/*/VR518/*" }, { ua: "VR518" }], dpi: 480, bw: 3, ac: 500 }, { type: "ios", rules: [{ res: [640, 960] }], dpi: [325.1, 328.4], bw: 4, ac: 1e3 }, { type: "ios", rules: [{ res: [640, 1136] }], dpi: [317.1, 320.2], bw: 3, ac: 1e3 }, { type: "ios", rules: [{ res: [750, 1334] }], dpi: 326.4, bw: 4, ac: 1e3 }, { type: "ios", rules: [{ res: [1242, 2208] }], dpi: [453.6, 458.4], bw: 4, ac: 1e3 }, { type: "ios", rules: [{ res: [1125, 2001] }], dpi: [410.9, 415.4], bw: 4, ac: 1e3 }, { type: "ios", rules: [{ res: [1125, 2436] }], dpi: 458, bw: 4, ac: 1e3 }, { type: "android", rules: [{ mdmh: "Huawei/*/EML-L29/*" }, { ua: "EML-L29" }], dpi: 428, bw: 3.45, ac: 500 }, { type: "android", rules: [{ mdmh: "Nokia/*/Nokia 7.1/*" }, { ua: "Nokia 7.1" }], dpi: [432, 431.9], bw: 3, ac: 500 }, { type: "ios", rules: [{ res: [1242, 2688] }], dpi: 458, bw: 4, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G570M/*" }, { ua: "SM-G570M" }], dpi: 320, bw: 3.684, ac: 1e3 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G970F/*" }, { ua: "SM-G970F" }], dpi: 438, bw: 2.281, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G973F/*" }, { ua: "SM-G973F" }], dpi: 550, bw: 2.002, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G975F/*" }, { ua: "SM-G975F" }], dpi: 522, bw: 2.054, ac: 500 }, { type: "android", rules: [{ mdmh: "samsung/*/SM-G977F/*" }, { ua: "SM-G977F" }], dpi: 505, bw: 2.334, ac: 500 }, { type: "ios", rules: [{ res: [828, 1792] }], dpi: 326, bw: 5, ac: 500 }], mr = {
+      format: ur,
+      last_updated: fr,
+      devices: pr
     };
-    function Dpdb(url, onDeviceParamsUpdated) {
-      this.dpdb = DPDB_CACHE;
-      this.recalculateDeviceParams_();
-      if (url) {
-        this.onDeviceParamsUpdated = onDeviceParamsUpdated;
-        var xhr = new XMLHttpRequest();
-        var obj = this;
-        xhr.open("GET", url, true);
-        xhr.addEventListener("load", function() {
-          obj.loading = false;
-          if (xhr.status >= 200 && xhr.status <= 299) {
-            obj.dpdb = JSON.parse(xhr.response);
-            obj.recalculateDeviceParams_();
-          } else {
-            console.error("Error loading online DPDB!");
-          }
-        });
-        xhr.send();
+    function rt(r, n) {
+      if (this.dpdb = mr, this.recalculateDeviceParams_(), r) {
+        this.onDeviceParamsUpdated = n;
+        var a = new XMLHttpRequest(), l = this;
+        a.open("GET", r, !0), a.addEventListener("load", function() {
+          l.loading = !1, a.status >= 200 && a.status <= 299 ? (l.dpdb = JSON.parse(a.response), l.recalculateDeviceParams_()) : console.error("Error loading online DPDB!");
+        }), a.send();
       }
     }
-    Dpdb.prototype.getDeviceParams = function() {
+    rt.prototype.getDeviceParams = function() {
       return this.deviceParams;
-    };
-    Dpdb.prototype.recalculateDeviceParams_ = function() {
-      var newDeviceParams = this.calcDeviceParams_();
-      if (newDeviceParams) {
-        this.deviceParams = newDeviceParams;
-        if (this.onDeviceParamsUpdated) {
-          this.onDeviceParamsUpdated(this.deviceParams);
-        }
-      } else {
-        console.error("Failed to recalculate device parameters.");
-      }
-    };
-    Dpdb.prototype.calcDeviceParams_ = function() {
-      var db = this.dpdb;
-      if (!db) {
-        console.error("DPDB not available.");
-        return null;
-      }
-      if (db.format != 1) {
-        console.error("DPDB has unexpected format version.");
-        return null;
-      }
-      if (!db.devices || !db.devices.length) {
-        console.error("DPDB does not have a devices section.");
-        return null;
-      }
-      var userAgent = navigator.userAgent || navigator.vendor || window.opera;
-      var width = getScreenWidth();
-      var height = getScreenHeight();
-      if (!db.devices) {
-        console.error("DPDB has no devices section.");
-        return null;
-      }
-      for (var i = 0; i < db.devices.length; i++) {
-        var device = db.devices[i];
-        if (!device.rules) {
-          console.warn("Device[" + i + "] has no rules section.");
+    }, rt.prototype.recalculateDeviceParams_ = function() {
+      var r = this.calcDeviceParams_();
+      r ? (this.deviceParams = r, this.onDeviceParamsUpdated && this.onDeviceParamsUpdated(this.deviceParams)) : console.error("Failed to recalculate device parameters.");
+    }, rt.prototype.calcDeviceParams_ = function() {
+      var r = this.dpdb;
+      if (!r)
+        return console.error("DPDB not available."), null;
+      if (r.format != 1)
+        return console.error("DPDB has unexpected format version."), null;
+      if (!r.devices || !r.devices.length)
+        return console.error("DPDB does not have a devices section."), null;
+      var n = navigator.userAgent || navigator.vendor || window.opera, a = P(), l = I();
+      if (!r.devices)
+        return console.error("DPDB has no devices section."), null;
+      for (var c = 0; c < r.devices.length; c++) {
+        var A = r.devices[c];
+        if (!A.rules) {
+          console.warn("Device[" + c + "] has no rules section.");
           continue;
         }
-        if (device.type != "ios" && device.type != "android") {
-          console.warn("Device[" + i + "] has invalid type.");
+        if (A.type != "ios" && A.type != "android") {
+          console.warn("Device[" + c + "] has invalid type.");
           continue;
         }
-        if (isIOS() != (device.type == "ios"))
-          continue;
-        var matched = false;
-        for (var j = 0; j < device.rules.length; j++) {
-          var rule = device.rules[j];
-          if (this.ruleMatches_(rule, userAgent, width, height)) {
-            matched = true;
-            break;
+        if (v() == (A.type == "ios")) {
+          for (var f = !1, S = 0; S < A.rules.length; S++) {
+            var E = A.rules[S];
+            if (this.ruleMatches_(E, n, a, l)) {
+              f = !0;
+              break;
+            }
+          }
+          if (!!f) {
+            var p = A.dpi[0] || A.dpi, w = A.dpi[1] || A.dpi;
+            return new vr({ xdpi: p, ydpi: w, bevelMm: A.bw });
           }
         }
-        if (!matched)
-          continue;
-        var xdpi = device.dpi[0] || device.dpi;
-        var ydpi = device.dpi[1] || device.dpi;
-        return new DeviceParams({ xdpi, ydpi, bevelMm: device.bw });
       }
-      console.warn("No DPDB device match.");
-      return null;
-    };
-    Dpdb.prototype.ruleMatches_ = function(rule, ua, screenWidth, screenHeight) {
-      if (!rule.ua && !rule.res)
-        return false;
-      if (rule.ua && rule.ua.substring(0, 2) === "SM")
-        rule.ua = rule.ua.substring(0, 7);
-      if (rule.ua && ua.indexOf(rule.ua) < 0)
-        return false;
-      if (rule.res) {
-        if (!rule.res[0] || !rule.res[1])
-          return false;
-        var resX = rule.res[0];
-        var resY = rule.res[1];
-        if (Math.min(screenWidth, screenHeight) != Math.min(resX, resY) || Math.max(screenWidth, screenHeight) != Math.max(resX, resY)) {
-          return false;
-        }
+      return console.warn("No DPDB device match."), null;
+    }, rt.prototype.ruleMatches_ = function(r, n, a, l) {
+      if (!r.ua && !r.res || (r.ua && r.ua.substring(0, 2) === "SM" && (r.ua = r.ua.substring(0, 7)), r.ua && n.indexOf(r.ua) < 0))
+        return !1;
+      if (r.res) {
+        if (!r.res[0] || !r.res[1])
+          return !1;
+        var c = r.res[0], A = r.res[1];
+        if (Math.min(a, l) != Math.min(c, A) || Math.max(a, l) != Math.max(c, A))
+          return !1;
       }
-      return true;
+      return !0;
     };
-    function DeviceParams(params) {
-      this.xdpi = params.xdpi;
-      this.ydpi = params.ydpi;
-      this.bevelMm = params.bevelMm;
+    function vr(r) {
+      this.xdpi = r.xdpi, this.ydpi = r.ydpi, this.bevelMm = r.bevelMm;
     }
-    function SensorSample(sample, timestampS) {
-      this.set(sample, timestampS);
+    function nt(r, n) {
+      this.set(r, n);
     }
-    SensorSample.prototype.set = function(sample, timestampS) {
-      this.sample = sample;
-      this.timestampS = timestampS;
+    nt.prototype.set = function(r, n) {
+      this.sample = r, this.timestampS = n;
+    }, nt.prototype.copy = function(r) {
+      this.set(r.sample, r.timestampS);
     };
-    SensorSample.prototype.copy = function(sensorSample) {
-      this.set(sensorSample.sample, sensorSample.timestampS);
-    };
-    function ComplementaryFilter(kFilter, isDebug) {
-      this.kFilter = kFilter;
-      this.isDebug = isDebug;
-      this.currentAccelMeasurement = new SensorSample();
-      this.currentGyroMeasurement = new SensorSample();
-      this.previousGyroMeasurement = new SensorSample();
-      if (isIOS()) {
-        this.filterQ = new Quaternion(-1, 0, 0, 1);
-      } else {
-        this.filterQ = new Quaternion(1, 0, 0, 1);
-      }
-      this.previousFilterQ = new Quaternion();
-      this.previousFilterQ.copy(this.filterQ);
-      this.accelQ = new Quaternion();
-      this.isOrientationInitialized = false;
-      this.estimatedGravity = new Vector3();
-      this.measuredGravity = new Vector3();
-      this.gyroIntegralQ = new Quaternion();
+    function Ye(r, n) {
+      this.kFilter = r, this.isDebug = n, this.currentAccelMeasurement = new nt(), this.currentGyroMeasurement = new nt(), this.previousGyroMeasurement = new nt(), v() ? this.filterQ = new te(-1, 0, 0, 1) : this.filterQ = new te(1, 0, 0, 1), this.previousFilterQ = new te(), this.previousFilterQ.copy(this.filterQ), this.accelQ = new te(), this.isOrientationInitialized = !1, this.estimatedGravity = new ae(), this.measuredGravity = new ae(), this.gyroIntegralQ = new te();
     }
-    ComplementaryFilter.prototype.addAccelMeasurement = function(vector, timestampS) {
-      this.currentAccelMeasurement.set(vector, timestampS);
-    };
-    ComplementaryFilter.prototype.addGyroMeasurement = function(vector, timestampS) {
-      this.currentGyroMeasurement.set(vector, timestampS);
-      var deltaT = timestampS - this.previousGyroMeasurement.timestampS;
-      if (isTimestampDeltaValid(deltaT)) {
-        this.run_();
-      }
-      this.previousGyroMeasurement.copy(this.currentGyroMeasurement);
-    };
-    ComplementaryFilter.prototype.run_ = function() {
+    Ye.prototype.addAccelMeasurement = function(r, n) {
+      this.currentAccelMeasurement.set(r, n);
+    }, Ye.prototype.addGyroMeasurement = function(r, n) {
+      this.currentGyroMeasurement.set(r, n);
+      var a = n - this.previousGyroMeasurement.timestampS;
+      Q(a) && this.run_(), this.previousGyroMeasurement.copy(this.currentGyroMeasurement);
+    }, Ye.prototype.run_ = function() {
       if (!this.isOrientationInitialized) {
-        this.accelQ = this.accelToQuaternion_(this.currentAccelMeasurement.sample);
-        this.previousFilterQ.copy(this.accelQ);
-        this.isOrientationInitialized = true;
+        this.accelQ = this.accelToQuaternion_(this.currentAccelMeasurement.sample), this.previousFilterQ.copy(this.accelQ), this.isOrientationInitialized = !0;
         return;
       }
-      var deltaT = this.currentGyroMeasurement.timestampS - this.previousGyroMeasurement.timestampS;
-      var gyroDeltaQ = this.gyroToQuaternionDelta_(this.currentGyroMeasurement.sample, deltaT);
-      this.gyroIntegralQ.multiply(gyroDeltaQ);
-      this.filterQ.copy(this.previousFilterQ);
-      this.filterQ.multiply(gyroDeltaQ);
-      var invFilterQ = new Quaternion();
-      invFilterQ.copy(this.filterQ);
-      invFilterQ.inverse();
-      this.estimatedGravity.set(0, 0, -1);
-      this.estimatedGravity.applyQuaternion(invFilterQ);
-      this.estimatedGravity.normalize();
-      this.measuredGravity.copy(this.currentAccelMeasurement.sample);
-      this.measuredGravity.normalize();
-      var deltaQ = new Quaternion();
-      deltaQ.setFromUnitVectors(this.estimatedGravity, this.measuredGravity);
-      deltaQ.inverse();
-      if (this.isDebug) {
-        console.log("Delta: %d deg, G_est: (%s, %s, %s), G_meas: (%s, %s, %s)", radToDeg * getQuaternionAngle(deltaQ), this.estimatedGravity.x.toFixed(1), this.estimatedGravity.y.toFixed(1), this.estimatedGravity.z.toFixed(1), this.measuredGravity.x.toFixed(1), this.measuredGravity.y.toFixed(1), this.measuredGravity.z.toFixed(1));
-      }
-      var targetQ = new Quaternion();
-      targetQ.copy(this.filterQ);
-      targetQ.multiply(deltaQ);
-      this.filterQ.slerp(targetQ, 1 - this.kFilter);
-      this.previousFilterQ.copy(this.filterQ);
-    };
-    ComplementaryFilter.prototype.getOrientation = function() {
+      var r = this.currentGyroMeasurement.timestampS - this.previousGyroMeasurement.timestampS, n = this.gyroToQuaternionDelta_(this.currentGyroMeasurement.sample, r);
+      this.gyroIntegralQ.multiply(n), this.filterQ.copy(this.previousFilterQ), this.filterQ.multiply(n);
+      var a = new te();
+      a.copy(this.filterQ), a.inverse(), this.estimatedGravity.set(0, 0, -1), this.estimatedGravity.applyQuaternion(a), this.estimatedGravity.normalize(), this.measuredGravity.copy(this.currentAccelMeasurement.sample), this.measuredGravity.normalize();
+      var l = new te();
+      l.setFromUnitVectors(this.estimatedGravity, this.measuredGravity), l.inverse(), this.isDebug && console.log("Delta: %d deg, G_est: (%s, %s, %s), G_meas: (%s, %s, %s)", Oe * $(l), this.estimatedGravity.x.toFixed(1), this.estimatedGravity.y.toFixed(1), this.estimatedGravity.z.toFixed(1), this.measuredGravity.x.toFixed(1), this.measuredGravity.y.toFixed(1), this.measuredGravity.z.toFixed(1));
+      var c = new te();
+      c.copy(this.filterQ), c.multiply(l), this.filterQ.slerp(c, 1 - this.kFilter), this.previousFilterQ.copy(this.filterQ);
+    }, Ye.prototype.getOrientation = function() {
       return this.filterQ;
+    }, Ye.prototype.accelToQuaternion_ = function(r) {
+      var n = new ae();
+      n.copy(r), n.normalize();
+      var a = new te();
+      return a.setFromUnitVectors(new ae(0, 0, -1), n), a.inverse(), a;
+    }, Ye.prototype.gyroToQuaternionDelta_ = function(r, n) {
+      var a = new te(), l = new ae();
+      return l.copy(r), l.normalize(), a.setFromAxisAngle(l, r.length() * n), a;
     };
-    ComplementaryFilter.prototype.accelToQuaternion_ = function(accel) {
-      var normAccel = new Vector3();
-      normAccel.copy(accel);
-      normAccel.normalize();
-      var quat = new Quaternion();
-      quat.setFromUnitVectors(new Vector3(0, 0, -1), normAccel);
-      quat.inverse();
-      return quat;
-    };
-    ComplementaryFilter.prototype.gyroToQuaternionDelta_ = function(gyro, dt) {
-      var quat = new Quaternion();
-      var axis = new Vector3();
-      axis.copy(gyro);
-      axis.normalize();
-      quat.setFromAxisAngle(axis, gyro.length() * dt);
-      return quat;
-    };
-    function PosePredictor(predictionTimeS, isDebug) {
-      this.predictionTimeS = predictionTimeS;
-      this.isDebug = isDebug;
-      this.previousQ = new Quaternion();
-      this.previousTimestampS = null;
-      this.deltaQ = new Quaternion();
-      this.outQ = new Quaternion();
+    function pi(r, n) {
+      this.predictionTimeS = r, this.isDebug = n, this.previousQ = new te(), this.previousTimestampS = null, this.deltaQ = new te(), this.outQ = new te();
     }
-    PosePredictor.prototype.getPrediction = function(currentQ, gyro, timestampS) {
-      if (!this.previousTimestampS) {
-        this.previousQ.copy(currentQ);
-        this.previousTimestampS = timestampS;
-        return currentQ;
-      }
-      var axis = new Vector3();
-      axis.copy(gyro);
-      axis.normalize();
-      var angularSpeed = gyro.length();
-      if (angularSpeed < degToRad * 20) {
-        if (this.isDebug) {
-          console.log("Moving slowly, at %s deg/s: no prediction", (radToDeg * angularSpeed).toFixed(1));
-        }
-        this.outQ.copy(currentQ);
-        this.previousQ.copy(currentQ);
-        return this.outQ;
-      }
-      var predictAngle = angularSpeed * this.predictionTimeS;
-      this.deltaQ.setFromAxisAngle(axis, predictAngle);
-      this.outQ.copy(this.previousQ);
-      this.outQ.multiply(this.deltaQ);
-      this.previousQ.copy(currentQ);
-      this.previousTimestampS = timestampS;
-      return this.outQ;
+    pi.prototype.getPrediction = function(r, n, a) {
+      if (!this.previousTimestampS)
+        return this.previousQ.copy(r), this.previousTimestampS = a, r;
+      var l = new ae();
+      l.copy(n), l.normalize();
+      var c = n.length();
+      if (c < Le * 20)
+        return this.isDebug && console.log("Moving slowly, at %s deg/s: no prediction", (Oe * c).toFixed(1)), this.outQ.copy(r), this.previousQ.copy(r), this.outQ;
+      var A = c * this.predictionTimeS;
+      return this.deltaQ.setFromAxisAngle(l, A), this.outQ.copy(this.previousQ), this.outQ.multiply(this.deltaQ), this.previousQ.copy(r), this.previousTimestampS = a, this.outQ;
     };
-    function FusionPoseSensor(kFilter, predictionTime, yawOnly, isDebug) {
-      this.yawOnly = yawOnly;
-      this.accelerometer = new Vector3();
-      this.gyroscope = new Vector3();
-      this.filter = new ComplementaryFilter(kFilter, isDebug);
-      this.posePredictor = new PosePredictor(predictionTime, isDebug);
-      this.isFirefoxAndroid = isFirefoxAndroid();
-      this.isIOS = isIOS();
-      var chromeVersion = getChromeVersion();
-      this.isDeviceMotionInRadians = !this.isIOS && chromeVersion && chromeVersion < 66;
-      this.isWithoutDeviceMotion = isChromeWithoutDeviceMotion() || isSafariWithoutDeviceMotion();
-      this.filterToWorldQ = new Quaternion();
-      if (isIOS()) {
-        this.filterToWorldQ.setFromAxisAngle(new Vector3(1, 0, 0), Math.PI / 2);
-      } else {
-        this.filterToWorldQ.setFromAxisAngle(new Vector3(1, 0, 0), -Math.PI / 2);
-      }
-      this.inverseWorldToScreenQ = new Quaternion();
-      this.worldToScreenQ = new Quaternion();
-      this.originalPoseAdjustQ = new Quaternion();
-      this.originalPoseAdjustQ.setFromAxisAngle(new Vector3(0, 0, 1), -window.orientation * Math.PI / 180);
-      this.setScreenTransform_();
-      if (isLandscapeMode()) {
-        this.filterToWorldQ.multiply(this.inverseWorldToScreenQ);
-      }
-      this.resetQ = new Quaternion();
-      this.orientationOut_ = new Float32Array(4);
-      this.start();
+    function Fe(r, n, a, l) {
+      this.yawOnly = a, this.accelerometer = new ae(), this.gyroscope = new ae(), this.filter = new Ye(r, l), this.posePredictor = new pi(n, l), this.isFirefoxAndroid = x(), this.isIOS = v();
+      var c = R();
+      this.isDeviceMotionInRadians = !this.isIOS && c && c < 66, this.isWithoutDeviceMotion = C() || F(), this.filterToWorldQ = new te(), v() ? this.filterToWorldQ.setFromAxisAngle(new ae(1, 0, 0), Math.PI / 2) : this.filterToWorldQ.setFromAxisAngle(new ae(1, 0, 0), -Math.PI / 2), this.inverseWorldToScreenQ = new te(), this.worldToScreenQ = new te(), this.originalPoseAdjustQ = new te(), this.originalPoseAdjustQ.setFromAxisAngle(new ae(0, 0, 1), -window.orientation * Math.PI / 180), this.setScreenTransform_(), N() && this.filterToWorldQ.multiply(this.inverseWorldToScreenQ), this.resetQ = new te(), this.orientationOut_ = new Float32Array(4), this.start();
     }
-    FusionPoseSensor.prototype.getPosition = function() {
+    Fe.prototype.getPosition = function() {
       return null;
-    };
-    FusionPoseSensor.prototype.getOrientation = function() {
-      var orientation = void 0;
+    }, Fe.prototype.getOrientation = function() {
+      var r = void 0;
       if (this.isWithoutDeviceMotion && this._deviceOrientationQ) {
         this.deviceOrientationFixQ = this.deviceOrientationFixQ || function() {
-          var z = new Quaternion().setFromAxisAngle(new Vector3(0, 0, -1), 0);
-          var y = new Quaternion();
-          if (window.orientation === -90) {
-            y.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI / -2);
-          } else {
-            y.setFromAxisAngle(new Vector3(0, 1, 0), Math.PI / 2);
-          }
-          return z.multiply(y);
-        }();
-        this.deviceOrientationFilterToWorldQ = this.deviceOrientationFilterToWorldQ || function() {
-          var q = new Quaternion();
-          q.setFromAxisAngle(new Vector3(1, 0, 0), -Math.PI / 2);
-          return q;
-        }();
-        orientation = this._deviceOrientationQ;
-        var out = new Quaternion();
-        out.copy(orientation);
-        out.multiply(this.deviceOrientationFilterToWorldQ);
-        out.multiply(this.resetQ);
-        out.multiply(this.worldToScreenQ);
-        out.multiplyQuaternions(this.deviceOrientationFixQ, out);
-        if (this.yawOnly) {
-          out.x = 0;
-          out.z = 0;
-          out.normalize();
-        }
-        this.orientationOut_[0] = out.x;
-        this.orientationOut_[1] = out.y;
-        this.orientationOut_[2] = out.z;
-        this.orientationOut_[3] = out.w;
-        return this.orientationOut_;
+          var c = new te().setFromAxisAngle(new ae(0, 0, -1), 0), A = new te();
+          return window.orientation === -90 ? A.setFromAxisAngle(new ae(0, 1, 0), Math.PI / -2) : A.setFromAxisAngle(new ae(0, 1, 0), Math.PI / 2), c.multiply(A);
+        }(), this.deviceOrientationFilterToWorldQ = this.deviceOrientationFilterToWorldQ || function() {
+          var c = new te();
+          return c.setFromAxisAngle(new ae(1, 0, 0), -Math.PI / 2), c;
+        }(), r = this._deviceOrientationQ;
+        var a = new te();
+        return a.copy(r), a.multiply(this.deviceOrientationFilterToWorldQ), a.multiply(this.resetQ), a.multiply(this.worldToScreenQ), a.multiplyQuaternions(this.deviceOrientationFixQ, a), this.yawOnly && (a.x = 0, a.z = 0, a.normalize()), this.orientationOut_[0] = a.x, this.orientationOut_[1] = a.y, this.orientationOut_[2] = a.z, this.orientationOut_[3] = a.w, this.orientationOut_;
       } else {
-        var filterOrientation = this.filter.getOrientation();
-        orientation = this.posePredictor.getPrediction(filterOrientation, this.gyroscope, this.previousTimestampS);
+        var n = this.filter.getOrientation();
+        r = this.posePredictor.getPrediction(n, this.gyroscope, this.previousTimestampS);
       }
-      var out = new Quaternion();
-      out.copy(this.filterToWorldQ);
-      out.multiply(this.resetQ);
-      out.multiply(orientation);
-      out.multiply(this.worldToScreenQ);
-      if (this.yawOnly) {
-        out.x = 0;
-        out.z = 0;
-        out.normalize();
-      }
-      this.orientationOut_[0] = out.x;
-      this.orientationOut_[1] = out.y;
-      this.orientationOut_[2] = out.z;
-      this.orientationOut_[3] = out.w;
-      return this.orientationOut_;
-    };
-    FusionPoseSensor.prototype.resetPose = function() {
-      this.resetQ.copy(this.filter.getOrientation());
-      this.resetQ.x = 0;
-      this.resetQ.y = 0;
-      this.resetQ.z *= -1;
-      this.resetQ.normalize();
-      if (isLandscapeMode()) {
-        this.resetQ.multiply(this.inverseWorldToScreenQ);
-      }
-      this.resetQ.multiply(this.originalPoseAdjustQ);
-    };
-    FusionPoseSensor.prototype.onDeviceOrientation_ = function(e) {
-      this._deviceOrientationQ = this._deviceOrientationQ || new Quaternion();
-      var alpha = e.alpha, beta = e.beta, gamma = e.gamma;
-      alpha = (alpha || 0) * Math.PI / 180;
-      beta = (beta || 0) * Math.PI / 180;
-      gamma = (gamma || 0) * Math.PI / 180;
-      this._deviceOrientationQ.setFromEulerYXZ(beta, alpha, -gamma);
-    };
-    FusionPoseSensor.prototype.onDeviceMotion_ = function(deviceMotion) {
-      this.updateDeviceMotion_(deviceMotion);
-    };
-    FusionPoseSensor.prototype.updateDeviceMotion_ = function(deviceMotion) {
-      var accGravity = deviceMotion.accelerationIncludingGravity;
-      var rotRate = deviceMotion.rotationRate;
-      var timestampS = deviceMotion.timeStamp / 1e3;
-      var deltaS = timestampS - this.previousTimestampS;
-      if (deltaS < 0) {
-        warnOnce("fusion-pose-sensor:invalid:non-monotonic", "Invalid timestamps detected: non-monotonic timestamp from devicemotion");
-        this.previousTimestampS = timestampS;
+      var a = new te();
+      return a.copy(this.filterToWorldQ), a.multiply(this.resetQ), a.multiply(r), a.multiply(this.worldToScreenQ), this.yawOnly && (a.x = 0, a.z = 0, a.normalize()), this.orientationOut_[0] = a.x, this.orientationOut_[1] = a.y, this.orientationOut_[2] = a.z, this.orientationOut_[3] = a.w, this.orientationOut_;
+    }, Fe.prototype.resetPose = function() {
+      this.resetQ.copy(this.filter.getOrientation()), this.resetQ.x = 0, this.resetQ.y = 0, this.resetQ.z *= -1, this.resetQ.normalize(), N() && this.resetQ.multiply(this.inverseWorldToScreenQ), this.resetQ.multiply(this.originalPoseAdjustQ);
+    }, Fe.prototype.onDeviceOrientation_ = function(r) {
+      this._deviceOrientationQ = this._deviceOrientationQ || new te();
+      var n = r.alpha, a = r.beta, l = r.gamma;
+      n = (n || 0) * Math.PI / 180, a = (a || 0) * Math.PI / 180, l = (l || 0) * Math.PI / 180, this._deviceOrientationQ.setFromEulerYXZ(a, n, -l);
+    }, Fe.prototype.onDeviceMotion_ = function(r) {
+      this.updateDeviceMotion_(r);
+    }, Fe.prototype.updateDeviceMotion_ = function(r) {
+      var n = r.accelerationIncludingGravity, a = r.rotationRate, l = r.timeStamp / 1e3, c = l - this.previousTimestampS;
+      if (c < 0) {
+        Ee("fusion-pose-sensor:invalid:non-monotonic", "Invalid timestamps detected: non-monotonic timestamp from devicemotion"), this.previousTimestampS = l;
         return;
-      } else if (deltaS <= MIN_TIMESTEP || deltaS > MAX_TIMESTEP) {
-        warnOnce("fusion-pose-sensor:invalid:outside-threshold", "Invalid timestamps detected: Timestamp from devicemotion outside expected range.");
-        this.previousTimestampS = timestampS;
+      } else if (c <= h || c > d) {
+        Ee("fusion-pose-sensor:invalid:outside-threshold", "Invalid timestamps detected: Timestamp from devicemotion outside expected range."), this.previousTimestampS = l;
         return;
       }
-      this.accelerometer.set(-accGravity.x, -accGravity.y, -accGravity.z);
-      if (rotRate) {
-        if (isR7()) {
-          this.gyroscope.set(-rotRate.beta, rotRate.alpha, rotRate.gamma);
-        } else {
-          this.gyroscope.set(rotRate.alpha, rotRate.beta, rotRate.gamma);
-        }
-        if (!this.isDeviceMotionInRadians) {
-          this.gyroscope.multiplyScalar(Math.PI / 180);
-        }
-        this.filter.addGyroMeasurement(this.gyroscope, timestampS);
-      }
-      this.filter.addAccelMeasurement(this.accelerometer, timestampS);
-      this.previousTimestampS = timestampS;
-    };
-    FusionPoseSensor.prototype.onOrientationChange_ = function(screenOrientation) {
+      this.accelerometer.set(-n.x, -n.y, -n.z), a && (B() ? this.gyroscope.set(-a.beta, a.alpha, a.gamma) : this.gyroscope.set(a.alpha, a.beta, a.gamma), this.isDeviceMotionInRadians || this.gyroscope.multiplyScalar(Math.PI / 180), this.filter.addGyroMeasurement(this.gyroscope, l)), this.filter.addAccelMeasurement(this.accelerometer, l), this.previousTimestampS = l;
+    }, Fe.prototype.onOrientationChange_ = function(r) {
       this.setScreenTransform_();
-    };
-    FusionPoseSensor.prototype.onMessage_ = function(event) {
-      var message = event.data;
-      if (!message || !message.type) {
-        return;
+    }, Fe.prototype.onMessage_ = function(r) {
+      var n = r.data;
+      if (!(!n || !n.type)) {
+        var a = n.type.toLowerCase();
+        a === "devicemotion" && this.updateDeviceMotion_(n.deviceMotionEvent);
       }
-      var type = message.type.toLowerCase();
-      if (type !== "devicemotion") {
-        return;
-      }
-      this.updateDeviceMotion_(message.deviceMotionEvent);
-    };
-    FusionPoseSensor.prototype.setScreenTransform_ = function() {
-      this.worldToScreenQ.set(0, 0, 0, 1);
-      switch (window.orientation) {
+    }, Fe.prototype.setScreenTransform_ = function() {
+      switch (this.worldToScreenQ.set(0, 0, 0, 1), window.orientation) {
         case 0:
           break;
         case 90:
-          this.worldToScreenQ.setFromAxisAngle(new Vector3(0, 0, 1), -Math.PI / 2);
+          this.worldToScreenQ.setFromAxisAngle(new ae(0, 0, 1), -Math.PI / 2);
           break;
         case -90:
-          this.worldToScreenQ.setFromAxisAngle(new Vector3(0, 0, 1), Math.PI / 2);
+          this.worldToScreenQ.setFromAxisAngle(new ae(0, 0, 1), Math.PI / 2);
           break;
       }
-      this.inverseWorldToScreenQ.copy(this.worldToScreenQ);
-      this.inverseWorldToScreenQ.inverse();
+      this.inverseWorldToScreenQ.copy(this.worldToScreenQ), this.inverseWorldToScreenQ.inverse();
+    }, Fe.prototype.start = function() {
+      this.onDeviceMotionCallback_ = this.onDeviceMotion_.bind(this), this.onOrientationChangeCallback_ = this.onOrientationChange_.bind(this), this.onMessageCallback_ = this.onMessage_.bind(this), this.onDeviceOrientationCallback_ = this.onDeviceOrientation_.bind(this), v() && J() && window.addEventListener("message", this.onMessageCallback_), window.addEventListener("orientationchange", this.onOrientationChangeCallback_), this.isWithoutDeviceMotion ? window.addEventListener("deviceorientation", this.onDeviceOrientationCallback_) : window.addEventListener("devicemotion", this.onDeviceMotionCallback_);
+    }, Fe.prototype.stop = function() {
+      window.removeEventListener("devicemotion", this.onDeviceMotionCallback_), window.removeEventListener("deviceorientation", this.onDeviceOrientationCallback_), window.removeEventListener("orientationchange", this.onOrientationChangeCallback_), window.removeEventListener("message", this.onMessageCallback_);
     };
-    FusionPoseSensor.prototype.start = function() {
-      this.onDeviceMotionCallback_ = this.onDeviceMotion_.bind(this);
-      this.onOrientationChangeCallback_ = this.onOrientationChange_.bind(this);
-      this.onMessageCallback_ = this.onMessage_.bind(this);
-      this.onDeviceOrientationCallback_ = this.onDeviceOrientation_.bind(this);
-      if (isIOS() && isInsideCrossOriginIFrame()) {
-        window.addEventListener("message", this.onMessageCallback_);
+    var wr = 60, yr = new ae(1, 0, 0), br = new ae(0, 0, 1), Xt = new te();
+    Xt.setFromAxisAngle(yr, -Math.PI / 2), Xt.multiply(new te().setFromAxisAngle(br, Math.PI / 2));
+    var gr = function() {
+      function r(n) {
+        t(this, r), this.config = n, this.sensor = null, this.fusionSensor = null, this._out = new Float32Array(4), this.api = null, this.errors = [], this._sensorQ = new te(), this._outQ = new te(), this._onSensorRead = this._onSensorRead.bind(this), this._onSensorError = this._onSensorError.bind(this), this.init();
       }
-      window.addEventListener("orientationchange", this.onOrientationChangeCallback_);
-      if (this.isWithoutDeviceMotion) {
-        window.addEventListener("deviceorientation", this.onDeviceOrientationCallback_);
-      } else {
-        window.addEventListener("devicemotion", this.onDeviceMotionCallback_);
-      }
-    };
-    FusionPoseSensor.prototype.stop = function() {
-      window.removeEventListener("devicemotion", this.onDeviceMotionCallback_);
-      window.removeEventListener("deviceorientation", this.onDeviceOrientationCallback_);
-      window.removeEventListener("orientationchange", this.onOrientationChangeCallback_);
-      window.removeEventListener("message", this.onMessageCallback_);
-    };
-    var SENSOR_FREQUENCY = 60;
-    var X_AXIS = new Vector3(1, 0, 0);
-    var Z_AXIS = new Vector3(0, 0, 1);
-    var SENSOR_TO_VR = new Quaternion();
-    SENSOR_TO_VR.setFromAxisAngle(X_AXIS, -Math.PI / 2);
-    SENSOR_TO_VR.multiply(new Quaternion().setFromAxisAngle(Z_AXIS, Math.PI / 2));
-    var PoseSensor = function() {
-      function PoseSensor2(config2) {
-        classCallCheck(this, PoseSensor2);
-        this.config = config2;
-        this.sensor = null;
-        this.fusionSensor = null;
-        this._out = new Float32Array(4);
-        this.api = null;
-        this.errors = [];
-        this._sensorQ = new Quaternion();
-        this._outQ = new Quaternion();
-        this._onSensorRead = this._onSensorRead.bind(this);
-        this._onSensorError = this._onSensorError.bind(this);
-        this.init();
-      }
-      createClass(PoseSensor2, [{
+      return s(r, [{
         key: "init",
-        value: function init() {
-          var sensor = null;
+        value: function() {
+          var a = null;
           try {
-            sensor = new RelativeOrientationSensor({
-              frequency: SENSOR_FREQUENCY,
+            a = new RelativeOrientationSensor({
+              frequency: wr,
               referenceFrame: "screen"
-            });
-            sensor.addEventListener("error", this._onSensorError);
-          } catch (error) {
-            this.errors.push(error);
-            if (error.name === "SecurityError") {
-              console.error("Cannot construct sensors due to the Feature Policy");
-              console.warn('Attempting to fall back using "devicemotion"; however this will fail in the future without correct permissions.');
-              this.useDeviceMotion();
-            } else if (error.name === "ReferenceError") {
-              this.useDeviceMotion();
-            } else {
-              console.error(error);
-            }
+            }), a.addEventListener("error", this._onSensorError);
+          } catch (l) {
+            this.errors.push(l), l.name === "SecurityError" ? (console.error("Cannot construct sensors due to the Feature Policy"), console.warn('Attempting to fall back using "devicemotion"; however this will fail in the future without correct permissions.'), this.useDeviceMotion()) : l.name === "ReferenceError" ? this.useDeviceMotion() : console.error(l);
           }
-          if (sensor) {
-            this.api = "sensor";
-            this.sensor = sensor;
-            this.sensor.addEventListener("reading", this._onSensorRead);
-            this.sensor.start();
-          }
+          a && (this.api = "sensor", this.sensor = a, this.sensor.addEventListener("reading", this._onSensorRead), this.sensor.start());
         }
       }, {
         key: "useDeviceMotion",
-        value: function useDeviceMotion() {
-          this.api = "devicemotion";
-          this.fusionSensor = new FusionPoseSensor(this.config.K_FILTER, this.config.PREDICTION_TIME_S, this.config.YAW_ONLY, this.config.DEBUG);
-          if (this.sensor) {
-            this.sensor.removeEventListener("reading", this._onSensorRead);
-            this.sensor.removeEventListener("error", this._onSensorError);
-            this.sensor = null;
-          }
+        value: function() {
+          this.api = "devicemotion", this.fusionSensor = new Fe(this.config.K_FILTER, this.config.PREDICTION_TIME_S, this.config.YAW_ONLY, this.config.DEBUG), this.sensor && (this.sensor.removeEventListener("reading", this._onSensorRead), this.sensor.removeEventListener("error", this._onSensorError), this.sensor = null);
         }
       }, {
         key: "getOrientation",
-        value: function getOrientation() {
-          if (this.fusionSensor) {
+        value: function() {
+          if (this.fusionSensor)
             return this.fusionSensor.getOrientation();
-          }
-          if (!this.sensor || !this.sensor.quaternion) {
-            this._out[0] = this._out[1] = this._out[2] = 0;
-            this._out[3] = 1;
-            return this._out;
-          }
-          var q = this.sensor.quaternion;
-          this._sensorQ.set(q[0], q[1], q[2], q[3]);
-          var out = this._outQ;
-          out.copy(SENSOR_TO_VR);
-          out.multiply(this._sensorQ);
-          if (this.config.YAW_ONLY) {
-            out.x = out.z = 0;
-            out.normalize();
-          }
-          this._out[0] = out.x;
-          this._out[1] = out.y;
-          this._out[2] = out.z;
-          this._out[3] = out.w;
-          return this._out;
+          if (!this.sensor || !this.sensor.quaternion)
+            return this._out[0] = this._out[1] = this._out[2] = 0, this._out[3] = 1, this._out;
+          var a = this.sensor.quaternion;
+          this._sensorQ.set(a[0], a[1], a[2], a[3]);
+          var l = this._outQ;
+          return l.copy(Xt), l.multiply(this._sensorQ), this.config.YAW_ONLY && (l.x = l.z = 0, l.normalize()), this._out[0] = l.x, this._out[1] = l.y, this._out[2] = l.z, this._out[3] = l.w, this._out;
         }
       }, {
         key: "_onSensorError",
-        value: function _onSensorError(event) {
-          this.errors.push(event.error);
-          if (event.error.name === "NotAllowedError") {
-            console.error("Permission to access sensor was denied");
-          } else if (event.error.name === "NotReadableError") {
-            console.error("Sensor could not be read");
-          } else {
-            console.error(event.error);
-          }
-          this.useDeviceMotion();
+        value: function(a) {
+          this.errors.push(a.error), a.error.name === "NotAllowedError" ? console.error("Permission to access sensor was denied") : a.error.name === "NotReadableError" ? console.error("Sensor could not be read") : console.error(a.error), this.useDeviceMotion();
         }
       }, {
         key: "_onSensorRead",
-        value: function _onSensorRead() {
+        value: function() {
         }
-      }]);
-      return PoseSensor2;
-    }();
-    var rotateInstructionsAsset = "<svg width='198' height='240' viewBox='0 0 198 240' xmlns='http://www.w3.org/2000/svg'><g fill='none' fill-rule='evenodd'><path d='M149.625 109.527l6.737 3.891v.886c0 .177.013.36.038.549.01.081.02.162.027.242.14 1.415.974 2.998 2.105 3.999l5.72 5.062.081-.09s4.382-2.53 5.235-3.024l25.97 14.993v54.001c0 .771-.386 1.217-.948 1.217-.233 0-.495-.076-.772-.236l-23.967-13.838-.014.024-27.322 15.775-.85-1.323c-4.731-1.529-9.748-2.74-14.951-3.61a.27.27 0 0 0-.007.024l-5.067 16.961-7.891 4.556-.037-.063v27.59c0 .772-.386 1.217-.948 1.217-.232 0-.495-.076-.772-.236l-42.473-24.522c-.95-.549-1.72-1.877-1.72-2.967v-1.035l-.021.047a5.111 5.111 0 0 0-1.816-.399 5.682 5.682 0 0 0-.546.001 13.724 13.724 0 0 1-1.918-.041c-1.655-.153-3.2-.6-4.404-1.296l-46.576-26.89.005.012-10.278-18.75c-1.001-1.827-.241-4.216 1.698-5.336l56.011-32.345a4.194 4.194 0 0 1 2.099-.572c1.326 0 2.572.659 3.227 1.853l.005-.003.227.413-.006.004a9.63 9.63 0 0 0 1.477 2.018l.277.27c1.914 1.85 4.468 2.801 7.113 2.801 1.949 0 3.948-.517 5.775-1.572.013 0 7.319-4.219 7.319-4.219a4.194 4.194 0 0 1 2.099-.572c1.326 0 2.572.658 3.226 1.853l3.25 5.928.022-.018 6.785 3.917-.105-.182 46.881-26.965m0-1.635c-.282 0-.563.073-.815.218l-46.169 26.556-5.41-3.124-3.005-5.481c-.913-1.667-2.699-2.702-4.66-2.703-1.011 0-2.02.274-2.917.792a3825 3825 0 0 1-7.275 4.195l-.044.024a9.937 9.937 0 0 1-4.957 1.353c-2.292 0-4.414-.832-5.976-2.342l-.252-.245a7.992 7.992 0 0 1-1.139-1.534 1.379 1.379 0 0 0-.06-.122l-.227-.414a1.718 1.718 0 0 0-.095-.154c-.938-1.574-2.673-2.545-4.571-2.545-1.011 0-2.02.274-2.917.792L3.125 155.502c-2.699 1.559-3.738 4.94-2.314 7.538l10.278 18.75c.177.323.448.563.761.704l46.426 26.804c1.403.81 3.157 1.332 5.072 1.508a15.661 15.661 0 0 0 2.146.046 4.766 4.766 0 0 1 .396 0c.096.004.19.011.283.022.109 1.593 1.159 3.323 2.529 4.114l42.472 24.522c.524.302 1.058.455 1.59.455 1.497 0 2.583-1.2 2.583-2.852v-26.562l7.111-4.105a1.64 1.64 0 0 0 .749-.948l4.658-15.593c4.414.797 8.692 1.848 12.742 3.128l.533.829a1.634 1.634 0 0 0 2.193.531l26.532-15.317L193 192.433c.523.302 1.058.455 1.59.455 1.497 0 2.583-1.199 2.583-2.852v-54.001c0-.584-.312-1.124-.818-1.416l-25.97-14.993a1.633 1.633 0 0 0-1.636.001c-.606.351-2.993 1.73-4.325 2.498l-4.809-4.255c-.819-.725-1.461-1.933-1.561-2.936a7.776 7.776 0 0 0-.033-.294 2.487 2.487 0 0 1-.023-.336v-.886c0-.584-.312-1.123-.817-1.416l-6.739-3.891a1.633 1.633 0 0 0-.817-.219' fill='#455A64'/><path d='M96.027 132.636l46.576 26.891c1.204.695 1.979 1.587 2.242 2.541l-.01.007-81.374 46.982h-.001c-1.654-.152-3.199-.6-4.403-1.295l-46.576-26.891 83.546-48.235' fill='#FAFAFA'/><path d='M63.461 209.174c-.008 0-.015 0-.022-.002-1.693-.156-3.228-.609-4.441-1.309l-46.576-26.89a.118.118 0 0 1 0-.203l83.546-48.235a.117.117 0 0 1 .117 0l46.576 26.891c1.227.708 2.021 1.612 2.296 2.611a.116.116 0 0 1-.042.124l-.021.016-81.375 46.981a.11.11 0 0 1-.058.016zm-50.747-28.303l46.401 26.79c1.178.68 2.671 1.121 4.32 1.276l81.272-46.922c-.279-.907-1.025-1.73-2.163-2.387l-46.517-26.857-83.313 48.1z' fill='#607D8B'/><path d='M148.327 165.471a5.85 5.85 0 0 1-.546.001c-1.894-.083-3.302-1.038-3.145-2.132a2.693 2.693 0 0 0-.072-1.105l-81.103 46.822c.628.058 1.272.073 1.918.042.182-.009.364-.009.546-.001 1.894.083 3.302 1.038 3.145 2.132l79.257-45.759' fill='#FFF'/><path d='M69.07 211.347a.118.118 0 0 1-.115-.134c.045-.317-.057-.637-.297-.925-.505-.61-1.555-1.022-2.738-1.074a5.966 5.966 0 0 0-.535.001 14.03 14.03 0 0 1-1.935-.041.117.117 0 0 1-.103-.092.116.116 0 0 1 .055-.126l81.104-46.822a.117.117 0 0 1 .171.07c.104.381.129.768.074 1.153-.045.316.057.637.296.925.506.61 1.555 1.021 2.739 1.073.178.008.357.008.535-.001a.117.117 0 0 1 .064.218l-79.256 45.759a.114.114 0 0 1-.059.016zm-3.405-2.372c.089 0 .177.002.265.006 1.266.056 2.353.488 2.908 1.158.227.274.35.575.36.882l78.685-45.429c-.036 0-.072-.001-.107-.003-1.267-.056-2.354-.489-2.909-1.158-.282-.34-.402-.724-.347-1.107a2.604 2.604 0 0 0-.032-.91L63.846 208.97a13.91 13.91 0 0 0 1.528.012c.097-.005.194-.007.291-.007z' fill='#607D8B'/><path d='M2.208 162.134c-1.001-1.827-.241-4.217 1.698-5.337l56.011-32.344c1.939-1.12 4.324-.546 5.326 1.281l.232.41a9.344 9.344 0 0 0 1.47 2.021l.278.27c3.325 3.214 8.583 3.716 12.888 1.23l7.319-4.22c1.94-1.119 4.324-.546 5.325 1.282l3.25 5.928-83.519 48.229-10.278-18.75z' fill='#FAFAFA'/><path d='M12.486 181.001a.112.112 0 0 1-.031-.005.114.114 0 0 1-.071-.056L2.106 162.19c-1.031-1.88-.249-4.345 1.742-5.494l56.01-32.344a4.328 4.328 0 0 1 2.158-.588c1.415 0 2.65.702 3.311 1.882.01.008.018.017.024.028l.227.414a.122.122 0 0 1 .013.038 9.508 9.508 0 0 0 1.439 1.959l.275.266c1.846 1.786 4.344 2.769 7.031 2.769 1.977 0 3.954-.538 5.717-1.557a.148.148 0 0 1 .035-.013l7.284-4.206a4.321 4.321 0 0 1 2.157-.588c1.427 0 2.672.716 3.329 1.914l3.249 5.929a.116.116 0 0 1-.044.157l-83.518 48.229a.116.116 0 0 1-.059.016zm49.53-57.004c-.704 0-1.41.193-2.041.557l-56.01 32.345c-1.882 1.086-2.624 3.409-1.655 5.179l10.221 18.645 83.317-48.112-3.195-5.829c-.615-1.122-1.783-1.792-3.124-1.792a4.08 4.08 0 0 0-2.04.557l-7.317 4.225a.148.148 0 0 1-.035.013 11.7 11.7 0 0 1-5.801 1.569c-2.748 0-5.303-1.007-7.194-2.835l-.278-.27a9.716 9.716 0 0 1-1.497-2.046.096.096 0 0 1-.013-.037l-.191-.347a.11.11 0 0 1-.023-.029c-.615-1.123-1.783-1.793-3.124-1.793z' fill='#607D8B'/><path d='M42.434 155.808c-2.51-.001-4.697-1.258-5.852-3.365-1.811-3.304-.438-7.634 3.059-9.654l12.291-7.098a7.599 7.599 0 0 1 3.789-1.033c2.51 0 4.697 1.258 5.852 3.365 1.811 3.304.439 7.634-3.059 9.654l-12.291 7.098a7.606 7.606 0 0 1-3.789 1.033zm13.287-20.683a7.128 7.128 0 0 0-3.555.971l-12.291 7.098c-3.279 1.893-4.573 5.942-2.883 9.024 1.071 1.955 3.106 3.122 5.442 3.122a7.13 7.13 0 0 0 3.556-.97l12.291-7.098c3.279-1.893 4.572-5.942 2.883-9.024-1.072-1.955-3.106-3.123-5.443-3.123z' fill='#607D8B'/><path d='M149.588 109.407l6.737 3.89v.887c0 .176.013.36.037.549.011.081.02.161.028.242.14 1.415.973 2.998 2.105 3.999l7.396 6.545c.177.156.358.295.541.415 1.579 1.04 2.95.466 3.062-1.282.049-.784.057-1.595.023-2.429l-.003-.16v-1.151l25.987 15.003v54c0 1.09-.77 1.53-1.72.982l-42.473-24.523c-.95-.548-1.72-1.877-1.72-2.966v-34.033' fill='#FAFAFA'/><path d='M194.553 191.25c-.257 0-.54-.085-.831-.253l-42.472-24.521c-.981-.567-1.779-1.943-1.779-3.068v-34.033h.234v34.033c0 1.051.745 2.336 1.661 2.866l42.473 24.521c.424.245.816.288 1.103.122.285-.164.442-.52.442-1.002v-53.933l-25.753-14.868.003 1.106c.034.832.026 1.654-.024 2.439-.054.844-.396 1.464-.963 1.746-.619.309-1.45.173-2.28-.373a5.023 5.023 0 0 1-.553-.426l-7.397-6.544c-1.158-1.026-1.999-2.625-2.143-4.076a9.624 9.624 0 0 0-.027-.238 4.241 4.241 0 0 1-.038-.564v-.82l-6.68-3.856.117-.202 6.738 3.89.058.034v.954c0 .171.012.351.036.533.011.083.021.165.029.246.138 1.395.948 2.935 2.065 3.923l7.397 6.545c.173.153.35.289.527.406.758.499 1.504.63 2.047.359.49-.243.786-.795.834-1.551.05-.778.057-1.591.024-2.417l-.004-.163v-1.355l.175.1 25.987 15.004.059.033v54.068c0 .569-.198.996-.559 1.204a1.002 1.002 0 0 1-.506.131' fill='#607D8B'/><path d='M145.685 163.161l24.115 13.922-25.978 14.998-1.462-.307c-6.534-2.17-13.628-3.728-21.019-4.616-4.365-.524-8.663 1.096-9.598 3.62a2.746 2.746 0 0 0-.011 1.928c1.538 4.267 4.236 8.363 7.995 12.135l.532.845-25.977 14.997-24.115-13.922 75.518-43.6' fill='#FFF'/><path d='M94.282 220.818l-.059-.033-24.29-14.024.175-.101 75.577-43.634.058.033 24.29 14.024-26.191 15.122-.045-.01-1.461-.307c-6.549-2.174-13.613-3.725-21.009-4.614a13.744 13.744 0 0 0-1.638-.097c-3.758 0-7.054 1.531-7.837 3.642a2.62 2.62 0 0 0-.01 1.848c1.535 4.258 4.216 8.326 7.968 12.091l.016.021.526.835.006.01.064.102-.105.061-25.977 14.998-.058.033zm-23.881-14.057l23.881 13.788 24.802-14.32c.546-.315.846-.489 1.017-.575l-.466-.74c-3.771-3.787-6.467-7.881-8.013-12.168a2.851 2.851 0 0 1 .011-2.008c.815-2.199 4.203-3.795 8.056-3.795.557 0 1.117.033 1.666.099 7.412.891 14.491 2.445 21.041 4.621.836.175 1.215.254 1.39.304l25.78-14.884-23.881-13.788-75.284 43.466z' fill='#607D8B'/><path d='M167.23 125.979v50.871l-27.321 15.773-6.461-14.167c-.91-1.996-3.428-1.738-5.624.574a10.238 10.238 0 0 0-2.33 4.018l-6.46 21.628-27.322 15.774v-50.871l75.518-43.6' fill='#FFF'/><path d='M91.712 220.567a.127.127 0 0 1-.059-.016.118.118 0 0 1-.058-.101v-50.871c0-.042.023-.08.058-.101l75.519-43.6a.117.117 0 0 1 .175.101v50.871c0 .041-.023.08-.059.1l-27.321 15.775a.118.118 0 0 1-.094.01.12.12 0 0 1-.071-.063l-6.46-14.168c-.375-.822-1.062-1.275-1.934-1.275-1.089 0-2.364.686-3.5 1.881a10.206 10.206 0 0 0-2.302 3.972l-6.46 21.627a.118.118 0 0 1-.054.068L91.77 220.551a.12.12 0 0 1-.058.016zm.117-50.92v50.601l27.106-15.65 6.447-21.583a10.286 10.286 0 0 1 2.357-4.065c1.18-1.242 2.517-1.954 3.669-1.954.969 0 1.731.501 2.146 1.411l6.407 14.051 27.152-15.676v-50.601l-75.284 43.466z' fill='#607D8B'/><path d='M168.543 126.213v50.87l-27.322 15.774-6.46-14.168c-.91-1.995-3.428-1.738-5.624.574a10.248 10.248 0 0 0-2.33 4.019l-6.461 21.627-27.321 15.774v-50.87l75.518-43.6' fill='#FFF'/><path d='M93.025 220.8a.123.123 0 0 1-.059-.015.12.12 0 0 1-.058-.101v-50.871c0-.042.023-.08.058-.101l75.518-43.6a.112.112 0 0 1 .117 0c.036.02.059.059.059.1v50.871a.116.116 0 0 1-.059.101l-27.321 15.774a.111.111 0 0 1-.094.01.115.115 0 0 1-.071-.062l-6.46-14.168c-.375-.823-1.062-1.275-1.935-1.275-1.088 0-2.363.685-3.499 1.881a10.19 10.19 0 0 0-2.302 3.971l-6.461 21.628a.108.108 0 0 1-.053.067l-27.322 15.775a.12.12 0 0 1-.058.015zm.117-50.919v50.6l27.106-15.649 6.447-21.584a10.293 10.293 0 0 1 2.357-4.065c1.179-1.241 2.516-1.954 3.668-1.954.969 0 1.732.502 2.147 1.412l6.407 14.051 27.152-15.676v-50.601l-75.284 43.466z' fill='#607D8B'/><path d='M169.8 177.083l-27.322 15.774-6.46-14.168c-.91-1.995-3.428-1.738-5.625.574a10.246 10.246 0 0 0-2.329 4.019l-6.461 21.627-27.321 15.774v-50.87l75.518-43.6v50.87z' fill='#FAFAFA'/><path d='M94.282 220.917a.234.234 0 0 1-.234-.233v-50.871c0-.083.045-.161.117-.202l75.518-43.601a.234.234 0 1 1 .35.202v50.871a.233.233 0 0 1-.116.202l-27.322 15.775a.232.232 0 0 1-.329-.106l-6.461-14.168c-.36-.789-.992-1.206-1.828-1.206-1.056 0-2.301.672-3.415 1.844a10.099 10.099 0 0 0-2.275 3.924l-6.46 21.628a.235.235 0 0 1-.107.136l-27.322 15.774a.23.23 0 0 1-.116.031zm.233-50.969v50.331l26.891-15.525 6.434-21.539a10.41 10.41 0 0 1 2.384-4.112c1.201-1.265 2.569-1.991 3.753-1.991 1.018 0 1.818.526 2.253 1.48l6.354 13.934 26.982-15.578v-50.331l-75.051 43.331z' fill='#607D8B'/><path d='M109.894 199.943c-1.774 0-3.241-.725-4.244-2.12a.224.224 0 0 1 .023-.294.233.233 0 0 1 .301-.023c.78.547 1.705.827 2.75.827 1.323 0 2.754-.439 4.256-1.306 5.311-3.067 9.631-10.518 9.631-16.611 0-1.927-.442-3.56-1.278-4.724a.232.232 0 0 1 .323-.327c1.671 1.172 2.591 3.381 2.591 6.219 0 6.242-4.426 13.863-9.865 17.003-1.574.908-3.084 1.356-4.488 1.356zm-2.969-1.542c.813.651 1.82.877 2.968.877h.001c1.321 0 2.753-.327 4.254-1.194 5.311-3.067 9.632-10.463 9.632-16.556 0-1.979-.463-3.599-1.326-4.761.411 1.035.625 2.275.625 3.635 0 6.243-4.426 13.883-9.865 17.023-1.574.909-3.084 1.317-4.49 1.317-.641 0-1.243-.149-1.799-.341z' fill='#607D8B'/><path d='M113.097 197.23c5.384-3.108 9.748-10.636 9.748-16.814 0-2.051-.483-3.692-1.323-4.86-1.784-1.252-4.374-1.194-7.257.47-5.384 3.108-9.748 10.636-9.748 16.814 0 2.051.483 3.692 1.323 4.86 1.784 1.252 4.374 1.194 7.257-.47' fill='#FAFAFA'/><path d='M108.724 198.614c-1.142 0-2.158-.213-3.019-.817-.021-.014-.04.014-.055-.007-.894-1.244-1.367-2.948-1.367-4.973 0-6.242 4.426-13.864 9.865-17.005 1.574-.908 3.084-1.363 4.49-1.363 1.142 0 2.158.309 3.018.913a.23.23 0 0 1 .056.056c.894 1.244 1.367 2.972 1.367 4.997 0 6.243-4.426 13.783-9.865 16.923-1.574.909-3.084 1.276-4.49 1.276zm-2.718-1.109c.774.532 1.688.776 2.718.776 1.323 0 2.754-.413 4.256-1.28 5.311-3.066 9.631-10.505 9.631-16.598 0-1.909-.434-3.523-1.255-4.685-.774-.533-1.688-.799-2.718-.799-1.323 0-2.755.441-4.256 1.308-5.311 3.066-9.631 10.506-9.631 16.599 0 1.909.434 3.517 1.255 4.679z' fill='#607D8B'/><path d='M149.318 114.262l-9.984 8.878 15.893 11.031 5.589-6.112-11.498-13.797' fill='#FAFAFA'/><path d='M169.676 120.84l-9.748 5.627c-3.642 2.103-9.528 2.113-13.147.024-3.62-2.089-3.601-5.488.041-7.591l9.495-5.608-6.729-3.885-81.836 47.071 45.923 26.514 3.081-1.779c.631-.365.869-.898.618-1.39-2.357-4.632-2.593-9.546-.683-14.262 5.638-13.92 24.509-24.815 48.618-28.07 8.169-1.103 16.68-.967 24.704.394.852.145 1.776.008 2.407-.357l3.081-1.778-25.825-14.91' fill='#FAFAFA'/><path d='M113.675 183.459a.47.47 0 0 1-.233-.062l-45.924-26.515a.468.468 0 0 1 .001-.809l81.836-47.071a.467.467 0 0 1 .466 0l6.729 3.885a.467.467 0 0 1-.467.809l-6.496-3.75-80.9 46.533 44.988 25.973 2.848-1.644c.192-.111.62-.409.435-.773-2.416-4.748-2.658-9.814-.7-14.65 2.806-6.927 8.885-13.242 17.582-18.263 8.657-4.998 19.518-8.489 31.407-10.094 8.198-1.107 16.79-.97 24.844.397.739.125 1.561.007 2.095-.301l2.381-1.374-25.125-14.506a.467.467 0 0 1 .467-.809l25.825 14.91a.467.467 0 0 1 0 .809l-3.081 1.779c-.721.417-1.763.575-2.718.413-7.963-1.351-16.457-1.486-24.563-.392-11.77 1.589-22.512 5.039-31.065 9.977-8.514 4.916-14.456 11.073-17.183 17.805-1.854 4.578-1.623 9.376.666 13.875.37.725.055 1.513-.8 2.006l-3.081 1.78a.476.476 0 0 1-.234.062' fill='#455A64'/><path d='M153.316 128.279c-2.413 0-4.821-.528-6.652-1.586-1.818-1.049-2.82-2.461-2.82-3.975 0-1.527 1.016-2.955 2.861-4.02l9.493-5.607a.233.233 0 1 1 .238.402l-9.496 5.609c-1.696.979-2.628 2.263-2.628 3.616 0 1.34.918 2.608 2.585 3.571 3.549 2.049 9.343 2.038 12.914-.024l9.748-5.628a.234.234 0 0 1 .234.405l-9.748 5.628c-1.858 1.072-4.296 1.609-6.729 1.609' fill='#607D8B'/><path d='M113.675 182.992l-45.913-26.508M113.675 183.342a.346.346 0 0 1-.175-.047l-45.913-26.508a.35.35 0 1 1 .35-.607l45.913 26.508a.35.35 0 0 1-.175.654' fill='#455A64'/><path d='M67.762 156.484v54.001c0 1.09.77 2.418 1.72 2.967l42.473 24.521c.95.549 1.72.11 1.72-.98v-54.001' fill='#FAFAFA'/><path d='M112.727 238.561c-.297 0-.62-.095-.947-.285l-42.473-24.521c-1.063-.613-1.895-2.05-1.895-3.27v-54.001a.35.35 0 1 1 .701 0v54.001c0 .96.707 2.18 1.544 2.663l42.473 24.522c.344.198.661.243.87.122.206-.119.325-.411.325-.799v-54.001a.35.35 0 1 1 .7 0v54.001c0 .655-.239 1.154-.675 1.406a1.235 1.235 0 0 1-.623.162' fill='#455A64'/><path d='M112.86 147.512h-.001c-2.318 0-4.499-.522-6.142-1.471-1.705-.984-2.643-2.315-2.643-3.749 0-1.445.952-2.791 2.68-3.788l12.041-6.953c1.668-.962 3.874-1.493 6.212-1.493 2.318 0 4.499.523 6.143 1.472 1.704.984 2.643 2.315 2.643 3.748 0 1.446-.952 2.791-2.68 3.789l-12.042 6.952c-1.668.963-3.874 1.493-6.211 1.493zm12.147-16.753c-2.217 0-4.298.497-5.861 1.399l-12.042 6.952c-1.502.868-2.33 1.998-2.33 3.182 0 1.173.815 2.289 2.293 3.142 1.538.889 3.596 1.378 5.792 1.378h.001c2.216 0 4.298-.497 5.861-1.399l12.041-6.953c1.502-.867 2.33-1.997 2.33-3.182 0-1.172-.814-2.288-2.292-3.142-1.539-.888-3.596-1.377-5.793-1.377z' fill='#607D8B'/><path d='M165.63 123.219l-5.734 3.311c-3.167 1.828-8.286 1.837-11.433.02-3.147-1.817-3.131-4.772.036-6.601l5.734-3.31 11.397 6.58' fill='#FAFAFA'/><path d='M154.233 117.448l9.995 5.771-4.682 2.704c-1.434.827-3.352 1.283-5.399 1.283-2.029 0-3.923-.449-5.333-1.263-1.29-.744-2-1.694-2-2.674 0-.991.723-1.955 2.036-2.713l5.383-3.108m0-.809l-5.734 3.31c-3.167 1.829-3.183 4.784-.036 6.601 1.568.905 3.623 1.357 5.684 1.357 2.077 0 4.159-.46 5.749-1.377l5.734-3.311-11.397-6.58M145.445 179.667c-1.773 0-3.241-.85-4.243-2.245-.067-.092-.057-.275.023-.356.08-.081.207-.12.3-.055.781.548 1.706.812 2.751.811 1.322 0 2.754-.446 4.256-1.313 5.31-3.066 9.631-10.522 9.631-16.615 0-1.927-.442-3.562-1.279-4.726a.235.235 0 0 1 .024-.301.232.232 0 0 1 .3-.027c1.67 1.172 2.59 3.38 2.59 6.219 0 6.242-4.425 13.987-9.865 17.127-1.573.908-3.083 1.481-4.488 1.481zM142.476 178c.814.651 1.82 1.002 2.969 1.002 1.322 0 2.753-.452 4.255-1.32 5.31-3.065 9.631-10.523 9.631-16.617 0-1.98-.463-3.63-1.325-4.793.411 1.035.624 2.26.624 3.62 0 6.242-4.425 13.875-9.865 17.015-1.573.909-3.084 1.376-4.489 1.376a5.49 5.49 0 0 1-1.8-.283z' fill='#607D8B'/><path d='M148.648 176.704c5.384-3.108 9.748-10.636 9.748-16.813 0-2.052-.483-3.693-1.322-4.861-1.785-1.252-4.375-1.194-7.258.471-5.383 3.108-9.748 10.636-9.748 16.813 0 2.051.484 3.692 1.323 4.86 1.785 1.253 4.374 1.195 7.257-.47' fill='#FAFAFA'/><path d='M144.276 178.276c-1.143 0-2.158-.307-3.019-.911a.217.217 0 0 1-.055-.054c-.895-1.244-1.367-2.972-1.367-4.997 0-6.241 4.425-13.875 9.865-17.016 1.573-.908 3.084-1.369 4.489-1.369 1.143 0 2.158.307 3.019.91a.24.24 0 0 1 .055.055c.894 1.244 1.367 2.971 1.367 4.997 0 6.241-4.425 13.875-9.865 17.016-1.573.908-3.084 1.369-4.489 1.369zm-2.718-1.172c.773.533 1.687.901 2.718.901 1.322 0 2.754-.538 4.256-1.405 5.31-3.066 9.631-10.567 9.631-16.661 0-1.908-.434-3.554-1.256-4.716-.774-.532-1.688-.814-2.718-.814-1.322 0-2.754.433-4.256 1.3-5.31 3.066-9.631 10.564-9.631 16.657 0 1.91.434 3.576 1.256 4.738z' fill='#607D8B'/><path d='M150.72 172.361l-.363-.295a24.105 24.105 0 0 0 2.148-3.128 24.05 24.05 0 0 0 1.977-4.375l.443.149a24.54 24.54 0 0 1-2.015 4.46 24.61 24.61 0 0 1-2.19 3.189M115.917 191.514l-.363-.294a24.174 24.174 0 0 0 2.148-3.128 24.038 24.038 0 0 0 1.976-4.375l.443.148a24.48 24.48 0 0 1-2.015 4.461 24.662 24.662 0 0 1-2.189 3.188M114 237.476V182.584 237.476' fill='#607D8B'/><g><path d='M81.822 37.474c.017-.135-.075-.28-.267-.392-.327-.188-.826-.21-1.109-.045l-6.012 3.471c-.131.076-.194.178-.191.285.002.132.002.461.002.578v.043l-.007.128-6.591 3.779c-.001 0-2.077 1.046-2.787 5.192 0 0-.912 6.961-.898 19.745.015 12.57.606 17.07 1.167 21.351.22 1.684 3.001 2.125 3.001 2.125.331.04.698-.027 1.08-.248l75.273-43.551c1.808-1.069 2.667-3.719 3.056-6.284 1.213-7.99 1.675-32.978-.275-39.878-.196-.693-.51-1.083-.868-1.282l-2.086-.79c-.727.028-1.416.467-1.534.535L82.032 37.072l-.21.402' fill='#FFF'/><path d='M144.311 1.701l2.085.79c.358.199.672.589.868 1.282 1.949 6.9 1.487 31.887.275 39.878-.39 2.565-1.249 5.215-3.056 6.284L69.21 93.486a1.78 1.78 0 0 1-.896.258l-.183-.011c0 .001-2.782-.44-3.003-2.124-.56-4.282-1.151-8.781-1.165-21.351-.015-12.784.897-19.745.897-19.745.71-4.146 2.787-5.192 2.787-5.192l6.591-3.779.007-.128v-.043c0-.117 0-.446-.002-.578-.003-.107.059-.21.191-.285l6.012-3.472a.98.98 0 0 1 .481-.11c.218 0 .449.053.627.156.193.112.285.258.268.392l.211-.402 60.744-34.836c.117-.068.806-.507 1.534-.535m0-.997l-.039.001c-.618.023-1.283.244-1.974.656l-.021.012-60.519 34.706a2.358 2.358 0 0 0-.831-.15c-.365 0-.704.084-.98.244l-6.012 3.471c-.442.255-.699.69-.689 1.166l.001.15-6.08 3.487c-.373.199-2.542 1.531-3.29 5.898l-.006.039c-.009.07-.92 7.173-.906 19.875.014 12.62.603 17.116 1.172 21.465l.002.015c.308 2.355 3.475 2.923 3.836 2.98l.034.004c.101.013.204.019.305.019a2.77 2.77 0 0 0 1.396-.392l75.273-43.552c1.811-1.071 2.999-3.423 3.542-6.997 1.186-7.814 1.734-33.096-.301-40.299-.253-.893-.704-1.527-1.343-1.882l-.132-.062-2.085-.789a.973.973 0 0 0-.353-.065' fill='#455A64'/><path d='M128.267 11.565l1.495.434-56.339 32.326' fill='#FFF'/><path d='M74.202 90.545a.5.5 0 0 1-.25-.931l18.437-10.645a.499.499 0 1 1 .499.864L74.451 90.478l-.249.067M75.764 42.654l-.108-.062.046-.171 5.135-2.964.17.045-.045.171-5.135 2.964-.063.017M70.52 90.375V46.421l.063-.036L137.84 7.554v43.954l-.062.036L70.52 90.375zm.25-43.811v43.38l66.821-38.579V7.985L70.77 46.564z' fill='#607D8B'/><path d='M86.986 83.182c-.23.149-.612.384-.849.523l-11.505 6.701c-.237.139-.206.252.068.252h.565c.275 0 .693-.113.93-.252L87.7 83.705c.237-.139.428-.253.425-.256a11.29 11.29 0 0 1-.006-.503c0-.274-.188-.377-.418-.227l-.715.463' fill='#607D8B'/><path d='M75.266 90.782H74.7c-.2 0-.316-.056-.346-.166-.03-.11.043-.217.215-.317l11.505-6.702c.236-.138.615-.371.844-.519l.715-.464a.488.488 0 0 1 .266-.089c.172 0 .345.13.345.421 0 .214.001.363.003.437l.006.004-.004.069c-.003.075-.003.075-.486.356l-11.505 6.702a2.282 2.282 0 0 1-.992.268zm-.6-.25l.034.001h.566c.252 0 .649-.108.866-.234l11.505-6.702c.168-.098.294-.173.361-.214-.004-.084-.004-.218-.004-.437l-.095-.171-.131.049-.714.463c-.232.15-.616.386-.854.525l-11.505 6.702-.029.018z' fill='#607D8B'/><path d='M75.266 89.871H74.7c-.2 0-.316-.056-.346-.166-.03-.11.043-.217.215-.317l11.505-6.702c.258-.151.694-.268.993-.268h.565c.2 0 .316.056.346.166.03.11-.043.217-.215.317l-11.505 6.702a2.282 2.282 0 0 1-.992.268zm-.6-.25l.034.001h.566c.252 0 .649-.107.866-.234l11.505-6.702.03-.018-.035-.001h-.565c-.252 0-.649.108-.867.234l-11.505 6.702-.029.018zM74.37 90.801v-1.247 1.247' fill='#607D8B'/><path d='M68.13 93.901c-.751-.093-1.314-.737-1.439-1.376-.831-4.238-1.151-8.782-1.165-21.352-.015-12.784.897-19.745.897-19.745.711-4.146 2.787-5.192 2.787-5.192l74.859-43.219c.223-.129 2.487-1.584 3.195.923 1.95 6.9 1.488 31.887.275 39.878-.389 2.565-1.248 5.215-3.056 6.283L69.21 93.653c-.382.221-.749.288-1.08.248 0 0-2.781-.441-3.001-2.125-.561-4.281-1.152-8.781-1.167-21.351-.014-12.784.898-19.745.898-19.745.71-4.146 2.787-5.191 2.787-5.191l6.598-3.81.871-.119 6.599-3.83.046-.461L68.13 93.901' fill='#FAFAFA'/><path d='M68.317 94.161l-.215-.013h-.001l-.244-.047c-.719-.156-2.772-.736-2.976-2.292-.568-4.34-1.154-8.813-1.168-21.384-.014-12.654.891-19.707.9-19.777.725-4.231 2.832-5.338 2.922-5.382l6.628-3.827.87-.119 6.446-3.742.034-.334a.248.248 0 0 1 .273-.223.248.248 0 0 1 .223.272l-.059.589-6.752 3.919-.87.118-6.556 3.785c-.031.016-1.99 1.068-2.666 5.018-.007.06-.908 7.086-.894 19.702.014 12.539.597 16.996 1.161 21.305.091.691.689 1.154 1.309 1.452a1.95 1.95 0 0 1-.236-.609c-.781-3.984-1.155-8.202-1.17-21.399-.014-12.653.891-19.707.9-19.777.725-4.231 2.832-5.337 2.922-5.382-.004.001 74.444-42.98 74.846-43.212l.028-.017c.904-.538 1.72-.688 2.36-.433.555.221.949.733 1.172 1.52 2.014 7.128 1.46 32.219.281 39.983-.507 3.341-1.575 5.515-3.175 6.462L69.335 93.869a2.023 2.023 0 0 1-1.018.292zm-.147-.507c.293.036.604-.037.915-.217l75.273-43.551c1.823-1.078 2.602-3.915 2.934-6.106 1.174-7.731 1.731-32.695-.268-39.772-.178-.631-.473-1.032-.876-1.192-.484-.193-1.166-.052-1.921.397l-.034.021-74.858 43.218c-.031.017-1.989 1.069-2.666 5.019-.007.059-.908 7.085-.894 19.702.015 13.155.386 17.351 1.161 21.303.09.461.476.983 1.037 1.139.114.025.185.037.196.039h.001z' fill='#455A64'/><path d='M69.317 68.982c.489-.281.885-.056.885.505 0 .56-.396 1.243-.885 1.525-.488.282-.884.057-.884-.504 0-.56.396-1.243.884-1.526' fill='#FFF'/><path d='M68.92 71.133c-.289 0-.487-.228-.487-.625 0-.56.396-1.243.884-1.526a.812.812 0 0 1 .397-.121c.289 0 .488.229.488.626 0 .56-.396 1.243-.885 1.525a.812.812 0 0 1-.397.121m.794-2.459a.976.976 0 0 0-.49.147c-.548.317-.978 1.058-.978 1.687 0 .486.271.812.674.812a.985.985 0 0 0 .491-.146c.548-.317.978-1.057.978-1.687 0-.486-.272-.813-.675-.813' fill='#8097A2'/><path d='M68.92 70.947c-.271 0-.299-.307-.299-.439 0-.491.361-1.116.79-1.363a.632.632 0 0 1 .303-.096c.272 0 .301.306.301.438 0 .491-.363 1.116-.791 1.364a.629.629 0 0 1-.304.096m.794-2.086a.812.812 0 0 0-.397.121c-.488.283-.884.966-.884 1.526 0 .397.198.625.487.625a.812.812 0 0 0 .397-.121c.489-.282.885-.965.885-1.525 0-.397-.199-.626-.488-.626' fill='#8097A2'/><path d='M69.444 85.35c.264-.152.477-.031.477.272 0 .303-.213.67-.477.822-.263.153-.477.031-.477-.271 0-.302.214-.671.477-.823' fill='#FFF'/><path d='M69.23 86.51c-.156 0-.263-.123-.263-.337 0-.302.214-.671.477-.823a.431.431 0 0 1 .214-.066c.156 0 .263.124.263.338 0 .303-.213.67-.477.822a.431.431 0 0 1-.214.066m.428-1.412c-.1 0-.203.029-.307.09-.32.185-.57.618-.57.985 0 .309.185.524.449.524a.63.63 0 0 0 .308-.09c.32-.185.57-.618.57-.985 0-.309-.185-.524-.45-.524' fill='#8097A2'/><path d='M69.23 86.322l-.076-.149c0-.235.179-.544.384-.661l.12-.041.076.151c0 .234-.179.542-.383.66l-.121.04m.428-1.038a.431.431 0 0 0-.214.066c-.263.152-.477.521-.477.823 0 .214.107.337.263.337a.431.431 0 0 0 .214-.066c.264-.152.477-.519.477-.822 0-.214-.107-.338-.263-.338' fill='#8097A2'/><path d='M139.278 7.769v43.667L72.208 90.16V46.493l67.07-38.724' fill='#455A64'/><path d='M72.083 90.375V46.421l.063-.036 67.257-38.831v43.954l-.062.036-67.258 38.831zm.25-43.811v43.38l66.821-38.579V7.985L72.333 46.564z' fill='#607D8B'/></g><path d='M125.737 88.647l-7.639 3.334V84l-11.459 4.713v8.269L99 100.315l13.369 3.646 13.368-15.314' fill='#455A64'/></g></svg>";
-    function RotateInstructions() {
+      }]), r;
+    }(), Er = "<svg width='198' height='240' viewBox='0 0 198 240' xmlns='http://www.w3.org/2000/svg'><g fill='none' fill-rule='evenodd'><path d='M149.625 109.527l6.737 3.891v.886c0 .177.013.36.038.549.01.081.02.162.027.242.14 1.415.974 2.998 2.105 3.999l5.72 5.062.081-.09s4.382-2.53 5.235-3.024l25.97 14.993v54.001c0 .771-.386 1.217-.948 1.217-.233 0-.495-.076-.772-.236l-23.967-13.838-.014.024-27.322 15.775-.85-1.323c-4.731-1.529-9.748-2.74-14.951-3.61a.27.27 0 0 0-.007.024l-5.067 16.961-7.891 4.556-.037-.063v27.59c0 .772-.386 1.217-.948 1.217-.232 0-.495-.076-.772-.236l-42.473-24.522c-.95-.549-1.72-1.877-1.72-2.967v-1.035l-.021.047a5.111 5.111 0 0 0-1.816-.399 5.682 5.682 0 0 0-.546.001 13.724 13.724 0 0 1-1.918-.041c-1.655-.153-3.2-.6-4.404-1.296l-46.576-26.89.005.012-10.278-18.75c-1.001-1.827-.241-4.216 1.698-5.336l56.011-32.345a4.194 4.194 0 0 1 2.099-.572c1.326 0 2.572.659 3.227 1.853l.005-.003.227.413-.006.004a9.63 9.63 0 0 0 1.477 2.018l.277.27c1.914 1.85 4.468 2.801 7.113 2.801 1.949 0 3.948-.517 5.775-1.572.013 0 7.319-4.219 7.319-4.219a4.194 4.194 0 0 1 2.099-.572c1.326 0 2.572.658 3.226 1.853l3.25 5.928.022-.018 6.785 3.917-.105-.182 46.881-26.965m0-1.635c-.282 0-.563.073-.815.218l-46.169 26.556-5.41-3.124-3.005-5.481c-.913-1.667-2.699-2.702-4.66-2.703-1.011 0-2.02.274-2.917.792a3825 3825 0 0 1-7.275 4.195l-.044.024a9.937 9.937 0 0 1-4.957 1.353c-2.292 0-4.414-.832-5.976-2.342l-.252-.245a7.992 7.992 0 0 1-1.139-1.534 1.379 1.379 0 0 0-.06-.122l-.227-.414a1.718 1.718 0 0 0-.095-.154c-.938-1.574-2.673-2.545-4.571-2.545-1.011 0-2.02.274-2.917.792L3.125 155.502c-2.699 1.559-3.738 4.94-2.314 7.538l10.278 18.75c.177.323.448.563.761.704l46.426 26.804c1.403.81 3.157 1.332 5.072 1.508a15.661 15.661 0 0 0 2.146.046 4.766 4.766 0 0 1 .396 0c.096.004.19.011.283.022.109 1.593 1.159 3.323 2.529 4.114l42.472 24.522c.524.302 1.058.455 1.59.455 1.497 0 2.583-1.2 2.583-2.852v-26.562l7.111-4.105a1.64 1.64 0 0 0 .749-.948l4.658-15.593c4.414.797 8.692 1.848 12.742 3.128l.533.829a1.634 1.634 0 0 0 2.193.531l26.532-15.317L193 192.433c.523.302 1.058.455 1.59.455 1.497 0 2.583-1.199 2.583-2.852v-54.001c0-.584-.312-1.124-.818-1.416l-25.97-14.993a1.633 1.633 0 0 0-1.636.001c-.606.351-2.993 1.73-4.325 2.498l-4.809-4.255c-.819-.725-1.461-1.933-1.561-2.936a7.776 7.776 0 0 0-.033-.294 2.487 2.487 0 0 1-.023-.336v-.886c0-.584-.312-1.123-.817-1.416l-6.739-3.891a1.633 1.633 0 0 0-.817-.219' fill='#455A64'/><path d='M96.027 132.636l46.576 26.891c1.204.695 1.979 1.587 2.242 2.541l-.01.007-81.374 46.982h-.001c-1.654-.152-3.199-.6-4.403-1.295l-46.576-26.891 83.546-48.235' fill='#FAFAFA'/><path d='M63.461 209.174c-.008 0-.015 0-.022-.002-1.693-.156-3.228-.609-4.441-1.309l-46.576-26.89a.118.118 0 0 1 0-.203l83.546-48.235a.117.117 0 0 1 .117 0l46.576 26.891c1.227.708 2.021 1.612 2.296 2.611a.116.116 0 0 1-.042.124l-.021.016-81.375 46.981a.11.11 0 0 1-.058.016zm-50.747-28.303l46.401 26.79c1.178.68 2.671 1.121 4.32 1.276l81.272-46.922c-.279-.907-1.025-1.73-2.163-2.387l-46.517-26.857-83.313 48.1z' fill='#607D8B'/><path d='M148.327 165.471a5.85 5.85 0 0 1-.546.001c-1.894-.083-3.302-1.038-3.145-2.132a2.693 2.693 0 0 0-.072-1.105l-81.103 46.822c.628.058 1.272.073 1.918.042.182-.009.364-.009.546-.001 1.894.083 3.302 1.038 3.145 2.132l79.257-45.759' fill='#FFF'/><path d='M69.07 211.347a.118.118 0 0 1-.115-.134c.045-.317-.057-.637-.297-.925-.505-.61-1.555-1.022-2.738-1.074a5.966 5.966 0 0 0-.535.001 14.03 14.03 0 0 1-1.935-.041.117.117 0 0 1-.103-.092.116.116 0 0 1 .055-.126l81.104-46.822a.117.117 0 0 1 .171.07c.104.381.129.768.074 1.153-.045.316.057.637.296.925.506.61 1.555 1.021 2.739 1.073.178.008.357.008.535-.001a.117.117 0 0 1 .064.218l-79.256 45.759a.114.114 0 0 1-.059.016zm-3.405-2.372c.089 0 .177.002.265.006 1.266.056 2.353.488 2.908 1.158.227.274.35.575.36.882l78.685-45.429c-.036 0-.072-.001-.107-.003-1.267-.056-2.354-.489-2.909-1.158-.282-.34-.402-.724-.347-1.107a2.604 2.604 0 0 0-.032-.91L63.846 208.97a13.91 13.91 0 0 0 1.528.012c.097-.005.194-.007.291-.007z' fill='#607D8B'/><path d='M2.208 162.134c-1.001-1.827-.241-4.217 1.698-5.337l56.011-32.344c1.939-1.12 4.324-.546 5.326 1.281l.232.41a9.344 9.344 0 0 0 1.47 2.021l.278.27c3.325 3.214 8.583 3.716 12.888 1.23l7.319-4.22c1.94-1.119 4.324-.546 5.325 1.282l3.25 5.928-83.519 48.229-10.278-18.75z' fill='#FAFAFA'/><path d='M12.486 181.001a.112.112 0 0 1-.031-.005.114.114 0 0 1-.071-.056L2.106 162.19c-1.031-1.88-.249-4.345 1.742-5.494l56.01-32.344a4.328 4.328 0 0 1 2.158-.588c1.415 0 2.65.702 3.311 1.882.01.008.018.017.024.028l.227.414a.122.122 0 0 1 .013.038 9.508 9.508 0 0 0 1.439 1.959l.275.266c1.846 1.786 4.344 2.769 7.031 2.769 1.977 0 3.954-.538 5.717-1.557a.148.148 0 0 1 .035-.013l7.284-4.206a4.321 4.321 0 0 1 2.157-.588c1.427 0 2.672.716 3.329 1.914l3.249 5.929a.116.116 0 0 1-.044.157l-83.518 48.229a.116.116 0 0 1-.059.016zm49.53-57.004c-.704 0-1.41.193-2.041.557l-56.01 32.345c-1.882 1.086-2.624 3.409-1.655 5.179l10.221 18.645 83.317-48.112-3.195-5.829c-.615-1.122-1.783-1.792-3.124-1.792a4.08 4.08 0 0 0-2.04.557l-7.317 4.225a.148.148 0 0 1-.035.013 11.7 11.7 0 0 1-5.801 1.569c-2.748 0-5.303-1.007-7.194-2.835l-.278-.27a9.716 9.716 0 0 1-1.497-2.046.096.096 0 0 1-.013-.037l-.191-.347a.11.11 0 0 1-.023-.029c-.615-1.123-1.783-1.793-3.124-1.793z' fill='#607D8B'/><path d='M42.434 155.808c-2.51-.001-4.697-1.258-5.852-3.365-1.811-3.304-.438-7.634 3.059-9.654l12.291-7.098a7.599 7.599 0 0 1 3.789-1.033c2.51 0 4.697 1.258 5.852 3.365 1.811 3.304.439 7.634-3.059 9.654l-12.291 7.098a7.606 7.606 0 0 1-3.789 1.033zm13.287-20.683a7.128 7.128 0 0 0-3.555.971l-12.291 7.098c-3.279 1.893-4.573 5.942-2.883 9.024 1.071 1.955 3.106 3.122 5.442 3.122a7.13 7.13 0 0 0 3.556-.97l12.291-7.098c3.279-1.893 4.572-5.942 2.883-9.024-1.072-1.955-3.106-3.123-5.443-3.123z' fill='#607D8B'/><path d='M149.588 109.407l6.737 3.89v.887c0 .176.013.36.037.549.011.081.02.161.028.242.14 1.415.973 2.998 2.105 3.999l7.396 6.545c.177.156.358.295.541.415 1.579 1.04 2.95.466 3.062-1.282.049-.784.057-1.595.023-2.429l-.003-.16v-1.151l25.987 15.003v54c0 1.09-.77 1.53-1.72.982l-42.473-24.523c-.95-.548-1.72-1.877-1.72-2.966v-34.033' fill='#FAFAFA'/><path d='M194.553 191.25c-.257 0-.54-.085-.831-.253l-42.472-24.521c-.981-.567-1.779-1.943-1.779-3.068v-34.033h.234v34.033c0 1.051.745 2.336 1.661 2.866l42.473 24.521c.424.245.816.288 1.103.122.285-.164.442-.52.442-1.002v-53.933l-25.753-14.868.003 1.106c.034.832.026 1.654-.024 2.439-.054.844-.396 1.464-.963 1.746-.619.309-1.45.173-2.28-.373a5.023 5.023 0 0 1-.553-.426l-7.397-6.544c-1.158-1.026-1.999-2.625-2.143-4.076a9.624 9.624 0 0 0-.027-.238 4.241 4.241 0 0 1-.038-.564v-.82l-6.68-3.856.117-.202 6.738 3.89.058.034v.954c0 .171.012.351.036.533.011.083.021.165.029.246.138 1.395.948 2.935 2.065 3.923l7.397 6.545c.173.153.35.289.527.406.758.499 1.504.63 2.047.359.49-.243.786-.795.834-1.551.05-.778.057-1.591.024-2.417l-.004-.163v-1.355l.175.1 25.987 15.004.059.033v54.068c0 .569-.198.996-.559 1.204a1.002 1.002 0 0 1-.506.131' fill='#607D8B'/><path d='M145.685 163.161l24.115 13.922-25.978 14.998-1.462-.307c-6.534-2.17-13.628-3.728-21.019-4.616-4.365-.524-8.663 1.096-9.598 3.62a2.746 2.746 0 0 0-.011 1.928c1.538 4.267 4.236 8.363 7.995 12.135l.532.845-25.977 14.997-24.115-13.922 75.518-43.6' fill='#FFF'/><path d='M94.282 220.818l-.059-.033-24.29-14.024.175-.101 75.577-43.634.058.033 24.29 14.024-26.191 15.122-.045-.01-1.461-.307c-6.549-2.174-13.613-3.725-21.009-4.614a13.744 13.744 0 0 0-1.638-.097c-3.758 0-7.054 1.531-7.837 3.642a2.62 2.62 0 0 0-.01 1.848c1.535 4.258 4.216 8.326 7.968 12.091l.016.021.526.835.006.01.064.102-.105.061-25.977 14.998-.058.033zm-23.881-14.057l23.881 13.788 24.802-14.32c.546-.315.846-.489 1.017-.575l-.466-.74c-3.771-3.787-6.467-7.881-8.013-12.168a2.851 2.851 0 0 1 .011-2.008c.815-2.199 4.203-3.795 8.056-3.795.557 0 1.117.033 1.666.099 7.412.891 14.491 2.445 21.041 4.621.836.175 1.215.254 1.39.304l25.78-14.884-23.881-13.788-75.284 43.466z' fill='#607D8B'/><path d='M167.23 125.979v50.871l-27.321 15.773-6.461-14.167c-.91-1.996-3.428-1.738-5.624.574a10.238 10.238 0 0 0-2.33 4.018l-6.46 21.628-27.322 15.774v-50.871l75.518-43.6' fill='#FFF'/><path d='M91.712 220.567a.127.127 0 0 1-.059-.016.118.118 0 0 1-.058-.101v-50.871c0-.042.023-.08.058-.101l75.519-43.6a.117.117 0 0 1 .175.101v50.871c0 .041-.023.08-.059.1l-27.321 15.775a.118.118 0 0 1-.094.01.12.12 0 0 1-.071-.063l-6.46-14.168c-.375-.822-1.062-1.275-1.934-1.275-1.089 0-2.364.686-3.5 1.881a10.206 10.206 0 0 0-2.302 3.972l-6.46 21.627a.118.118 0 0 1-.054.068L91.77 220.551a.12.12 0 0 1-.058.016zm.117-50.92v50.601l27.106-15.65 6.447-21.583a10.286 10.286 0 0 1 2.357-4.065c1.18-1.242 2.517-1.954 3.669-1.954.969 0 1.731.501 2.146 1.411l6.407 14.051 27.152-15.676v-50.601l-75.284 43.466z' fill='#607D8B'/><path d='M168.543 126.213v50.87l-27.322 15.774-6.46-14.168c-.91-1.995-3.428-1.738-5.624.574a10.248 10.248 0 0 0-2.33 4.019l-6.461 21.627-27.321 15.774v-50.87l75.518-43.6' fill='#FFF'/><path d='M93.025 220.8a.123.123 0 0 1-.059-.015.12.12 0 0 1-.058-.101v-50.871c0-.042.023-.08.058-.101l75.518-43.6a.112.112 0 0 1 .117 0c.036.02.059.059.059.1v50.871a.116.116 0 0 1-.059.101l-27.321 15.774a.111.111 0 0 1-.094.01.115.115 0 0 1-.071-.062l-6.46-14.168c-.375-.823-1.062-1.275-1.935-1.275-1.088 0-2.363.685-3.499 1.881a10.19 10.19 0 0 0-2.302 3.971l-6.461 21.628a.108.108 0 0 1-.053.067l-27.322 15.775a.12.12 0 0 1-.058.015zm.117-50.919v50.6l27.106-15.649 6.447-21.584a10.293 10.293 0 0 1 2.357-4.065c1.179-1.241 2.516-1.954 3.668-1.954.969 0 1.732.502 2.147 1.412l6.407 14.051 27.152-15.676v-50.601l-75.284 43.466z' fill='#607D8B'/><path d='M169.8 177.083l-27.322 15.774-6.46-14.168c-.91-1.995-3.428-1.738-5.625.574a10.246 10.246 0 0 0-2.329 4.019l-6.461 21.627-27.321 15.774v-50.87l75.518-43.6v50.87z' fill='#FAFAFA'/><path d='M94.282 220.917a.234.234 0 0 1-.234-.233v-50.871c0-.083.045-.161.117-.202l75.518-43.601a.234.234 0 1 1 .35.202v50.871a.233.233 0 0 1-.116.202l-27.322 15.775a.232.232 0 0 1-.329-.106l-6.461-14.168c-.36-.789-.992-1.206-1.828-1.206-1.056 0-2.301.672-3.415 1.844a10.099 10.099 0 0 0-2.275 3.924l-6.46 21.628a.235.235 0 0 1-.107.136l-27.322 15.774a.23.23 0 0 1-.116.031zm.233-50.969v50.331l26.891-15.525 6.434-21.539a10.41 10.41 0 0 1 2.384-4.112c1.201-1.265 2.569-1.991 3.753-1.991 1.018 0 1.818.526 2.253 1.48l6.354 13.934 26.982-15.578v-50.331l-75.051 43.331z' fill='#607D8B'/><path d='M109.894 199.943c-1.774 0-3.241-.725-4.244-2.12a.224.224 0 0 1 .023-.294.233.233 0 0 1 .301-.023c.78.547 1.705.827 2.75.827 1.323 0 2.754-.439 4.256-1.306 5.311-3.067 9.631-10.518 9.631-16.611 0-1.927-.442-3.56-1.278-4.724a.232.232 0 0 1 .323-.327c1.671 1.172 2.591 3.381 2.591 6.219 0 6.242-4.426 13.863-9.865 17.003-1.574.908-3.084 1.356-4.488 1.356zm-2.969-1.542c.813.651 1.82.877 2.968.877h.001c1.321 0 2.753-.327 4.254-1.194 5.311-3.067 9.632-10.463 9.632-16.556 0-1.979-.463-3.599-1.326-4.761.411 1.035.625 2.275.625 3.635 0 6.243-4.426 13.883-9.865 17.023-1.574.909-3.084 1.317-4.49 1.317-.641 0-1.243-.149-1.799-.341z' fill='#607D8B'/><path d='M113.097 197.23c5.384-3.108 9.748-10.636 9.748-16.814 0-2.051-.483-3.692-1.323-4.86-1.784-1.252-4.374-1.194-7.257.47-5.384 3.108-9.748 10.636-9.748 16.814 0 2.051.483 3.692 1.323 4.86 1.784 1.252 4.374 1.194 7.257-.47' fill='#FAFAFA'/><path d='M108.724 198.614c-1.142 0-2.158-.213-3.019-.817-.021-.014-.04.014-.055-.007-.894-1.244-1.367-2.948-1.367-4.973 0-6.242 4.426-13.864 9.865-17.005 1.574-.908 3.084-1.363 4.49-1.363 1.142 0 2.158.309 3.018.913a.23.23 0 0 1 .056.056c.894 1.244 1.367 2.972 1.367 4.997 0 6.243-4.426 13.783-9.865 16.923-1.574.909-3.084 1.276-4.49 1.276zm-2.718-1.109c.774.532 1.688.776 2.718.776 1.323 0 2.754-.413 4.256-1.28 5.311-3.066 9.631-10.505 9.631-16.598 0-1.909-.434-3.523-1.255-4.685-.774-.533-1.688-.799-2.718-.799-1.323 0-2.755.441-4.256 1.308-5.311 3.066-9.631 10.506-9.631 16.599 0 1.909.434 3.517 1.255 4.679z' fill='#607D8B'/><path d='M149.318 114.262l-9.984 8.878 15.893 11.031 5.589-6.112-11.498-13.797' fill='#FAFAFA'/><path d='M169.676 120.84l-9.748 5.627c-3.642 2.103-9.528 2.113-13.147.024-3.62-2.089-3.601-5.488.041-7.591l9.495-5.608-6.729-3.885-81.836 47.071 45.923 26.514 3.081-1.779c.631-.365.869-.898.618-1.39-2.357-4.632-2.593-9.546-.683-14.262 5.638-13.92 24.509-24.815 48.618-28.07 8.169-1.103 16.68-.967 24.704.394.852.145 1.776.008 2.407-.357l3.081-1.778-25.825-14.91' fill='#FAFAFA'/><path d='M113.675 183.459a.47.47 0 0 1-.233-.062l-45.924-26.515a.468.468 0 0 1 .001-.809l81.836-47.071a.467.467 0 0 1 .466 0l6.729 3.885a.467.467 0 0 1-.467.809l-6.496-3.75-80.9 46.533 44.988 25.973 2.848-1.644c.192-.111.62-.409.435-.773-2.416-4.748-2.658-9.814-.7-14.65 2.806-6.927 8.885-13.242 17.582-18.263 8.657-4.998 19.518-8.489 31.407-10.094 8.198-1.107 16.79-.97 24.844.397.739.125 1.561.007 2.095-.301l2.381-1.374-25.125-14.506a.467.467 0 0 1 .467-.809l25.825 14.91a.467.467 0 0 1 0 .809l-3.081 1.779c-.721.417-1.763.575-2.718.413-7.963-1.351-16.457-1.486-24.563-.392-11.77 1.589-22.512 5.039-31.065 9.977-8.514 4.916-14.456 11.073-17.183 17.805-1.854 4.578-1.623 9.376.666 13.875.37.725.055 1.513-.8 2.006l-3.081 1.78a.476.476 0 0 1-.234.062' fill='#455A64'/><path d='M153.316 128.279c-2.413 0-4.821-.528-6.652-1.586-1.818-1.049-2.82-2.461-2.82-3.975 0-1.527 1.016-2.955 2.861-4.02l9.493-5.607a.233.233 0 1 1 .238.402l-9.496 5.609c-1.696.979-2.628 2.263-2.628 3.616 0 1.34.918 2.608 2.585 3.571 3.549 2.049 9.343 2.038 12.914-.024l9.748-5.628a.234.234 0 0 1 .234.405l-9.748 5.628c-1.858 1.072-4.296 1.609-6.729 1.609' fill='#607D8B'/><path d='M113.675 182.992l-45.913-26.508M113.675 183.342a.346.346 0 0 1-.175-.047l-45.913-26.508a.35.35 0 1 1 .35-.607l45.913 26.508a.35.35 0 0 1-.175.654' fill='#455A64'/><path d='M67.762 156.484v54.001c0 1.09.77 2.418 1.72 2.967l42.473 24.521c.95.549 1.72.11 1.72-.98v-54.001' fill='#FAFAFA'/><path d='M112.727 238.561c-.297 0-.62-.095-.947-.285l-42.473-24.521c-1.063-.613-1.895-2.05-1.895-3.27v-54.001a.35.35 0 1 1 .701 0v54.001c0 .96.707 2.18 1.544 2.663l42.473 24.522c.344.198.661.243.87.122.206-.119.325-.411.325-.799v-54.001a.35.35 0 1 1 .7 0v54.001c0 .655-.239 1.154-.675 1.406a1.235 1.235 0 0 1-.623.162' fill='#455A64'/><path d='M112.86 147.512h-.001c-2.318 0-4.499-.522-6.142-1.471-1.705-.984-2.643-2.315-2.643-3.749 0-1.445.952-2.791 2.68-3.788l12.041-6.953c1.668-.962 3.874-1.493 6.212-1.493 2.318 0 4.499.523 6.143 1.472 1.704.984 2.643 2.315 2.643 3.748 0 1.446-.952 2.791-2.68 3.789l-12.042 6.952c-1.668.963-3.874 1.493-6.211 1.493zm12.147-16.753c-2.217 0-4.298.497-5.861 1.399l-12.042 6.952c-1.502.868-2.33 1.998-2.33 3.182 0 1.173.815 2.289 2.293 3.142 1.538.889 3.596 1.378 5.792 1.378h.001c2.216 0 4.298-.497 5.861-1.399l12.041-6.953c1.502-.867 2.33-1.997 2.33-3.182 0-1.172-.814-2.288-2.292-3.142-1.539-.888-3.596-1.377-5.793-1.377z' fill='#607D8B'/><path d='M165.63 123.219l-5.734 3.311c-3.167 1.828-8.286 1.837-11.433.02-3.147-1.817-3.131-4.772.036-6.601l5.734-3.31 11.397 6.58' fill='#FAFAFA'/><path d='M154.233 117.448l9.995 5.771-4.682 2.704c-1.434.827-3.352 1.283-5.399 1.283-2.029 0-3.923-.449-5.333-1.263-1.29-.744-2-1.694-2-2.674 0-.991.723-1.955 2.036-2.713l5.383-3.108m0-.809l-5.734 3.31c-3.167 1.829-3.183 4.784-.036 6.601 1.568.905 3.623 1.357 5.684 1.357 2.077 0 4.159-.46 5.749-1.377l5.734-3.311-11.397-6.58M145.445 179.667c-1.773 0-3.241-.85-4.243-2.245-.067-.092-.057-.275.023-.356.08-.081.207-.12.3-.055.781.548 1.706.812 2.751.811 1.322 0 2.754-.446 4.256-1.313 5.31-3.066 9.631-10.522 9.631-16.615 0-1.927-.442-3.562-1.279-4.726a.235.235 0 0 1 .024-.301.232.232 0 0 1 .3-.027c1.67 1.172 2.59 3.38 2.59 6.219 0 6.242-4.425 13.987-9.865 17.127-1.573.908-3.083 1.481-4.488 1.481zM142.476 178c.814.651 1.82 1.002 2.969 1.002 1.322 0 2.753-.452 4.255-1.32 5.31-3.065 9.631-10.523 9.631-16.617 0-1.98-.463-3.63-1.325-4.793.411 1.035.624 2.26.624 3.62 0 6.242-4.425 13.875-9.865 17.015-1.573.909-3.084 1.376-4.489 1.376a5.49 5.49 0 0 1-1.8-.283z' fill='#607D8B'/><path d='M148.648 176.704c5.384-3.108 9.748-10.636 9.748-16.813 0-2.052-.483-3.693-1.322-4.861-1.785-1.252-4.375-1.194-7.258.471-5.383 3.108-9.748 10.636-9.748 16.813 0 2.051.484 3.692 1.323 4.86 1.785 1.253 4.374 1.195 7.257-.47' fill='#FAFAFA'/><path d='M144.276 178.276c-1.143 0-2.158-.307-3.019-.911a.217.217 0 0 1-.055-.054c-.895-1.244-1.367-2.972-1.367-4.997 0-6.241 4.425-13.875 9.865-17.016 1.573-.908 3.084-1.369 4.489-1.369 1.143 0 2.158.307 3.019.91a.24.24 0 0 1 .055.055c.894 1.244 1.367 2.971 1.367 4.997 0 6.241-4.425 13.875-9.865 17.016-1.573.908-3.084 1.369-4.489 1.369zm-2.718-1.172c.773.533 1.687.901 2.718.901 1.322 0 2.754-.538 4.256-1.405 5.31-3.066 9.631-10.567 9.631-16.661 0-1.908-.434-3.554-1.256-4.716-.774-.532-1.688-.814-2.718-.814-1.322 0-2.754.433-4.256 1.3-5.31 3.066-9.631 10.564-9.631 16.657 0 1.91.434 3.576 1.256 4.738z' fill='#607D8B'/><path d='M150.72 172.361l-.363-.295a24.105 24.105 0 0 0 2.148-3.128 24.05 24.05 0 0 0 1.977-4.375l.443.149a24.54 24.54 0 0 1-2.015 4.46 24.61 24.61 0 0 1-2.19 3.189M115.917 191.514l-.363-.294a24.174 24.174 0 0 0 2.148-3.128 24.038 24.038 0 0 0 1.976-4.375l.443.148a24.48 24.48 0 0 1-2.015 4.461 24.662 24.662 0 0 1-2.189 3.188M114 237.476V182.584 237.476' fill='#607D8B'/><g><path d='M81.822 37.474c.017-.135-.075-.28-.267-.392-.327-.188-.826-.21-1.109-.045l-6.012 3.471c-.131.076-.194.178-.191.285.002.132.002.461.002.578v.043l-.007.128-6.591 3.779c-.001 0-2.077 1.046-2.787 5.192 0 0-.912 6.961-.898 19.745.015 12.57.606 17.07 1.167 21.351.22 1.684 3.001 2.125 3.001 2.125.331.04.698-.027 1.08-.248l75.273-43.551c1.808-1.069 2.667-3.719 3.056-6.284 1.213-7.99 1.675-32.978-.275-39.878-.196-.693-.51-1.083-.868-1.282l-2.086-.79c-.727.028-1.416.467-1.534.535L82.032 37.072l-.21.402' fill='#FFF'/><path d='M144.311 1.701l2.085.79c.358.199.672.589.868 1.282 1.949 6.9 1.487 31.887.275 39.878-.39 2.565-1.249 5.215-3.056 6.284L69.21 93.486a1.78 1.78 0 0 1-.896.258l-.183-.011c0 .001-2.782-.44-3.003-2.124-.56-4.282-1.151-8.781-1.165-21.351-.015-12.784.897-19.745.897-19.745.71-4.146 2.787-5.192 2.787-5.192l6.591-3.779.007-.128v-.043c0-.117 0-.446-.002-.578-.003-.107.059-.21.191-.285l6.012-3.472a.98.98 0 0 1 .481-.11c.218 0 .449.053.627.156.193.112.285.258.268.392l.211-.402 60.744-34.836c.117-.068.806-.507 1.534-.535m0-.997l-.039.001c-.618.023-1.283.244-1.974.656l-.021.012-60.519 34.706a2.358 2.358 0 0 0-.831-.15c-.365 0-.704.084-.98.244l-6.012 3.471c-.442.255-.699.69-.689 1.166l.001.15-6.08 3.487c-.373.199-2.542 1.531-3.29 5.898l-.006.039c-.009.07-.92 7.173-.906 19.875.014 12.62.603 17.116 1.172 21.465l.002.015c.308 2.355 3.475 2.923 3.836 2.98l.034.004c.101.013.204.019.305.019a2.77 2.77 0 0 0 1.396-.392l75.273-43.552c1.811-1.071 2.999-3.423 3.542-6.997 1.186-7.814 1.734-33.096-.301-40.299-.253-.893-.704-1.527-1.343-1.882l-.132-.062-2.085-.789a.973.973 0 0 0-.353-.065' fill='#455A64'/><path d='M128.267 11.565l1.495.434-56.339 32.326' fill='#FFF'/><path d='M74.202 90.545a.5.5 0 0 1-.25-.931l18.437-10.645a.499.499 0 1 1 .499.864L74.451 90.478l-.249.067M75.764 42.654l-.108-.062.046-.171 5.135-2.964.17.045-.045.171-5.135 2.964-.063.017M70.52 90.375V46.421l.063-.036L137.84 7.554v43.954l-.062.036L70.52 90.375zm.25-43.811v43.38l66.821-38.579V7.985L70.77 46.564z' fill='#607D8B'/><path d='M86.986 83.182c-.23.149-.612.384-.849.523l-11.505 6.701c-.237.139-.206.252.068.252h.565c.275 0 .693-.113.93-.252L87.7 83.705c.237-.139.428-.253.425-.256a11.29 11.29 0 0 1-.006-.503c0-.274-.188-.377-.418-.227l-.715.463' fill='#607D8B'/><path d='M75.266 90.782H74.7c-.2 0-.316-.056-.346-.166-.03-.11.043-.217.215-.317l11.505-6.702c.236-.138.615-.371.844-.519l.715-.464a.488.488 0 0 1 .266-.089c.172 0 .345.13.345.421 0 .214.001.363.003.437l.006.004-.004.069c-.003.075-.003.075-.486.356l-11.505 6.702a2.282 2.282 0 0 1-.992.268zm-.6-.25l.034.001h.566c.252 0 .649-.108.866-.234l11.505-6.702c.168-.098.294-.173.361-.214-.004-.084-.004-.218-.004-.437l-.095-.171-.131.049-.714.463c-.232.15-.616.386-.854.525l-11.505 6.702-.029.018z' fill='#607D8B'/><path d='M75.266 89.871H74.7c-.2 0-.316-.056-.346-.166-.03-.11.043-.217.215-.317l11.505-6.702c.258-.151.694-.268.993-.268h.565c.2 0 .316.056.346.166.03.11-.043.217-.215.317l-11.505 6.702a2.282 2.282 0 0 1-.992.268zm-.6-.25l.034.001h.566c.252 0 .649-.107.866-.234l11.505-6.702.03-.018-.035-.001h-.565c-.252 0-.649.108-.867.234l-11.505 6.702-.029.018zM74.37 90.801v-1.247 1.247' fill='#607D8B'/><path d='M68.13 93.901c-.751-.093-1.314-.737-1.439-1.376-.831-4.238-1.151-8.782-1.165-21.352-.015-12.784.897-19.745.897-19.745.711-4.146 2.787-5.192 2.787-5.192l74.859-43.219c.223-.129 2.487-1.584 3.195.923 1.95 6.9 1.488 31.887.275 39.878-.389 2.565-1.248 5.215-3.056 6.283L69.21 93.653c-.382.221-.749.288-1.08.248 0 0-2.781-.441-3.001-2.125-.561-4.281-1.152-8.781-1.167-21.351-.014-12.784.898-19.745.898-19.745.71-4.146 2.787-5.191 2.787-5.191l6.598-3.81.871-.119 6.599-3.83.046-.461L68.13 93.901' fill='#FAFAFA'/><path d='M68.317 94.161l-.215-.013h-.001l-.244-.047c-.719-.156-2.772-.736-2.976-2.292-.568-4.34-1.154-8.813-1.168-21.384-.014-12.654.891-19.707.9-19.777.725-4.231 2.832-5.338 2.922-5.382l6.628-3.827.87-.119 6.446-3.742.034-.334a.248.248 0 0 1 .273-.223.248.248 0 0 1 .223.272l-.059.589-6.752 3.919-.87.118-6.556 3.785c-.031.016-1.99 1.068-2.666 5.018-.007.06-.908 7.086-.894 19.702.014 12.539.597 16.996 1.161 21.305.091.691.689 1.154 1.309 1.452a1.95 1.95 0 0 1-.236-.609c-.781-3.984-1.155-8.202-1.17-21.399-.014-12.653.891-19.707.9-19.777.725-4.231 2.832-5.337 2.922-5.382-.004.001 74.444-42.98 74.846-43.212l.028-.017c.904-.538 1.72-.688 2.36-.433.555.221.949.733 1.172 1.52 2.014 7.128 1.46 32.219.281 39.983-.507 3.341-1.575 5.515-3.175 6.462L69.335 93.869a2.023 2.023 0 0 1-1.018.292zm-.147-.507c.293.036.604-.037.915-.217l75.273-43.551c1.823-1.078 2.602-3.915 2.934-6.106 1.174-7.731 1.731-32.695-.268-39.772-.178-.631-.473-1.032-.876-1.192-.484-.193-1.166-.052-1.921.397l-.034.021-74.858 43.218c-.031.017-1.989 1.069-2.666 5.019-.007.059-.908 7.085-.894 19.702.015 13.155.386 17.351 1.161 21.303.09.461.476.983 1.037 1.139.114.025.185.037.196.039h.001z' fill='#455A64'/><path d='M69.317 68.982c.489-.281.885-.056.885.505 0 .56-.396 1.243-.885 1.525-.488.282-.884.057-.884-.504 0-.56.396-1.243.884-1.526' fill='#FFF'/><path d='M68.92 71.133c-.289 0-.487-.228-.487-.625 0-.56.396-1.243.884-1.526a.812.812 0 0 1 .397-.121c.289 0 .488.229.488.626 0 .56-.396 1.243-.885 1.525a.812.812 0 0 1-.397.121m.794-2.459a.976.976 0 0 0-.49.147c-.548.317-.978 1.058-.978 1.687 0 .486.271.812.674.812a.985.985 0 0 0 .491-.146c.548-.317.978-1.057.978-1.687 0-.486-.272-.813-.675-.813' fill='#8097A2'/><path d='M68.92 70.947c-.271 0-.299-.307-.299-.439 0-.491.361-1.116.79-1.363a.632.632 0 0 1 .303-.096c.272 0 .301.306.301.438 0 .491-.363 1.116-.791 1.364a.629.629 0 0 1-.304.096m.794-2.086a.812.812 0 0 0-.397.121c-.488.283-.884.966-.884 1.526 0 .397.198.625.487.625a.812.812 0 0 0 .397-.121c.489-.282.885-.965.885-1.525 0-.397-.199-.626-.488-.626' fill='#8097A2'/><path d='M69.444 85.35c.264-.152.477-.031.477.272 0 .303-.213.67-.477.822-.263.153-.477.031-.477-.271 0-.302.214-.671.477-.823' fill='#FFF'/><path d='M69.23 86.51c-.156 0-.263-.123-.263-.337 0-.302.214-.671.477-.823a.431.431 0 0 1 .214-.066c.156 0 .263.124.263.338 0 .303-.213.67-.477.822a.431.431 0 0 1-.214.066m.428-1.412c-.1 0-.203.029-.307.09-.32.185-.57.618-.57.985 0 .309.185.524.449.524a.63.63 0 0 0 .308-.09c.32-.185.57-.618.57-.985 0-.309-.185-.524-.45-.524' fill='#8097A2'/><path d='M69.23 86.322l-.076-.149c0-.235.179-.544.384-.661l.12-.041.076.151c0 .234-.179.542-.383.66l-.121.04m.428-1.038a.431.431 0 0 0-.214.066c-.263.152-.477.521-.477.823 0 .214.107.337.263.337a.431.431 0 0 0 .214-.066c.264-.152.477-.519.477-.822 0-.214-.107-.338-.263-.338' fill='#8097A2'/><path d='M139.278 7.769v43.667L72.208 90.16V46.493l67.07-38.724' fill='#455A64'/><path d='M72.083 90.375V46.421l.063-.036 67.257-38.831v43.954l-.062.036-67.258 38.831zm.25-43.811v43.38l66.821-38.579V7.985L72.333 46.564z' fill='#607D8B'/></g><path d='M125.737 88.647l-7.639 3.334V84l-11.459 4.713v8.269L99 100.315l13.369 3.646 13.368-15.314' fill='#455A64'/></g></svg>";
+    function je() {
       this.loadIcon_();
-      var overlay = document.createElement("div");
-      var s = overlay.style;
-      s.position = "fixed";
-      s.top = 0;
-      s.right = 0;
-      s.bottom = 0;
-      s.left = 0;
-      s.backgroundColor = "gray";
-      s.fontFamily = "sans-serif";
-      s.zIndex = 1e6;
-      var img = document.createElement("img");
-      img.src = this.icon;
-      var s = img.style;
-      s.marginLeft = "25%";
-      s.marginTop = "25%";
-      s.width = "50%";
-      overlay.appendChild(img);
-      var text = document.createElement("div");
-      var s = text.style;
-      s.textAlign = "center";
-      s.fontSize = "16px";
-      s.lineHeight = "24px";
-      s.margin = "24px 25%";
-      s.width = "50%";
-      text.innerHTML = "Place your phone into your Cardboard viewer.";
-      overlay.appendChild(text);
-      var snackbar = document.createElement("div");
-      var s = snackbar.style;
-      s.backgroundColor = "#CFD8DC";
-      s.position = "fixed";
-      s.bottom = 0;
-      s.width = "100%";
-      s.height = "48px";
-      s.padding = "14px 24px";
-      s.boxSizing = "border-box";
-      s.color = "#656A6B";
-      overlay.appendChild(snackbar);
-      var snackbarText = document.createElement("div");
-      snackbarText.style.float = "left";
-      snackbarText.innerHTML = "No Cardboard viewer?";
-      var snackbarButton = document.createElement("a");
-      snackbarButton.href = "https://www.google.com/get/cardboard/get-cardboard/";
-      snackbarButton.innerHTML = "get one";
-      snackbarButton.target = "_blank";
-      var s = snackbarButton.style;
-      s.float = "right";
-      s.fontWeight = 600;
-      s.textTransform = "uppercase";
-      s.borderLeft = "1px solid gray";
-      s.paddingLeft = "24px";
-      s.textDecoration = "none";
-      s.color = "#656A6B";
-      snackbar.appendChild(snackbarText);
-      snackbar.appendChild(snackbarButton);
-      this.overlay = overlay;
-      this.text = text;
-      this.hide();
+      var r = document.createElement("div"), f = r.style;
+      f.position = "fixed", f.top = 0, f.right = 0, f.bottom = 0, f.left = 0, f.backgroundColor = "gray", f.fontFamily = "sans-serif", f.zIndex = 1e6;
+      var n = document.createElement("img");
+      n.src = this.icon;
+      var f = n.style;
+      f.marginLeft = "25%", f.marginTop = "25%", f.width = "50%", r.appendChild(n);
+      var a = document.createElement("div"), f = a.style;
+      f.textAlign = "center", f.fontSize = "16px", f.lineHeight = "24px", f.margin = "24px 25%", f.width = "50%", a.innerHTML = "Place your phone into your Cardboard viewer.", r.appendChild(a);
+      var l = document.createElement("div"), f = l.style;
+      f.backgroundColor = "#CFD8DC", f.position = "fixed", f.bottom = 0, f.width = "100%", f.height = "48px", f.padding = "14px 24px", f.boxSizing = "border-box", f.color = "#656A6B", r.appendChild(l);
+      var c = document.createElement("div");
+      c.style.float = "left", c.innerHTML = "No Cardboard viewer?";
+      var A = document.createElement("a");
+      A.href = "https://www.google.com/get/cardboard/get-cardboard/", A.innerHTML = "get one", A.target = "_blank";
+      var f = A.style;
+      f.float = "right", f.fontWeight = 600, f.textTransform = "uppercase", f.borderLeft = "1px solid gray", f.paddingLeft = "24px", f.textDecoration = "none", f.color = "#656A6B", l.appendChild(c), l.appendChild(A), this.overlay = r, this.text = a, this.hide();
     }
-    RotateInstructions.prototype.show = function(parent) {
-      if (!parent && !this.overlay.parentElement) {
-        document.body.appendChild(this.overlay);
-      } else if (parent) {
-        if (this.overlay.parentElement && this.overlay.parentElement != parent)
-          this.overlay.parentElement.removeChild(this.overlay);
-        parent.appendChild(this.overlay);
-      }
-      this.overlay.style.display = "block";
-      var img = this.overlay.querySelector("img");
-      var s = img.style;
-      if (isLandscapeMode()) {
-        s.width = "20%";
-        s.marginLeft = "40%";
-        s.marginTop = "3%";
-      } else {
-        s.width = "50%";
-        s.marginLeft = "25%";
-        s.marginTop = "25%";
-      }
-    };
-    RotateInstructions.prototype.hide = function() {
+    je.prototype.show = function(r) {
+      !r && !this.overlay.parentElement ? document.body.appendChild(this.overlay) : r && (this.overlay.parentElement && this.overlay.parentElement != r && this.overlay.parentElement.removeChild(this.overlay), r.appendChild(this.overlay)), this.overlay.style.display = "block";
+      var n = this.overlay.querySelector("img"), a = n.style;
+      N() ? (a.width = "20%", a.marginLeft = "40%", a.marginTop = "3%") : (a.width = "50%", a.marginLeft = "25%", a.marginTop = "25%");
+    }, je.prototype.hide = function() {
       this.overlay.style.display = "none";
-    };
-    RotateInstructions.prototype.showTemporarily = function(ms, parent) {
-      this.show(parent);
-      this.timer = setTimeout(this.hide.bind(this), ms);
-    };
-    RotateInstructions.prototype.disableShowTemporarily = function() {
+    }, je.prototype.showTemporarily = function(r, n) {
+      this.show(n), this.timer = setTimeout(this.hide.bind(this), r);
+    }, je.prototype.disableShowTemporarily = function() {
       clearTimeout(this.timer);
+    }, je.prototype.update = function() {
+      this.disableShowTemporarily(), !N() && D() ? this.show() : this.hide();
+    }, je.prototype.loadIcon_ = function() {
+      this.icon = u("image/svg+xml", Er);
     };
-    RotateInstructions.prototype.update = function() {
-      this.disableShowTemporarily();
-      if (!isLandscapeMode() && isMobile2()) {
-        this.show();
-      } else {
-        this.hide();
-      }
-    };
-    RotateInstructions.prototype.loadIcon_ = function() {
-      this.icon = dataUri("image/svg+xml", rotateInstructionsAsset);
-    };
-    var DEFAULT_VIEWER = "CardboardV1";
-    var VIEWER_KEY = "WEBVR_CARDBOARD_VIEWER";
-    var CLASS_NAME = "webvr-polyfill-viewer-selector";
-    function ViewerSelector(defaultViewer) {
+    var xr = "CardboardV1", mi = "WEBVR_CARDBOARD_VIEWER", Sr = "webvr-polyfill-viewer-selector";
+    function Ce(r) {
       try {
-        this.selectedKey = localStorage.getItem(VIEWER_KEY);
-      } catch (error) {
-        console.error("Failed to load viewer profile: %s", error);
+        this.selectedKey = localStorage.getItem(mi);
+      } catch (n) {
+        console.error("Failed to load viewer profile: %s", n);
       }
-      if (!this.selectedKey) {
-        this.selectedKey = defaultViewer || DEFAULT_VIEWER;
-      }
-      this.dialog = this.createDialog_(DeviceInfo.Viewers);
-      this.root = null;
-      this.onChangeCallbacks_ = [];
+      this.selectedKey || (this.selectedKey = r || xr), this.dialog = this.createDialog_(Ae.Viewers), this.root = null, this.onChangeCallbacks_ = [];
     }
-    ViewerSelector.prototype.show = function(root) {
-      this.root = root;
-      root.appendChild(this.dialog);
-      var selected = this.dialog.querySelector("#" + this.selectedKey);
-      selected.checked = true;
-      this.dialog.style.display = "block";
-    };
-    ViewerSelector.prototype.hide = function() {
-      if (this.root && this.root.contains(this.dialog)) {
-        this.root.removeChild(this.dialog);
-      }
-      this.dialog.style.display = "none";
-    };
-    ViewerSelector.prototype.getCurrentViewer = function() {
-      return DeviceInfo.Viewers[this.selectedKey];
-    };
-    ViewerSelector.prototype.getSelectedKey_ = function() {
-      var input = this.dialog.querySelector("input[name=field]:checked");
-      if (input) {
-        return input.id;
-      }
-      return null;
-    };
-    ViewerSelector.prototype.onChange = function(cb) {
-      this.onChangeCallbacks_.push(cb);
-    };
-    ViewerSelector.prototype.fireOnChange_ = function(viewer) {
-      for (var i = 0; i < this.onChangeCallbacks_.length; i++) {
-        this.onChangeCallbacks_[i](viewer);
-      }
-    };
-    ViewerSelector.prototype.onSave_ = function() {
-      this.selectedKey = this.getSelectedKey_();
-      if (!this.selectedKey || !DeviceInfo.Viewers[this.selectedKey]) {
+    Ce.prototype.show = function(r) {
+      this.root = r, r.appendChild(this.dialog);
+      var n = this.dialog.querySelector("#" + this.selectedKey);
+      n.checked = !0, this.dialog.style.display = "block";
+    }, Ce.prototype.hide = function() {
+      this.root && this.root.contains(this.dialog) && this.root.removeChild(this.dialog), this.dialog.style.display = "none";
+    }, Ce.prototype.getCurrentViewer = function() {
+      return Ae.Viewers[this.selectedKey];
+    }, Ce.prototype.getSelectedKey_ = function() {
+      var r = this.dialog.querySelector("input[name=field]:checked");
+      return r ? r.id : null;
+    }, Ce.prototype.onChange = function(r) {
+      this.onChangeCallbacks_.push(r);
+    }, Ce.prototype.fireOnChange_ = function(r) {
+      for (var n = 0; n < this.onChangeCallbacks_.length; n++)
+        this.onChangeCallbacks_[n](r);
+    }, Ce.prototype.onSave_ = function() {
+      if (this.selectedKey = this.getSelectedKey_(), !this.selectedKey || !Ae.Viewers[this.selectedKey]) {
         console.error("ViewerSelector.onSave_: this should never happen!");
         return;
       }
-      this.fireOnChange_(DeviceInfo.Viewers[this.selectedKey]);
+      this.fireOnChange_(Ae.Viewers[this.selectedKey]);
       try {
-        localStorage.setItem(VIEWER_KEY, this.selectedKey);
-      } catch (error) {
-        console.error("Failed to save viewer profile: %s", error);
+        localStorage.setItem(mi, this.selectedKey);
+      } catch (r) {
+        console.error("Failed to save viewer profile: %s", r);
       }
       this.hide();
+    }, Ce.prototype.createDialog_ = function(r) {
+      var n = document.createElement("div");
+      n.classList.add(Sr), n.style.display = "none";
+      var a = document.createElement("div"), A = a.style;
+      A.position = "fixed", A.left = 0, A.top = 0, A.width = "100%", A.height = "100%", A.background = "rgba(0, 0, 0, 0.3)", a.addEventListener("click", this.hide.bind(this));
+      var l = 280, c = document.createElement("div"), A = c.style;
+      A.boxSizing = "border-box", A.position = "fixed", A.top = "24px", A.left = "50%", A.marginLeft = -l / 2 + "px", A.width = l + "px", A.padding = "24px", A.overflow = "hidden", A.background = "#fafafa", A.fontFamily = "'Roboto', sans-serif", A.boxShadow = "0px 5px 20px #666", c.appendChild(this.createH1_("Select your viewer"));
+      for (var f in r)
+        c.appendChild(this.createChoice_(f, r[f].label));
+      return c.appendChild(this.createButton_("Save", this.onSave_.bind(this))), n.appendChild(a), n.appendChild(c), n;
+    }, Ce.prototype.createH1_ = function(r) {
+      var n = document.createElement("h1"), a = n.style;
+      return a.color = "black", a.fontSize = "20px", a.fontWeight = "bold", a.marginTop = 0, a.marginBottom = "24px", n.innerHTML = r, n;
+    }, Ce.prototype.createChoice_ = function(r, n) {
+      var a = document.createElement("div");
+      a.style.marginTop = "8px", a.style.color = "black";
+      var l = document.createElement("input");
+      l.style.fontSize = "30px", l.setAttribute("id", r), l.setAttribute("type", "radio"), l.setAttribute("value", r), l.setAttribute("name", "field");
+      var c = document.createElement("label");
+      return c.style.marginLeft = "4px", c.setAttribute("for", r), c.innerHTML = n, a.appendChild(l), a.appendChild(c), a;
+    }, Ce.prototype.createButton_ = function(r, n) {
+      var a = document.createElement("button");
+      a.innerHTML = r;
+      var l = a.style;
+      return l.float = "right", l.textTransform = "uppercase", l.color = "#1094f7", l.fontSize = "14px", l.letterSpacing = 0, l.border = 0, l.background = "none", l.marginTop = "16px", a.addEventListener("click", n), a;
     };
-    ViewerSelector.prototype.createDialog_ = function(options) {
-      var container = document.createElement("div");
-      container.classList.add(CLASS_NAME);
-      container.style.display = "none";
-      var overlay = document.createElement("div");
-      var s = overlay.style;
-      s.position = "fixed";
-      s.left = 0;
-      s.top = 0;
-      s.width = "100%";
-      s.height = "100%";
-      s.background = "rgba(0, 0, 0, 0.3)";
-      overlay.addEventListener("click", this.hide.bind(this));
-      var width = 280;
-      var dialog = document.createElement("div");
-      var s = dialog.style;
-      s.boxSizing = "border-box";
-      s.position = "fixed";
-      s.top = "24px";
-      s.left = "50%";
-      s.marginLeft = -width / 2 + "px";
-      s.width = width + "px";
-      s.padding = "24px";
-      s.overflow = "hidden";
-      s.background = "#fafafa";
-      s.fontFamily = "'Roboto', sans-serif";
-      s.boxShadow = "0px 5px 20px #666";
-      dialog.appendChild(this.createH1_("Select your viewer"));
-      for (var id in options) {
-        dialog.appendChild(this.createChoice_(id, options[id].label));
-      }
-      dialog.appendChild(this.createButton_("Save", this.onSave_.bind(this)));
-      container.appendChild(overlay);
-      container.appendChild(dialog);
-      return container;
-    };
-    ViewerSelector.prototype.createH1_ = function(name) {
-      var h1 = document.createElement("h1");
-      var s = h1.style;
-      s.color = "black";
-      s.fontSize = "20px";
-      s.fontWeight = "bold";
-      s.marginTop = 0;
-      s.marginBottom = "24px";
-      h1.innerHTML = name;
-      return h1;
-    };
-    ViewerSelector.prototype.createChoice_ = function(id, name) {
-      var div = document.createElement("div");
-      div.style.marginTop = "8px";
-      div.style.color = "black";
-      var input = document.createElement("input");
-      input.style.fontSize = "30px";
-      input.setAttribute("id", id);
-      input.setAttribute("type", "radio");
-      input.setAttribute("value", id);
-      input.setAttribute("name", "field");
-      var label = document.createElement("label");
-      label.style.marginLeft = "4px";
-      label.setAttribute("for", id);
-      label.innerHTML = name;
-      div.appendChild(input);
-      div.appendChild(label);
-      return div;
-    };
-    ViewerSelector.prototype.createButton_ = function(label, onclick) {
-      var button = document.createElement("button");
-      button.innerHTML = label;
-      var s = button.style;
-      s.float = "right";
-      s.textTransform = "uppercase";
-      s.color = "#1094f7";
-      s.fontSize = "14px";
-      s.letterSpacing = 0;
-      s.border = 0;
-      s.background = "none";
-      s.marginTop = "16px";
-      button.addEventListener("click", onclick);
-      return button;
-    };
-    var commonjsGlobal2 = typeof window !== "undefined" ? window : typeof commonjsGlobal$1 !== "undefined" ? commonjsGlobal$1 : typeof self !== "undefined" ? self : {};
-    function unwrapExports(x) {
-      return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, "default") ? x["default"] : x;
+    var _r = typeof window < "u" ? window : typeof $t < "u" ? $t : typeof self < "u" ? self : {};
+    function Rr(r) {
+      return r && r.__esModule && Object.prototype.hasOwnProperty.call(r, "default") ? r.default : r;
     }
-    function createCommonjsModule2(fn, module2) {
-      return module2 = { exports: {} }, fn(module2, module2.exports), module2.exports;
+    function Mr(r, n) {
+      return n = { exports: {} }, r(n, n.exports), n.exports;
     }
-    var NoSleep = createCommonjsModule2(function(module2, exports2) {
-      (function webpackUniversalModuleDefinition(root, factory) {
-        module2.exports = factory();
-      })(commonjsGlobal2, function() {
-        return function(modules) {
-          var installedModules = {};
-          function __webpack_require__(moduleId) {
-            if (installedModules[moduleId]) {
-              return installedModules[moduleId].exports;
-            }
-            var module3 = installedModules[moduleId] = {
-              i: moduleId,
-              l: false,
+    var Tr = Mr(function(r, n) {
+      (function(l, c) {
+        r.exports = c();
+      })(_r, function() {
+        return function(a) {
+          var l = {};
+          function c(A) {
+            if (l[A])
+              return l[A].exports;
+            var f = l[A] = {
+              i: A,
+              l: !1,
               exports: {}
             };
-            modules[moduleId].call(module3.exports, module3, module3.exports, __webpack_require__);
-            module3.l = true;
-            return module3.exports;
+            return a[A].call(f.exports, f, f.exports, c), f.l = !0, f.exports;
           }
-          __webpack_require__.m = modules;
-          __webpack_require__.c = installedModules;
-          __webpack_require__.d = function(exports3, name, getter) {
-            if (!__webpack_require__.o(exports3, name)) {
-              Object.defineProperty(exports3, name, {
-                configurable: false,
-                enumerable: true,
-                get: getter
-              });
-            }
-          };
-          __webpack_require__.n = function(module3) {
-            var getter = module3 && module3.__esModule ? function getDefault() {
-              return module3["default"];
-            } : function getModuleExports() {
-              return module3;
+          return c.m = a, c.c = l, c.d = function(A, f, S) {
+            c.o(A, f) || Object.defineProperty(A, f, {
+              configurable: !1,
+              enumerable: !0,
+              get: S
+            });
+          }, c.n = function(A) {
+            var f = A && A.__esModule ? function() {
+              return A.default;
+            } : function() {
+              return A;
             };
-            __webpack_require__.d(getter, "a", getter);
-            return getter;
-          };
-          __webpack_require__.o = function(object, property) {
-            return Object.prototype.hasOwnProperty.call(object, property);
-          };
-          __webpack_require__.p = "";
-          return __webpack_require__(__webpack_require__.s = 0);
+            return c.d(f, "a", f), f;
+          }, c.o = function(A, f) {
+            return Object.prototype.hasOwnProperty.call(A, f);
+          }, c.p = "", c(c.s = 0);
         }([
-          function(module3, exports3, __webpack_require__) {
-            var _createClass = function() {
-              function defineProperties(target, props) {
-                for (var i = 0; i < props.length; i++) {
-                  var descriptor = props[i];
-                  descriptor.enumerable = descriptor.enumerable || false;
-                  descriptor.configurable = true;
-                  if ("value" in descriptor)
-                    descriptor.writable = true;
-                  Object.defineProperty(target, descriptor.key, descriptor);
+          function(a, l, c) {
+            var A = function() {
+              function w(T, k) {
+                for (var U = 0; U < k.length; U++) {
+                  var X = k[U];
+                  X.enumerable = X.enumerable || !1, X.configurable = !0, "value" in X && (X.writable = !0), Object.defineProperty(T, X.key, X);
                 }
               }
-              return function(Constructor, protoProps, staticProps) {
-                if (protoProps)
-                  defineProperties(Constructor.prototype, protoProps);
-                if (staticProps)
-                  defineProperties(Constructor, staticProps);
-                return Constructor;
+              return function(T, k, U) {
+                return k && w(T.prototype, k), U && w(T, U), T;
               };
             }();
-            function _classCallCheck(instance, Constructor) {
-              if (!(instance instanceof Constructor)) {
+            function f(w, T) {
+              if (!(w instanceof T))
                 throw new TypeError("Cannot call a class as a function");
-              }
             }
-            var mediaFile = __webpack_require__(1);
-            var oldIOS = typeof navigator !== "undefined" && parseFloat(("" + (/CPU.*OS ([0-9_]{3,4})[0-9_]{0,1}|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent) || [0, ""])[1]).replace("undefined", "3_2").replace("_", ".").replace("_", "")) < 10 && !window.MSStream;
-            var NoSleep2 = function() {
-              function NoSleep3() {
-                _classCallCheck(this, NoSleep3);
-                if (oldIOS) {
-                  this.noSleepTimer = null;
-                } else {
-                  this.noSleepVideo = document.createElement("video");
-                  this.noSleepVideo.setAttribute("playsinline", "");
-                  this.noSleepVideo.setAttribute("src", mediaFile);
-                  this.noSleepVideo.addEventListener("timeupdate", function(e) {
-                    if (this.noSleepVideo.currentTime > 0.5) {
-                      this.noSleepVideo.currentTime = Math.random();
-                    }
-                  }.bind(this));
-                }
+            var S = c(1), E = typeof navigator < "u" && parseFloat(("" + (/CPU.*OS ([0-9_]{3,4})[0-9_]{0,1}|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent) || [0, ""])[1]).replace("undefined", "3_2").replace("_", ".").replace("_", "")) < 10 && !window.MSStream, p = function() {
+              function w() {
+                f(this, w), E ? this.noSleepTimer = null : (this.noSleepVideo = document.createElement("video"), this.noSleepVideo.setAttribute("playsinline", ""), this.noSleepVideo.setAttribute("src", S), this.noSleepVideo.addEventListener("timeupdate", function(T) {
+                  this.noSleepVideo.currentTime > 0.5 && (this.noSleepVideo.currentTime = Math.random());
+                }.bind(this)));
               }
-              _createClass(NoSleep3, [{
+              return A(w, [{
                 key: "enable",
-                value: function enable() {
-                  if (oldIOS) {
-                    this.disable();
-                    this.noSleepTimer = window.setInterval(function() {
-                      window.location.href = "/";
-                      window.setTimeout(window.stop, 0);
-                    }, 15e3);
-                  } else {
-                    this.noSleepVideo.play();
-                  }
+                value: function() {
+                  E ? (this.disable(), this.noSleepTimer = window.setInterval(function() {
+                    window.location.href = "/", window.setTimeout(window.stop, 0);
+                  }, 15e3)) : this.noSleepVideo.play();
                 }
               }, {
                 key: "disable",
-                value: function disable() {
-                  if (oldIOS) {
-                    if (this.noSleepTimer) {
-                      window.clearInterval(this.noSleepTimer);
-                      this.noSleepTimer = null;
-                    }
-                  } else {
-                    this.noSleepVideo.pause();
-                  }
+                value: function() {
+                  E ? this.noSleepTimer && (window.clearInterval(this.noSleepTimer), this.noSleepTimer = null) : this.noSleepVideo.pause();
                 }
-              }]);
-              return NoSleep3;
+              }]), w;
             }();
-            module3.exports = NoSleep2;
+            a.exports = p;
           },
-          function(module3, exports3, __webpack_require__) {
-            module3.exports = "data:video/mp4;base64,AAAAIGZ0eXBtcDQyAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAACKBtZGF0AAAC8wYF///v3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE0MiByMjQ3OSBkZDc5YTYxIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNCAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTEgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MToweDExMSBtZT1oZXggc3VibWU9MiBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0wIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MCA4eDhkY3Q9MCBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0wIHRocmVhZHM9NiBsb29rYWhlYWRfdGhyZWFkcz0xIHNsaWNlZF90aHJlYWRzPTAgbnI9MCBkZWNpbWF0ZT0xIGludGVybGFjZWQ9MCBibHVyYXlfY29tcGF0PTAgY29uc3RyYWluZWRfaW50cmE9MCBiZnJhbWVzPTMgYl9weXJhbWlkPTIgYl9hZGFwdD0xIGJfYmlhcz0wIGRpcmVjdD0xIHdlaWdodGI9MSBvcGVuX2dvcD0wIHdlaWdodHA9MSBrZXlpbnQ9MzAwIGtleWludF9taW49MzAgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD0xMCByYz1jcmYgbWJ0cmVlPTEgY3JmPTIwLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IHZidl9tYXhyYXRlPTIwMDAwIHZidl9idWZzaXplPTI1MDAwIGNyZl9tYXg9MC4wIG5hbF9ocmQ9bm9uZSBmaWxsZXI9MCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAOWWIhAA3//p+C7v8tDDSTjf97w55i3SbRPO4ZY+hkjD5hbkAkL3zpJ6h/LR1CAABzgB1kqqzUorlhQAAAAxBmiQYhn/+qZYADLgAAAAJQZ5CQhX/AAj5IQADQGgcIQADQGgcAAAACQGeYUQn/wALKCEAA0BoHAAAAAkBnmNEJ/8ACykhAANAaBwhAANAaBwAAAANQZpoNExDP/6plgAMuSEAA0BoHAAAAAtBnoZFESwr/wAI+SEAA0BoHCEAA0BoHAAAAAkBnqVEJ/8ACykhAANAaBwAAAAJAZ6nRCf/AAsoIQADQGgcIQADQGgcAAAADUGarDRMQz/+qZYADLghAANAaBwAAAALQZ7KRRUsK/8ACPkhAANAaBwAAAAJAZ7pRCf/AAsoIQADQGgcIQADQGgcAAAACQGe60Qn/wALKCEAA0BoHAAAAA1BmvA0TEM//qmWAAy5IQADQGgcIQADQGgcAAAAC0GfDkUVLCv/AAj5IQADQGgcAAAACQGfLUQn/wALKSEAA0BoHCEAA0BoHAAAAAkBny9EJ/8ACyghAANAaBwAAAANQZs0NExDP/6plgAMuCEAA0BoHAAAAAtBn1JFFSwr/wAI+SEAA0BoHCEAA0BoHAAAAAkBn3FEJ/8ACyghAANAaBwAAAAJAZ9zRCf/AAsoIQADQGgcIQADQGgcAAAADUGbeDRMQz/+qZYADLkhAANAaBwAAAALQZ+WRRUsK/8ACPghAANAaBwhAANAaBwAAAAJAZ+1RCf/AAspIQADQGgcAAAACQGft0Qn/wALKSEAA0BoHCEAA0BoHAAAAA1Bm7w0TEM//qmWAAy4IQADQGgcAAAAC0Gf2kUVLCv/AAj5IQADQGgcAAAACQGf+UQn/wALKCEAA0BoHCEAA0BoHAAAAAkBn/tEJ/8ACykhAANAaBwAAAANQZvgNExDP/6plgAMuSEAA0BoHCEAA0BoHAAAAAtBnh5FFSwr/wAI+CEAA0BoHAAAAAkBnj1EJ/8ACyghAANAaBwhAANAaBwAAAAJAZ4/RCf/AAspIQADQGgcAAAADUGaJDRMQz/+qZYADLghAANAaBwAAAALQZ5CRRUsK/8ACPkhAANAaBwhAANAaBwAAAAJAZ5hRCf/AAsoIQADQGgcAAAACQGeY0Qn/wALKSEAA0BoHCEAA0BoHAAAAA1Bmmg0TEM//qmWAAy5IQADQGgcAAAAC0GehkUVLCv/AAj5IQADQGgcIQADQGgcAAAACQGepUQn/wALKSEAA0BoHAAAAAkBnqdEJ/8ACyghAANAaBwAAAANQZqsNExDP/6plgAMuCEAA0BoHCEAA0BoHAAAAAtBnspFFSwr/wAI+SEAA0BoHAAAAAkBnulEJ/8ACyghAANAaBwhAANAaBwAAAAJAZ7rRCf/AAsoIQADQGgcAAAADUGa8DRMQz/+qZYADLkhAANAaBwhAANAaBwAAAALQZ8ORRUsK/8ACPkhAANAaBwAAAAJAZ8tRCf/AAspIQADQGgcIQADQGgcAAAACQGfL0Qn/wALKCEAA0BoHAAAAA1BmzQ0TEM//qmWAAy4IQADQGgcAAAAC0GfUkUVLCv/AAj5IQADQGgcIQADQGgcAAAACQGfcUQn/wALKCEAA0BoHAAAAAkBn3NEJ/8ACyghAANAaBwhAANAaBwAAAANQZt4NExC//6plgAMuSEAA0BoHAAAAAtBn5ZFFSwr/wAI+CEAA0BoHCEAA0BoHAAAAAkBn7VEJ/8ACykhAANAaBwAAAAJAZ+3RCf/AAspIQADQGgcAAAADUGbuzRMQn/+nhAAYsAhAANAaBwhAANAaBwAAAAJQZ/aQhP/AAspIQADQGgcAAAACQGf+UQn/wALKCEAA0BoHCEAA0BoHCEAA0BoHCEAA0BoHCEAA0BoHCEAA0BoHAAACiFtb292AAAAbG12aGQAAAAA1YCCX9WAgl8AAAPoAAAH/AABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAGGlvZHMAAAAAEICAgAcAT////v7/AAAF+XRyYWsAAABcdGtoZAAAAAPVgIJf1YCCXwAAAAEAAAAAAAAH0AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAygAAAMoAAAAAACRlZHRzAAAAHGVsc3QAAAAAAAAAAQAAB9AAABdwAAEAAAAABXFtZGlhAAAAIG1kaGQAAAAA1YCCX9WAgl8AAV+QAAK/IFXEAAAAAAAtaGRscgAAAAAAAAAAdmlkZQAAAAAAAAAAAAAAAFZpZGVvSGFuZGxlcgAAAAUcbWluZgAAABR2bWhkAAAAAQAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAAE3HN0YmwAAACYc3RzZAAAAAAAAAABAAAAiGF2YzEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAygDKAEgAAABIAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY//8AAAAyYXZjQwFNQCj/4QAbZ01AKOyho3ySTUBAQFAAAAMAEAAr8gDxgxlgAQAEaO+G8gAAABhzdHRzAAAAAAAAAAEAAAA8AAALuAAAABRzdHNzAAAAAAAAAAEAAAABAAAB8GN0dHMAAAAAAAAAPAAAAAEAABdwAAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAADqYAAAAAQAAF3AAAAABAAAAAAAAAAEAAAu4AAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAADqYAAAAAQAAF3AAAAABAAAAAAAAAAEAAAu4AAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAADqYAAAAAQAAF3AAAAABAAAAAAAAAAEAAAu4AAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAADqYAAAAAQAAF3AAAAABAAAAAAAAAAEAAAu4AAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAAC7gAAAAAQAAF3AAAAABAAAAAAAAABxzdHNjAAAAAAAAAAEAAAABAAAAAQAAAAEAAAEEc3RzegAAAAAAAAAAAAAAPAAAAzQAAAAQAAAADQAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAAPAAAADQAAAA0AAAARAAAADwAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAAPAAAADQAAAA0AAAARAAAADwAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAAPAAAADQAAAA0AAAARAAAADwAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAAPAAAADQAAAA0AAAARAAAADwAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAANAAAADQAAAQBzdGNvAAAAAAAAADwAAAAwAAADZAAAA3QAAAONAAADoAAAA7kAAAPQAAAD6wAAA/4AAAQXAAAELgAABEMAAARcAAAEbwAABIwAAAShAAAEugAABM0AAATkAAAE/wAABRIAAAUrAAAFQgAABV0AAAVwAAAFiQAABaAAAAW1AAAFzgAABeEAAAX+AAAGEwAABiwAAAY/AAAGVgAABnEAAAaEAAAGnQAABrQAAAbPAAAG4gAABvUAAAcSAAAHJwAAB0AAAAdTAAAHcAAAB4UAAAeeAAAHsQAAB8gAAAfjAAAH9gAACA8AAAgmAAAIQQAACFQAAAhnAAAIhAAACJcAAAMsdHJhawAAAFx0a2hkAAAAA9WAgl/VgIJfAAAAAgAAAAAAAAf8AAAAAAAAAAAAAAABAQAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAACsm1kaWEAAAAgbWRoZAAAAADVgIJf1YCCXwAArEQAAWAAVcQAAAAAACdoZGxyAAAAAAAAAABzb3VuAAAAAAAAAAAAAAAAU3RlcmVvAAAAAmNtaW5mAAAAEHNtaGQAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAidzdGJsAAAAZ3N0c2QAAAAAAAAAAQAAAFdtcDRhAAAAAAAAAAEAAAAAAAAAAAACABAAAAAArEQAAAAAADNlc2RzAAAAAAOAgIAiAAIABICAgBRAFQAAAAADDUAAAAAABYCAgAISEAaAgIABAgAAABhzdHRzAAAAAAAAAAEAAABYAAAEAAAAABxzdHNjAAAAAAAAAAEAAAABAAAAAQAAAAEAAAAUc3RzegAAAAAAAAAGAAAAWAAAAXBzdGNvAAAAAAAAAFgAAAOBAAADhwAAA5oAAAOtAAADswAAA8oAAAPfAAAD5QAAA/gAAAQLAAAEEQAABCgAAAQ9AAAEUAAABFYAAARpAAAEgAAABIYAAASbAAAErgAABLQAAATHAAAE3gAABPMAAAT5AAAFDAAABR8AAAUlAAAFPAAABVEAAAVXAAAFagAABX0AAAWDAAAFmgAABa8AAAXCAAAFyAAABdsAAAXyAAAF+AAABg0AAAYgAAAGJgAABjkAAAZQAAAGZQAABmsAAAZ+AAAGkQAABpcAAAauAAAGwwAABskAAAbcAAAG7wAABwYAAAcMAAAHIQAABzQAAAc6AAAHTQAAB2QAAAdqAAAHfwAAB5IAAAeYAAAHqwAAB8IAAAfXAAAH3QAAB/AAAAgDAAAICQAACCAAAAg1AAAIOwAACE4AAAhhAAAIeAAACH4AAAiRAAAIpAAACKoAAAiwAAAItgAACLwAAAjCAAAAFnVkdGEAAAAObmFtZVN0ZXJlbwAAAHB1ZHRhAAAAaG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAAO2lsc3QAAAAzqXRvbwAAACtkYXRhAAAAAQAAAABIYW5kQnJha2UgMC4xMC4yIDIwMTUwNjExMDA=";
+          function(a, l, c) {
+            a.exports = "data:video/mp4;base64,AAAAIGZ0eXBtcDQyAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAACKBtZGF0AAAC8wYF///v3EXpvebZSLeWLNgg2SPu73gyNjQgLSBjb3JlIDE0MiByMjQ3OSBkZDc5YTYxIC0gSC4yNjQvTVBFRy00IEFWQyBjb2RlYyAtIENvcHlsZWZ0IDIwMDMtMjAxNCAtIGh0dHA6Ly93d3cudmlkZW9sYW4ub3JnL3gyNjQuaHRtbCAtIG9wdGlvbnM6IGNhYmFjPTEgcmVmPTEgZGVibG9jaz0xOjA6MCBhbmFseXNlPTB4MToweDExMSBtZT1oZXggc3VibWU9MiBwc3k9MSBwc3lfcmQ9MS4wMDowLjAwIG1peGVkX3JlZj0wIG1lX3JhbmdlPTE2IGNocm9tYV9tZT0xIHRyZWxsaXM9MCA4eDhkY3Q9MCBjcW09MCBkZWFkem9uZT0yMSwxMSBmYXN0X3Bza2lwPTEgY2hyb21hX3FwX29mZnNldD0wIHRocmVhZHM9NiBsb29rYWhlYWRfdGhyZWFkcz0xIHNsaWNlZF90aHJlYWRzPTAgbnI9MCBkZWNpbWF0ZT0xIGludGVybGFjZWQ9MCBibHVyYXlfY29tcGF0PTAgY29uc3RyYWluZWRfaW50cmE9MCBiZnJhbWVzPTMgYl9weXJhbWlkPTIgYl9hZGFwdD0xIGJfYmlhcz0wIGRpcmVjdD0xIHdlaWdodGI9MSBvcGVuX2dvcD0wIHdlaWdodHA9MSBrZXlpbnQ9MzAwIGtleWludF9taW49MzAgc2NlbmVjdXQ9NDAgaW50cmFfcmVmcmVzaD0wIHJjX2xvb2thaGVhZD0xMCByYz1jcmYgbWJ0cmVlPTEgY3JmPTIwLjAgcWNvbXA9MC42MCBxcG1pbj0wIHFwbWF4PTY5IHFwc3RlcD00IHZidl9tYXhyYXRlPTIwMDAwIHZidl9idWZzaXplPTI1MDAwIGNyZl9tYXg9MC4wIG5hbF9ocmQ9bm9uZSBmaWxsZXI9MCBpcF9yYXRpbz0xLjQwIGFxPTE6MS4wMACAAAAAOWWIhAA3//p+C7v8tDDSTjf97w55i3SbRPO4ZY+hkjD5hbkAkL3zpJ6h/LR1CAABzgB1kqqzUorlhQAAAAxBmiQYhn/+qZYADLgAAAAJQZ5CQhX/AAj5IQADQGgcIQADQGgcAAAACQGeYUQn/wALKCEAA0BoHAAAAAkBnmNEJ/8ACykhAANAaBwhAANAaBwAAAANQZpoNExDP/6plgAMuSEAA0BoHAAAAAtBnoZFESwr/wAI+SEAA0BoHCEAA0BoHAAAAAkBnqVEJ/8ACykhAANAaBwAAAAJAZ6nRCf/AAsoIQADQGgcIQADQGgcAAAADUGarDRMQz/+qZYADLghAANAaBwAAAALQZ7KRRUsK/8ACPkhAANAaBwAAAAJAZ7pRCf/AAsoIQADQGgcIQADQGgcAAAACQGe60Qn/wALKCEAA0BoHAAAAA1BmvA0TEM//qmWAAy5IQADQGgcIQADQGgcAAAAC0GfDkUVLCv/AAj5IQADQGgcAAAACQGfLUQn/wALKSEAA0BoHCEAA0BoHAAAAAkBny9EJ/8ACyghAANAaBwAAAANQZs0NExDP/6plgAMuCEAA0BoHAAAAAtBn1JFFSwr/wAI+SEAA0BoHCEAA0BoHAAAAAkBn3FEJ/8ACyghAANAaBwAAAAJAZ9zRCf/AAsoIQADQGgcIQADQGgcAAAADUGbeDRMQz/+qZYADLkhAANAaBwAAAALQZ+WRRUsK/8ACPghAANAaBwhAANAaBwAAAAJAZ+1RCf/AAspIQADQGgcAAAACQGft0Qn/wALKSEAA0BoHCEAA0BoHAAAAA1Bm7w0TEM//qmWAAy4IQADQGgcAAAAC0Gf2kUVLCv/AAj5IQADQGgcAAAACQGf+UQn/wALKCEAA0BoHCEAA0BoHAAAAAkBn/tEJ/8ACykhAANAaBwAAAANQZvgNExDP/6plgAMuSEAA0BoHCEAA0BoHAAAAAtBnh5FFSwr/wAI+CEAA0BoHAAAAAkBnj1EJ/8ACyghAANAaBwhAANAaBwAAAAJAZ4/RCf/AAspIQADQGgcAAAADUGaJDRMQz/+qZYADLghAANAaBwAAAALQZ5CRRUsK/8ACPkhAANAaBwhAANAaBwAAAAJAZ5hRCf/AAsoIQADQGgcAAAACQGeY0Qn/wALKSEAA0BoHCEAA0BoHAAAAA1Bmmg0TEM//qmWAAy5IQADQGgcAAAAC0GehkUVLCv/AAj5IQADQGgcIQADQGgcAAAACQGepUQn/wALKSEAA0BoHAAAAAkBnqdEJ/8ACyghAANAaBwAAAANQZqsNExDP/6plgAMuCEAA0BoHCEAA0BoHAAAAAtBnspFFSwr/wAI+SEAA0BoHAAAAAkBnulEJ/8ACyghAANAaBwhAANAaBwAAAAJAZ7rRCf/AAsoIQADQGgcAAAADUGa8DRMQz/+qZYADLkhAANAaBwhAANAaBwAAAALQZ8ORRUsK/8ACPkhAANAaBwAAAAJAZ8tRCf/AAspIQADQGgcIQADQGgcAAAACQGfL0Qn/wALKCEAA0BoHAAAAA1BmzQ0TEM//qmWAAy4IQADQGgcAAAAC0GfUkUVLCv/AAj5IQADQGgcIQADQGgcAAAACQGfcUQn/wALKCEAA0BoHAAAAAkBn3NEJ/8ACyghAANAaBwhAANAaBwAAAANQZt4NExC//6plgAMuSEAA0BoHAAAAAtBn5ZFFSwr/wAI+CEAA0BoHCEAA0BoHAAAAAkBn7VEJ/8ACykhAANAaBwAAAAJAZ+3RCf/AAspIQADQGgcAAAADUGbuzRMQn/+nhAAYsAhAANAaBwhAANAaBwAAAAJQZ/aQhP/AAspIQADQGgcAAAACQGf+UQn/wALKCEAA0BoHCEAA0BoHCEAA0BoHCEAA0BoHCEAA0BoHCEAA0BoHAAACiFtb292AAAAbG12aGQAAAAA1YCCX9WAgl8AAAPoAAAH/AABAAABAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAAAAGGlvZHMAAAAAEICAgAcAT////v7/AAAF+XRyYWsAAABcdGtoZAAAAAPVgIJf1YCCXwAAAAEAAAAAAAAH0AAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAEAAAAAAygAAAMoAAAAAACRlZHRzAAAAHGVsc3QAAAAAAAAAAQAAB9AAABdwAAEAAAAABXFtZGlhAAAAIG1kaGQAAAAA1YCCX9WAgl8AAV+QAAK/IFXEAAAAAAAtaGRscgAAAAAAAAAAdmlkZQAAAAAAAAAAAAAAAFZpZGVvSGFuZGxlcgAAAAUcbWluZgAAABR2bWhkAAAAAQAAAAAAAAAAAAAAJGRpbmYAAAAcZHJlZgAAAAAAAAABAAAADHVybCAAAAABAAAE3HN0YmwAAACYc3RzZAAAAAAAAAABAAAAiGF2YzEAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAygDKAEgAAABIAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAY//8AAAAyYXZjQwFNQCj/4QAbZ01AKOyho3ySTUBAQFAAAAMAEAAr8gDxgxlgAQAEaO+G8gAAABhzdHRzAAAAAAAAAAEAAAA8AAALuAAAABRzdHNzAAAAAAAAAAEAAAABAAAB8GN0dHMAAAAAAAAAPAAAAAEAABdwAAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAADqYAAAAAQAAF3AAAAABAAAAAAAAAAEAAAu4AAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAADqYAAAAAQAAF3AAAAABAAAAAAAAAAEAAAu4AAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAADqYAAAAAQAAF3AAAAABAAAAAAAAAAEAAAu4AAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAADqYAAAAAQAAF3AAAAABAAAAAAAAAAEAAAu4AAAAAQAAOpgAAAABAAAXcAAAAAEAAAAAAAAAAQAAC7gAAAABAAA6mAAAAAEAABdwAAAAAQAAAAAAAAABAAALuAAAAAEAAC7gAAAAAQAAF3AAAAABAAAAAAAAABxzdHNjAAAAAAAAAAEAAAABAAAAAQAAAAEAAAEEc3RzegAAAAAAAAAAAAAAPAAAAzQAAAAQAAAADQAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAAPAAAADQAAAA0AAAARAAAADwAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAAPAAAADQAAAA0AAAARAAAADwAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAAPAAAADQAAAA0AAAARAAAADwAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAAPAAAADQAAAA0AAAARAAAADwAAAA0AAAANAAAAEQAAAA8AAAANAAAADQAAABEAAAANAAAADQAAAQBzdGNvAAAAAAAAADwAAAAwAAADZAAAA3QAAAONAAADoAAAA7kAAAPQAAAD6wAAA/4AAAQXAAAELgAABEMAAARcAAAEbwAABIwAAAShAAAEugAABM0AAATkAAAE/wAABRIAAAUrAAAFQgAABV0AAAVwAAAFiQAABaAAAAW1AAAFzgAABeEAAAX+AAAGEwAABiwAAAY/AAAGVgAABnEAAAaEAAAGnQAABrQAAAbPAAAG4gAABvUAAAcSAAAHJwAAB0AAAAdTAAAHcAAAB4UAAAeeAAAHsQAAB8gAAAfjAAAH9gAACA8AAAgmAAAIQQAACFQAAAhnAAAIhAAACJcAAAMsdHJhawAAAFx0a2hkAAAAA9WAgl/VgIJfAAAAAgAAAAAAAAf8AAAAAAAAAAAAAAABAQAAAAABAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAACsm1kaWEAAAAgbWRoZAAAAADVgIJf1YCCXwAArEQAAWAAVcQAAAAAACdoZGxyAAAAAAAAAABzb3VuAAAAAAAAAAAAAAAAU3RlcmVvAAAAAmNtaW5mAAAAEHNtaGQAAAAAAAAAAAAAACRkaW5mAAAAHGRyZWYAAAAAAAAAAQAAAAx1cmwgAAAAAQAAAidzdGJsAAAAZ3N0c2QAAAAAAAAAAQAAAFdtcDRhAAAAAAAAAAEAAAAAAAAAAAACABAAAAAArEQAAAAAADNlc2RzAAAAAAOAgIAiAAIABICAgBRAFQAAAAADDUAAAAAABYCAgAISEAaAgIABAgAAABhzdHRzAAAAAAAAAAEAAABYAAAEAAAAABxzdHNjAAAAAAAAAAEAAAABAAAAAQAAAAEAAAAUc3RzegAAAAAAAAAGAAAAWAAAAXBzdGNvAAAAAAAAAFgAAAOBAAADhwAAA5oAAAOtAAADswAAA8oAAAPfAAAD5QAAA/gAAAQLAAAEEQAABCgAAAQ9AAAEUAAABFYAAARpAAAEgAAABIYAAASbAAAErgAABLQAAATHAAAE3gAABPMAAAT5AAAFDAAABR8AAAUlAAAFPAAABVEAAAVXAAAFagAABX0AAAWDAAAFmgAABa8AAAXCAAAFyAAABdsAAAXyAAAF+AAABg0AAAYgAAAGJgAABjkAAAZQAAAGZQAABmsAAAZ+AAAGkQAABpcAAAauAAAGwwAABskAAAbcAAAG7wAABwYAAAcMAAAHIQAABzQAAAc6AAAHTQAAB2QAAAdqAAAHfwAAB5IAAAeYAAAHqwAAB8IAAAfXAAAH3QAAB/AAAAgDAAAICQAACCAAAAg1AAAIOwAACE4AAAhhAAAIeAAACH4AAAiRAAAIpAAACKoAAAiwAAAItgAACLwAAAjCAAAAFnVkdGEAAAAObmFtZVN0ZXJlbwAAAHB1ZHRhAAAAaG1ldGEAAAAAAAAAIWhkbHIAAAAAAAAAAG1kaXJhcHBsAAAAAAAAAAAAAAAAO2lsc3QAAAAzqXRvbwAAACtkYXRhAAAAAQAAAABIYW5kQnJha2UgMC4xMC4yIDIwMTUwNjExMDA=";
           }
         ]);
       });
-    });
-    var NoSleep$1 = unwrapExports(NoSleep);
-    var nextDisplayId = 1e3;
-    var defaultLeftBounds = [0, 0, 0.5, 1];
-    var defaultRightBounds = [0.5, 0, 0.5, 1];
-    var raf = window.requestAnimationFrame;
-    var caf = window.cancelAnimationFrame;
-    function VRFrameData() {
-      this.leftProjectionMatrix = new Float32Array(16);
-      this.leftViewMatrix = new Float32Array(16);
-      this.rightProjectionMatrix = new Float32Array(16);
-      this.rightViewMatrix = new Float32Array(16);
-      this.pose = null;
+    }), Fr = Rr(Tr), Cr = 1e3, Pr = [0, 0, 0.5, 1], Dr = [0.5, 0, 0.5, 1], Ir = window.requestAnimationFrame, Br = window.cancelAnimationFrame;
+    function Lr() {
+      this.leftProjectionMatrix = new Float32Array(16), this.leftViewMatrix = new Float32Array(16), this.rightProjectionMatrix = new Float32Array(16), this.rightViewMatrix = new Float32Array(16), this.pose = null;
     }
-    function VRDisplayCapabilities(config2) {
+    function vi(r) {
       Object.defineProperties(this, {
         hasPosition: {
-          writable: false,
-          enumerable: true,
-          value: config2.hasPosition
+          writable: !1,
+          enumerable: !0,
+          value: r.hasPosition
         },
         hasExternalDisplay: {
-          writable: false,
-          enumerable: true,
-          value: config2.hasExternalDisplay
+          writable: !1,
+          enumerable: !0,
+          value: r.hasExternalDisplay
         },
         canPresent: {
-          writable: false,
-          enumerable: true,
-          value: config2.canPresent
+          writable: !1,
+          enumerable: !0,
+          value: r.canPresent
         },
         maxLayers: {
-          writable: false,
-          enumerable: true,
-          value: config2.maxLayers
+          writable: !1,
+          enumerable: !0,
+          value: r.maxLayers
         },
         hasOrientation: {
-          enumerable: true,
-          get: function get() {
-            deprecateWarning("VRDisplayCapabilities.prototype.hasOrientation", "VRDisplay.prototype.getFrameData");
-            return config2.hasOrientation;
+          enumerable: !0,
+          get: function() {
+            return Te("VRDisplayCapabilities.prototype.hasOrientation", "VRDisplay.prototype.getFrameData"), r.hasOrientation;
           }
         }
       });
     }
-    function VRDisplay(config2) {
-      config2 = config2 || {};
-      var USE_WAKELOCK = "wakelock" in config2 ? config2.wakelock : true;
-      this.isPolyfilled = true;
-      this.displayId = nextDisplayId++;
-      this.displayName = "";
-      this.depthNear = 0.01;
-      this.depthFar = 1e4;
-      this.isPresenting = false;
-      Object.defineProperty(this, "isConnected", {
-        get: function get() {
-          deprecateWarning("VRDisplay.prototype.isConnected", "VRDisplayCapabilities.prototype.hasExternalDisplay");
-          return false;
+    function se(r) {
+      r = r || {};
+      var n = "wakelock" in r ? r.wakelock : !0;
+      this.isPolyfilled = !0, this.displayId = Cr++, this.displayName = "", this.depthNear = 0.01, this.depthFar = 1e4, this.isPresenting = !1, Object.defineProperty(this, "isConnected", {
+        get: function() {
+          return Te("VRDisplay.prototype.isConnected", "VRDisplayCapabilities.prototype.hasExternalDisplay"), !1;
         }
-      });
-      this.capabilities = new VRDisplayCapabilities({
-        hasPosition: false,
-        hasOrientation: false,
-        hasExternalDisplay: false,
-        canPresent: false,
+      }), this.capabilities = new vi({
+        hasPosition: !1,
+        hasOrientation: !1,
+        hasExternalDisplay: !1,
+        canPresent: !1,
         maxLayers: 1
-      });
-      this.stageParameters = null;
-      this.waitingForPresent_ = false;
-      this.layer_ = null;
-      this.originalParent_ = null;
-      this.fullscreenElement_ = null;
-      this.fullscreenWrapper_ = null;
-      this.fullscreenElementCachedStyle_ = null;
-      this.fullscreenEventTarget_ = null;
-      this.fullscreenChangeHandler_ = null;
-      this.fullscreenErrorHandler_ = null;
-      if (USE_WAKELOCK && isMobile2()) {
-        this.wakelock_ = new NoSleep$1();
-      }
+      }), this.stageParameters = null, this.waitingForPresent_ = !1, this.layer_ = null, this.originalParent_ = null, this.fullscreenElement_ = null, this.fullscreenWrapper_ = null, this.fullscreenElementCachedStyle_ = null, this.fullscreenEventTarget_ = null, this.fullscreenChangeHandler_ = null, this.fullscreenErrorHandler_ = null, n && D() && (this.wakelock_ = new Fr());
     }
-    VRDisplay.prototype.getFrameData = function(frameData) {
-      return frameDataFromPose(frameData, this._getPose(), this);
-    };
-    VRDisplay.prototype.getPose = function() {
-      deprecateWarning("VRDisplay.prototype.getPose", "VRDisplay.prototype.getFrameData");
-      return this._getPose();
-    };
-    VRDisplay.prototype.resetPose = function() {
-      deprecateWarning("VRDisplay.prototype.resetPose");
-      return this._resetPose();
-    };
-    VRDisplay.prototype.getImmediatePose = function() {
-      deprecateWarning("VRDisplay.prototype.getImmediatePose", "VRDisplay.prototype.getFrameData");
-      return this._getPose();
-    };
-    VRDisplay.prototype.requestAnimationFrame = function(callback) {
-      return raf(callback);
-    };
-    VRDisplay.prototype.cancelAnimationFrame = function(id) {
-      return caf(id);
-    };
-    VRDisplay.prototype.wrapForFullscreen = function(element) {
-      if (isIOS()) {
-        return element;
-      }
+    se.prototype.getFrameData = function(r) {
+      return M(r, this._getPose(), this);
+    }, se.prototype.getPose = function() {
+      return Te("VRDisplay.prototype.getPose", "VRDisplay.prototype.getFrameData"), this._getPose();
+    }, se.prototype.resetPose = function() {
+      return Te("VRDisplay.prototype.resetPose"), this._resetPose();
+    }, se.prototype.getImmediatePose = function() {
+      return Te("VRDisplay.prototype.getImmediatePose", "VRDisplay.prototype.getFrameData"), this._getPose();
+    }, se.prototype.requestAnimationFrame = function(r) {
+      return Ir(r);
+    }, se.prototype.cancelAnimationFrame = function(r) {
+      return Br(r);
+    }, se.prototype.wrapForFullscreen = function(r) {
+      if (v())
+        return r;
       if (!this.fullscreenWrapper_) {
         this.fullscreenWrapper_ = document.createElement("div");
-        var cssProperties = ["height: " + Math.min(screen.height, screen.width) + "px !important", "top: 0 !important", "left: 0 !important", "right: 0 !important", "border: 0", "margin: 0", "padding: 0", "z-index: 999999 !important", "position: fixed"];
-        this.fullscreenWrapper_.setAttribute("style", cssProperties.join("; ") + ";");
-        this.fullscreenWrapper_.classList.add("webvr-polyfill-fullscreen-wrapper");
+        var n = ["height: " + Math.min(screen.height, screen.width) + "px !important", "top: 0 !important", "left: 0 !important", "right: 0 !important", "border: 0", "margin: 0", "padding: 0", "z-index: 999999 !important", "position: fixed"];
+        this.fullscreenWrapper_.setAttribute("style", n.join("; ") + ";"), this.fullscreenWrapper_.classList.add("webvr-polyfill-fullscreen-wrapper");
       }
-      if (this.fullscreenElement_ == element) {
+      if (this.fullscreenElement_ == r)
         return this.fullscreenWrapper_;
+      if (this.fullscreenElement_ && (this.originalParent_ ? this.originalParent_.appendChild(this.fullscreenElement_) : this.fullscreenElement_.parentElement.removeChild(this.fullscreenElement_)), this.fullscreenElement_ = r, this.originalParent_ = r.parentElement, this.originalParent_ || document.body.appendChild(r), !this.fullscreenWrapper_.parentElement) {
+        var a = this.fullscreenElement_.parentElement;
+        a.insertBefore(this.fullscreenWrapper_, this.fullscreenElement_), a.removeChild(this.fullscreenElement_);
       }
-      if (this.fullscreenElement_) {
-        if (this.originalParent_) {
-          this.originalParent_.appendChild(this.fullscreenElement_);
-        } else {
-          this.fullscreenElement_.parentElement.removeChild(this.fullscreenElement_);
+      this.fullscreenWrapper_.insertBefore(this.fullscreenElement_, this.fullscreenWrapper_.firstChild), this.fullscreenElementCachedStyle_ = this.fullscreenElement_.getAttribute("style");
+      var l = this;
+      function c() {
+        if (!!l.fullscreenElement_) {
+          var A = ["position: absolute", "top: 0", "left: 0", "width: " + Math.max(screen.width, screen.height) + "px", "height: " + Math.min(screen.height, screen.width) + "px", "border: 0", "margin: 0", "padding: 0"];
+          l.fullscreenElement_.setAttribute("style", A.join("; ") + ";");
         }
       }
-      this.fullscreenElement_ = element;
-      this.originalParent_ = element.parentElement;
-      if (!this.originalParent_) {
-        document.body.appendChild(element);
+      return c(), this.fullscreenWrapper_;
+    }, se.prototype.removeFullscreenWrapper = function() {
+      if (!!this.fullscreenElement_) {
+        var r = this.fullscreenElement_;
+        this.fullscreenElementCachedStyle_ ? r.setAttribute("style", this.fullscreenElementCachedStyle_) : r.removeAttribute("style"), this.fullscreenElement_ = null, this.fullscreenElementCachedStyle_ = null;
+        var n = this.fullscreenWrapper_.parentElement;
+        return this.fullscreenWrapper_.removeChild(r), this.originalParent_ === n ? n.insertBefore(r, this.fullscreenWrapper_) : this.originalParent_ && this.originalParent_.appendChild(r), n.removeChild(this.fullscreenWrapper_), r;
       }
-      if (!this.fullscreenWrapper_.parentElement) {
-        var parent = this.fullscreenElement_.parentElement;
-        parent.insertBefore(this.fullscreenWrapper_, this.fullscreenElement_);
-        parent.removeChild(this.fullscreenElement_);
-      }
-      this.fullscreenWrapper_.insertBefore(this.fullscreenElement_, this.fullscreenWrapper_.firstChild);
-      this.fullscreenElementCachedStyle_ = this.fullscreenElement_.getAttribute("style");
-      var self2 = this;
-      function applyFullscreenElementStyle() {
-        if (!self2.fullscreenElement_) {
+    }, se.prototype.requestPresent = function(r) {
+      var n = this.isPresenting, a = this;
+      return r instanceof Array || (Te("VRDisplay.prototype.requestPresent with non-array argument", "an array of VRLayers as the first argument"), r = [r]), new Promise(function(l, c) {
+        if (!a.capabilities.canPresent) {
+          c(new Error("VRDisplay is not capable of presenting."));
           return;
         }
-        var cssProperties2 = ["position: absolute", "top: 0", "left: 0", "width: " + Math.max(screen.width, screen.height) + "px", "height: " + Math.min(screen.height, screen.width) + "px", "border: 0", "margin: 0", "padding: 0"];
-        self2.fullscreenElement_.setAttribute("style", cssProperties2.join("; ") + ";");
-      }
-      applyFullscreenElementStyle();
-      return this.fullscreenWrapper_;
-    };
-    VRDisplay.prototype.removeFullscreenWrapper = function() {
-      if (!this.fullscreenElement_) {
-        return;
-      }
-      var element = this.fullscreenElement_;
-      if (this.fullscreenElementCachedStyle_) {
-        element.setAttribute("style", this.fullscreenElementCachedStyle_);
-      } else {
-        element.removeAttribute("style");
-      }
-      this.fullscreenElement_ = null;
-      this.fullscreenElementCachedStyle_ = null;
-      var parent = this.fullscreenWrapper_.parentElement;
-      this.fullscreenWrapper_.removeChild(element);
-      if (this.originalParent_ === parent) {
-        parent.insertBefore(element, this.fullscreenWrapper_);
-      } else if (this.originalParent_) {
-        this.originalParent_.appendChild(element);
-      }
-      parent.removeChild(this.fullscreenWrapper_);
-      return element;
-    };
-    VRDisplay.prototype.requestPresent = function(layers) {
-      var wasPresenting = this.isPresenting;
-      var self2 = this;
-      if (!(layers instanceof Array)) {
-        deprecateWarning("VRDisplay.prototype.requestPresent with non-array argument", "an array of VRLayers as the first argument");
-        layers = [layers];
-      }
-      return new Promise(function(resolve, reject) {
-        if (!self2.capabilities.canPresent) {
-          reject(new Error("VRDisplay is not capable of presenting."));
+        if (r.length == 0 || r.length > a.capabilities.maxLayers) {
+          c(new Error("Invalid number of layers."));
           return;
         }
-        if (layers.length == 0 || layers.length > self2.capabilities.maxLayers) {
-          reject(new Error("Invalid number of layers."));
+        var A = r[0];
+        if (!A.source) {
+          l();
           return;
         }
-        var incomingLayer = layers[0];
-        if (!incomingLayer.source) {
-          resolve();
+        var f = A.leftBounds || Pr, S = A.rightBounds || Dr;
+        if (n) {
+          var E = a.layer_;
+          E.source !== A.source && (E.source = A.source);
+          for (var p = 0; p < 4; p++)
+            E.leftBounds[p] = f[p], E.rightBounds[p] = S[p];
+          a.wrapForFullscreen(a.layer_.source), a.updatePresent_(), l();
           return;
         }
-        var leftBounds = incomingLayer.leftBounds || defaultLeftBounds;
-        var rightBounds = incomingLayer.rightBounds || defaultRightBounds;
-        if (wasPresenting) {
-          var layer = self2.layer_;
-          if (layer.source !== incomingLayer.source) {
-            layer.source = incomingLayer.source;
-          }
-          for (var i = 0; i < 4; i++) {
-            layer.leftBounds[i] = leftBounds[i];
-            layer.rightBounds[i] = rightBounds[i];
-          }
-          self2.wrapForFullscreen(self2.layer_.source);
-          self2.updatePresent_();
-          resolve();
-          return;
-        }
-        self2.layer_ = {
-          predistorted: incomingLayer.predistorted,
-          source: incomingLayer.source,
-          leftBounds: leftBounds.slice(0),
-          rightBounds: rightBounds.slice(0)
-        };
-        self2.waitingForPresent_ = false;
-        if (self2.layer_ && self2.layer_.source) {
-          var fullscreenElement = self2.wrapForFullscreen(self2.layer_.source);
-          var onFullscreenChange = function onFullscreenChange2() {
-            var actualFullscreenElement = getFullscreenElement();
-            self2.isPresenting = fullscreenElement === actualFullscreenElement;
-            if (self2.isPresenting) {
-              if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock("landscape-primary").catch(function(error) {
-                  console.error("screen.orientation.lock() failed due to", error.message);
-                });
-              }
-              self2.waitingForPresent_ = false;
-              self2.beginPresent_();
-              resolve();
-            } else {
-              if (screen.orientation && screen.orientation.unlock) {
-                screen.orientation.unlock();
-              }
-              self2.removeFullscreenWrapper();
-              self2.disableWakeLock();
-              self2.endPresent_();
-              self2.removeFullscreenListeners_();
-            }
-            self2.fireVRDisplayPresentChange_();
+        if (a.layer_ = {
+          predistorted: A.predistorted,
+          source: A.source,
+          leftBounds: f.slice(0),
+          rightBounds: S.slice(0)
+        }, a.waitingForPresent_ = !1, a.layer_ && a.layer_.source) {
+          var w = a.wrapForFullscreen(a.layer_.source), T = function() {
+            var X = W();
+            a.isPresenting = w === X, a.isPresenting ? (screen.orientation && screen.orientation.lock && screen.orientation.lock("landscape-primary").catch(function(q) {
+              console.error("screen.orientation.lock() failed due to", q.message);
+            }), a.waitingForPresent_ = !1, a.beginPresent_(), l()) : (screen.orientation && screen.orientation.unlock && screen.orientation.unlock(), a.removeFullscreenWrapper(), a.disableWakeLock(), a.endPresent_(), a.removeFullscreenListeners_()), a.fireVRDisplayPresentChange_();
+          }, k = function() {
+            !a.waitingForPresent_ || (a.removeFullscreenWrapper(), a.removeFullscreenListeners_(), a.disableWakeLock(), a.waitingForPresent_ = !1, a.isPresenting = !1, c(new Error("Unable to present.")));
           };
-          var onFullscreenError = function onFullscreenError2() {
-            if (!self2.waitingForPresent_) {
-              return;
-            }
-            self2.removeFullscreenWrapper();
-            self2.removeFullscreenListeners_();
-            self2.disableWakeLock();
-            self2.waitingForPresent_ = false;
-            self2.isPresenting = false;
-            reject(new Error("Unable to present."));
-          };
-          self2.addFullscreenListeners_(fullscreenElement, onFullscreenChange, onFullscreenError);
-          if (requestFullscreen(fullscreenElement)) {
-            self2.enableWakeLock();
-            self2.waitingForPresent_ = true;
-          } else if (isIOS() || isWebViewAndroid()) {
-            self2.enableWakeLock();
-            self2.isPresenting = true;
-            self2.beginPresent_();
-            self2.fireVRDisplayPresentChange_();
-            resolve();
-          }
+          a.addFullscreenListeners_(w, T, k), G(w) ? (a.enableWakeLock(), a.waitingForPresent_ = !0) : (v() || y()) && (a.enableWakeLock(), a.isPresenting = !0, a.beginPresent_(), a.fireVRDisplayPresentChange_(), l());
         }
-        if (!self2.waitingForPresent_ && !isIOS()) {
-          exitFullscreen();
-          reject(new Error("Unable to present."));
-        }
+        !a.waitingForPresent_ && !v() && (O(), c(new Error("Unable to present.")));
       });
-    };
-    VRDisplay.prototype.exitPresent = function() {
-      var wasPresenting = this.isPresenting;
-      var self2 = this;
-      this.isPresenting = false;
-      this.layer_ = null;
-      this.disableWakeLock();
-      return new Promise(function(resolve, reject) {
-        if (wasPresenting) {
-          if (!exitFullscreen() && isIOS()) {
-            self2.endPresent_();
-            self2.fireVRDisplayPresentChange_();
-          }
-          if (isWebViewAndroid()) {
-            self2.removeFullscreenWrapper();
-            self2.removeFullscreenListeners_();
-            self2.endPresent_();
-            self2.fireVRDisplayPresentChange_();
-          }
-          resolve();
-        } else {
-          reject(new Error("Was not presenting to VRDisplay."));
-        }
+    }, se.prototype.exitPresent = function() {
+      var r = this.isPresenting, n = this;
+      return this.isPresenting = !1, this.layer_ = null, this.disableWakeLock(), new Promise(function(a, l) {
+        r ? (!O() && v() && (n.endPresent_(), n.fireVRDisplayPresentChange_()), y() && (n.removeFullscreenWrapper(), n.removeFullscreenListeners_(), n.endPresent_(), n.fireVRDisplayPresentChange_()), a()) : l(new Error("Was not presenting to VRDisplay."));
       });
-    };
-    VRDisplay.prototype.getLayers = function() {
-      if (this.layer_) {
-        return [this.layer_];
-      }
-      return [];
-    };
-    VRDisplay.prototype.fireVRDisplayPresentChange_ = function() {
-      var event = new CustomEvent("vrdisplaypresentchange", { detail: { display: this } });
-      window.dispatchEvent(event);
-    };
-    VRDisplay.prototype.fireVRDisplayConnect_ = function() {
-      var event = new CustomEvent("vrdisplayconnect", { detail: { display: this } });
-      window.dispatchEvent(event);
-    };
-    VRDisplay.prototype.addFullscreenListeners_ = function(element, changeHandler, errorHandler) {
-      this.removeFullscreenListeners_();
-      this.fullscreenEventTarget_ = element;
-      this.fullscreenChangeHandler_ = changeHandler;
-      this.fullscreenErrorHandler_ = errorHandler;
-      if (changeHandler) {
-        if (document.fullscreenEnabled) {
-          element.addEventListener("fullscreenchange", changeHandler, false);
-        } else if (document.webkitFullscreenEnabled) {
-          element.addEventListener("webkitfullscreenchange", changeHandler, false);
-        } else if (document.mozFullScreenEnabled) {
-          document.addEventListener("mozfullscreenchange", changeHandler, false);
-        } else if (document.msFullscreenEnabled) {
-          element.addEventListener("msfullscreenchange", changeHandler, false);
+    }, se.prototype.getLayers = function() {
+      return this.layer_ ? [this.layer_] : [];
+    }, se.prototype.fireVRDisplayPresentChange_ = function() {
+      var r = new CustomEvent("vrdisplaypresentchange", { detail: { display: this } });
+      window.dispatchEvent(r);
+    }, se.prototype.fireVRDisplayConnect_ = function() {
+      var r = new CustomEvent("vrdisplayconnect", { detail: { display: this } });
+      window.dispatchEvent(r);
+    }, se.prototype.addFullscreenListeners_ = function(r, n, a) {
+      this.removeFullscreenListeners_(), this.fullscreenEventTarget_ = r, this.fullscreenChangeHandler_ = n, this.fullscreenErrorHandler_ = a, n && (document.fullscreenEnabled ? r.addEventListener("fullscreenchange", n, !1) : document.webkitFullscreenEnabled ? r.addEventListener("webkitfullscreenchange", n, !1) : document.mozFullScreenEnabled ? document.addEventListener("mozfullscreenchange", n, !1) : document.msFullscreenEnabled && r.addEventListener("msfullscreenchange", n, !1)), a && (document.fullscreenEnabled ? r.addEventListener("fullscreenerror", a, !1) : document.webkitFullscreenEnabled ? r.addEventListener("webkitfullscreenerror", a, !1) : document.mozFullScreenEnabled ? document.addEventListener("mozfullscreenerror", a, !1) : document.msFullscreenEnabled && r.addEventListener("msfullscreenerror", a, !1));
+    }, se.prototype.removeFullscreenListeners_ = function() {
+      if (!!this.fullscreenEventTarget_) {
+        var r = this.fullscreenEventTarget_;
+        if (this.fullscreenChangeHandler_) {
+          var n = this.fullscreenChangeHandler_;
+          r.removeEventListener("fullscreenchange", n, !1), r.removeEventListener("webkitfullscreenchange", n, !1), document.removeEventListener("mozfullscreenchange", n, !1), r.removeEventListener("msfullscreenchange", n, !1);
         }
-      }
-      if (errorHandler) {
-        if (document.fullscreenEnabled) {
-          element.addEventListener("fullscreenerror", errorHandler, false);
-        } else if (document.webkitFullscreenEnabled) {
-          element.addEventListener("webkitfullscreenerror", errorHandler, false);
-        } else if (document.mozFullScreenEnabled) {
-          document.addEventListener("mozfullscreenerror", errorHandler, false);
-        } else if (document.msFullscreenEnabled) {
-          element.addEventListener("msfullscreenerror", errorHandler, false);
+        if (this.fullscreenErrorHandler_) {
+          var a = this.fullscreenErrorHandler_;
+          r.removeEventListener("fullscreenerror", a, !1), r.removeEventListener("webkitfullscreenerror", a, !1), document.removeEventListener("mozfullscreenerror", a, !1), r.removeEventListener("msfullscreenerror", a, !1);
         }
+        this.fullscreenEventTarget_ = null, this.fullscreenChangeHandler_ = null, this.fullscreenErrorHandler_ = null;
       }
-    };
-    VRDisplay.prototype.removeFullscreenListeners_ = function() {
-      if (!this.fullscreenEventTarget_)
-        return;
-      var element = this.fullscreenEventTarget_;
-      if (this.fullscreenChangeHandler_) {
-        var changeHandler = this.fullscreenChangeHandler_;
-        element.removeEventListener("fullscreenchange", changeHandler, false);
-        element.removeEventListener("webkitfullscreenchange", changeHandler, false);
-        document.removeEventListener("mozfullscreenchange", changeHandler, false);
-        element.removeEventListener("msfullscreenchange", changeHandler, false);
-      }
-      if (this.fullscreenErrorHandler_) {
-        var errorHandler = this.fullscreenErrorHandler_;
-        element.removeEventListener("fullscreenerror", errorHandler, false);
-        element.removeEventListener("webkitfullscreenerror", errorHandler, false);
-        document.removeEventListener("mozfullscreenerror", errorHandler, false);
-        element.removeEventListener("msfullscreenerror", errorHandler, false);
-      }
-      this.fullscreenEventTarget_ = null;
-      this.fullscreenChangeHandler_ = null;
-      this.fullscreenErrorHandler_ = null;
-    };
-    VRDisplay.prototype.enableWakeLock = function() {
-      if (this.wakelock_) {
-        this.wakelock_.enable();
-      }
-    };
-    VRDisplay.prototype.disableWakeLock = function() {
-      if (this.wakelock_) {
-        this.wakelock_.disable();
-      }
-    };
-    VRDisplay.prototype.beginPresent_ = function() {
-    };
-    VRDisplay.prototype.endPresent_ = function() {
-    };
-    VRDisplay.prototype.submitFrame = function(pose) {
-    };
-    VRDisplay.prototype.getEyeParameters = function(whichEye) {
+    }, se.prototype.enableWakeLock = function() {
+      this.wakelock_ && this.wakelock_.enable();
+    }, se.prototype.disableWakeLock = function() {
+      this.wakelock_ && this.wakelock_.disable();
+    }, se.prototype.beginPresent_ = function() {
+    }, se.prototype.endPresent_ = function() {
+    }, se.prototype.submitFrame = function(r) {
+    }, se.prototype.getEyeParameters = function(r) {
       return null;
     };
-    var config = {
+    var Or = {
       ADDITIONAL_VIEWERS: [],
       DEFAULT_VIEWER: "",
-      MOBILE_WAKE_LOCK: true,
-      DEBUG: false,
+      MOBILE_WAKE_LOCK: !0,
+      DEBUG: !1,
       DPDB_URL: "https://dpdb.webvr.rocks/dpdb.json",
       K_FILTER: 0.98,
       PREDICTION_TIME_S: 0.04,
-      CARDBOARD_UI_DISABLED: false,
-      ROTATE_INSTRUCTIONS_DISABLED: false,
-      YAW_ONLY: false,
+      CARDBOARD_UI_DISABLED: !1,
+      ROTATE_INSTRUCTIONS_DISABLED: !1,
+      YAW_ONLY: !1,
       BUFFER_SCALE: 0.5,
-      DIRTY_SUBMIT_FRAME_BINDINGS: false
-    };
-    var Eye = {
+      DIRTY_SUBMIT_FRAME_BINDINGS: !1
+    }, Ft = {
       LEFT: "left",
       RIGHT: "right"
     };
-    function CardboardVRDisplay2(config$$1) {
-      var defaults = extend({}, config);
-      config$$1 = extend(defaults, config$$1 || {});
-      VRDisplay.call(this, {
-        wakelock: config$$1.MOBILE_WAKE_LOCK
-      });
-      this.config = config$$1;
-      this.displayName = "Cardboard VRDisplay";
-      this.capabilities = new VRDisplayCapabilities({
-        hasPosition: false,
-        hasOrientation: true,
-        hasExternalDisplay: false,
-        canPresent: true,
+    function ue(r) {
+      var n = V({}, Or);
+      r = V(n, r || {}), se.call(this, {
+        wakelock: r.MOBILE_WAKE_LOCK
+      }), this.config = r, this.displayName = "Cardboard VRDisplay", this.capabilities = new vi({
+        hasPosition: !1,
+        hasOrientation: !0,
+        hasExternalDisplay: !1,
+        canPresent: !0,
         maxLayers: 1
-      });
-      this.stageParameters = null;
-      this.bufferScale_ = this.config.BUFFER_SCALE;
-      this.poseSensor_ = new PoseSensor(this.config);
-      this.distorter_ = null;
-      this.cardboardUI_ = null;
-      this.dpdb_ = new Dpdb(this.config.DPDB_URL, this.onDeviceParamsUpdated_.bind(this));
-      this.deviceInfo_ = new DeviceInfo(this.dpdb_.getDeviceParams(), config$$1.ADDITIONAL_VIEWERS);
-      this.viewerSelector_ = new ViewerSelector(config$$1.DEFAULT_VIEWER);
-      this.viewerSelector_.onChange(this.onViewerChanged_.bind(this));
-      this.deviceInfo_.setViewer(this.viewerSelector_.getCurrentViewer());
-      if (!this.config.ROTATE_INSTRUCTIONS_DISABLED) {
-        this.rotateInstructions_ = new RotateInstructions();
-      }
-      if (isIOS()) {
-        window.addEventListener("resize", this.onResize_.bind(this));
-      }
+      }), this.stageParameters = null, this.bufferScale_ = this.config.BUFFER_SCALE, this.poseSensor_ = new gr(this.config), this.distorter_ = null, this.cardboardUI_ = null, this.dpdb_ = new rt(this.config.DPDB_URL, this.onDeviceParamsUpdated_.bind(this)), this.deviceInfo_ = new Ae(this.dpdb_.getDeviceParams(), r.ADDITIONAL_VIEWERS), this.viewerSelector_ = new Ce(r.DEFAULT_VIEWER), this.viewerSelector_.onChange(this.onViewerChanged_.bind(this)), this.deviceInfo_.setViewer(this.viewerSelector_.getCurrentViewer()), this.config.ROTATE_INSTRUCTIONS_DISABLED || (this.rotateInstructions_ = new je()), v() && window.addEventListener("resize", this.onResize_.bind(this));
     }
-    CardboardVRDisplay2.prototype = Object.create(VRDisplay.prototype);
-    CardboardVRDisplay2.prototype._getPose = function() {
+    return ue.prototype = Object.create(se.prototype), ue.prototype._getPose = function() {
       return {
         position: null,
         orientation: this.poseSensor_.getOrientation(),
@@ -4777,166 +2376,69 @@ var cardboardVrDisplay = { exports: {} };
         angularVelocity: null,
         angularAcceleration: null
       };
-    };
-    CardboardVRDisplay2.prototype._resetPose = function() {
-      if (this.poseSensor_.resetPose) {
-        this.poseSensor_.resetPose();
-      }
-    };
-    CardboardVRDisplay2.prototype._getFieldOfView = function(whichEye) {
-      var fieldOfView;
-      if (whichEye == Eye.LEFT) {
-        fieldOfView = this.deviceInfo_.getFieldOfViewLeftEye();
-      } else if (whichEye == Eye.RIGHT) {
-        fieldOfView = this.deviceInfo_.getFieldOfViewRightEye();
-      } else {
-        console.error("Invalid eye provided: %s", whichEye);
-        return null;
-      }
-      return fieldOfView;
-    };
-    CardboardVRDisplay2.prototype._getEyeOffset = function(whichEye) {
-      var offset;
-      if (whichEye == Eye.LEFT) {
-        offset = [-this.deviceInfo_.viewer.interLensDistance * 0.5, 0, 0];
-      } else if (whichEye == Eye.RIGHT) {
-        offset = [this.deviceInfo_.viewer.interLensDistance * 0.5, 0, 0];
-      } else {
-        console.error("Invalid eye provided: %s", whichEye);
-        return null;
-      }
-      return offset;
-    };
-    CardboardVRDisplay2.prototype.getEyeParameters = function(whichEye) {
-      var offset = this._getEyeOffset(whichEye);
-      var fieldOfView = this._getFieldOfView(whichEye);
-      var eyeParams = {
-        offset,
+    }, ue.prototype._resetPose = function() {
+      this.poseSensor_.resetPose && this.poseSensor_.resetPose();
+    }, ue.prototype._getFieldOfView = function(r) {
+      var n;
+      if (r == Ft.LEFT)
+        n = this.deviceInfo_.getFieldOfViewLeftEye();
+      else if (r == Ft.RIGHT)
+        n = this.deviceInfo_.getFieldOfViewRightEye();
+      else
+        return console.error("Invalid eye provided: %s", r), null;
+      return n;
+    }, ue.prototype._getEyeOffset = function(r) {
+      var n;
+      if (r == Ft.LEFT)
+        n = [-this.deviceInfo_.viewer.interLensDistance * 0.5, 0, 0];
+      else if (r == Ft.RIGHT)
+        n = [this.deviceInfo_.viewer.interLensDistance * 0.5, 0, 0];
+      else
+        return console.error("Invalid eye provided: %s", r), null;
+      return n;
+    }, ue.prototype.getEyeParameters = function(r) {
+      var n = this._getEyeOffset(r), a = this._getFieldOfView(r), l = {
+        offset: n,
         renderWidth: this.deviceInfo_.device.width * 0.5 * this.bufferScale_,
         renderHeight: this.deviceInfo_.device.height * this.bufferScale_
       };
-      Object.defineProperty(eyeParams, "fieldOfView", {
-        enumerable: true,
-        get: function get() {
-          deprecateWarning("VRFieldOfView", "VRFrameData's projection matrices");
-          return fieldOfView;
+      return Object.defineProperty(l, "fieldOfView", {
+        enumerable: !0,
+        get: function() {
+          return Te("VRFieldOfView", "VRFrameData's projection matrices"), a;
         }
-      });
-      return eyeParams;
-    };
-    CardboardVRDisplay2.prototype.onDeviceParamsUpdated_ = function(newParams) {
-      if (this.config.DEBUG) {
-        console.log("DPDB reported that device params were updated.");
+      }), l;
+    }, ue.prototype.onDeviceParamsUpdated_ = function(r) {
+      this.config.DEBUG && console.log("DPDB reported that device params were updated."), this.deviceInfo_.updateDeviceParams(r), this.distorter_ && this.distorter_.updateDeviceInfo(this.deviceInfo_);
+    }, ue.prototype.updateBounds_ = function() {
+      this.layer_ && this.distorter_ && (this.layer_.leftBounds || this.layer_.rightBounds) && this.distorter_.setTextureBounds(this.layer_.leftBounds, this.layer_.rightBounds);
+    }, ue.prototype.beginPresent_ = function() {
+      var r = this.layer_.source.getContext("webgl");
+      r || (r = this.layer_.source.getContext("experimental-webgl")), r || (r = this.layer_.source.getContext("webgl2")), r && (this.layer_.predistorted ? this.config.CARDBOARD_UI_DISABLED || (r.canvas.width = P() * this.bufferScale_, r.canvas.height = I() * this.bufferScale_, this.cardboardUI_ = new He(r)) : (this.config.CARDBOARD_UI_DISABLED || (this.cardboardUI_ = new He(r)), this.distorter_ = new ee(r, this.cardboardUI_, this.config.BUFFER_SCALE, this.config.DIRTY_SUBMIT_FRAME_BINDINGS), this.distorter_.updateDeviceInfo(this.deviceInfo_)), this.cardboardUI_ && this.cardboardUI_.listen(function(n) {
+        this.viewerSelector_.show(this.layer_.source.parentElement), n.stopPropagation(), n.preventDefault();
+      }.bind(this), function(n) {
+        this.exitPresent(), n.stopPropagation(), n.preventDefault();
+      }.bind(this)), this.rotateInstructions_ && (N() && D() ? this.rotateInstructions_.showTemporarily(3e3, this.layer_.source.parentElement) : this.rotateInstructions_.update()), this.orientationHandler = this.onOrientationChange_.bind(this), window.addEventListener("orientationchange", this.orientationHandler), this.vrdisplaypresentchangeHandler = this.updateBounds_.bind(this), window.addEventListener("vrdisplaypresentchange", this.vrdisplaypresentchangeHandler), this.fireVRDisplayDeviceParamsChange_());
+    }, ue.prototype.endPresent_ = function() {
+      this.distorter_ && (this.distorter_.destroy(), this.distorter_ = null), this.cardboardUI_ && (this.cardboardUI_.destroy(), this.cardboardUI_ = null), this.rotateInstructions_ && this.rotateInstructions_.hide(), this.viewerSelector_.hide(), window.removeEventListener("orientationchange", this.orientationHandler), window.removeEventListener("vrdisplaypresentchange", this.vrdisplaypresentchangeHandler);
+    }, ue.prototype.updatePresent_ = function() {
+      this.endPresent_(), this.beginPresent_();
+    }, ue.prototype.submitFrame = function(r) {
+      if (this.distorter_)
+        this.updateBounds_(), this.distorter_.submitFrame();
+      else if (this.cardboardUI_ && this.layer_) {
+        var n = this.layer_.source.getContext("webgl");
+        n || (n = this.layer_.source.getContext("experimental-webgl")), n || (n = this.layer_.source.getContext("webgl2"));
+        var a = n.canvas;
+        (a.width != this.lastWidth || a.height != this.lastHeight) && this.cardboardUI_.onResize(), this.lastWidth = a.width, this.lastHeight = a.height, this.cardboardUI_.render();
       }
-      this.deviceInfo_.updateDeviceParams(newParams);
-      if (this.distorter_) {
-        this.distorter_.updateDeviceInfo(this.deviceInfo_);
-      }
-    };
-    CardboardVRDisplay2.prototype.updateBounds_ = function() {
-      if (this.layer_ && this.distorter_ && (this.layer_.leftBounds || this.layer_.rightBounds)) {
-        this.distorter_.setTextureBounds(this.layer_.leftBounds, this.layer_.rightBounds);
-      }
-    };
-    CardboardVRDisplay2.prototype.beginPresent_ = function() {
-      var gl = this.layer_.source.getContext("webgl");
-      if (!gl)
-        gl = this.layer_.source.getContext("experimental-webgl");
-      if (!gl)
-        gl = this.layer_.source.getContext("webgl2");
-      if (!gl)
-        return;
-      if (this.layer_.predistorted) {
-        if (!this.config.CARDBOARD_UI_DISABLED) {
-          gl.canvas.width = getScreenWidth() * this.bufferScale_;
-          gl.canvas.height = getScreenHeight() * this.bufferScale_;
-          this.cardboardUI_ = new CardboardUI(gl);
-        }
-      } else {
-        if (!this.config.CARDBOARD_UI_DISABLED) {
-          this.cardboardUI_ = new CardboardUI(gl);
-        }
-        this.distorter_ = new CardboardDistorter(gl, this.cardboardUI_, this.config.BUFFER_SCALE, this.config.DIRTY_SUBMIT_FRAME_BINDINGS);
-        this.distorter_.updateDeviceInfo(this.deviceInfo_);
-      }
-      if (this.cardboardUI_) {
-        this.cardboardUI_.listen(function(e) {
-          this.viewerSelector_.show(this.layer_.source.parentElement);
-          e.stopPropagation();
-          e.preventDefault();
-        }.bind(this), function(e) {
-          this.exitPresent();
-          e.stopPropagation();
-          e.preventDefault();
-        }.bind(this));
-      }
-      if (this.rotateInstructions_) {
-        if (isLandscapeMode() && isMobile2()) {
-          this.rotateInstructions_.showTemporarily(3e3, this.layer_.source.parentElement);
-        } else {
-          this.rotateInstructions_.update();
-        }
-      }
-      this.orientationHandler = this.onOrientationChange_.bind(this);
-      window.addEventListener("orientationchange", this.orientationHandler);
-      this.vrdisplaypresentchangeHandler = this.updateBounds_.bind(this);
-      window.addEventListener("vrdisplaypresentchange", this.vrdisplaypresentchangeHandler);
-      this.fireVRDisplayDeviceParamsChange_();
-    };
-    CardboardVRDisplay2.prototype.endPresent_ = function() {
-      if (this.distorter_) {
-        this.distorter_.destroy();
-        this.distorter_ = null;
-      }
-      if (this.cardboardUI_) {
-        this.cardboardUI_.destroy();
-        this.cardboardUI_ = null;
-      }
-      if (this.rotateInstructions_) {
-        this.rotateInstructions_.hide();
-      }
-      this.viewerSelector_.hide();
-      window.removeEventListener("orientationchange", this.orientationHandler);
-      window.removeEventListener("vrdisplaypresentchange", this.vrdisplaypresentchangeHandler);
-    };
-    CardboardVRDisplay2.prototype.updatePresent_ = function() {
-      this.endPresent_();
-      this.beginPresent_();
-    };
-    CardboardVRDisplay2.prototype.submitFrame = function(pose) {
-      if (this.distorter_) {
-        this.updateBounds_();
-        this.distorter_.submitFrame();
-      } else if (this.cardboardUI_ && this.layer_) {
-        var gl = this.layer_.source.getContext("webgl");
-        if (!gl)
-          gl = this.layer_.source.getContext("experimental-webgl");
-        if (!gl)
-          gl = this.layer_.source.getContext("webgl2");
-        var canvas = gl.canvas;
-        if (canvas.width != this.lastWidth || canvas.height != this.lastHeight) {
-          this.cardboardUI_.onResize();
-        }
-        this.lastWidth = canvas.width;
-        this.lastHeight = canvas.height;
-        this.cardboardUI_.render();
-      }
-    };
-    CardboardVRDisplay2.prototype.onOrientationChange_ = function(e) {
-      this.viewerSelector_.hide();
-      if (this.rotateInstructions_) {
-        this.rotateInstructions_.update();
-      }
-      this.onResize_();
-    };
-    CardboardVRDisplay2.prototype.onResize_ = function(e) {
+    }, ue.prototype.onOrientationChange_ = function(r) {
+      this.viewerSelector_.hide(), this.rotateInstructions_ && this.rotateInstructions_.update(), this.onResize_();
+    }, ue.prototype.onResize_ = function(r) {
       if (this.layer_) {
-        var gl = this.layer_.source.getContext("webgl");
-        if (!gl)
-          gl = this.layer_.source.getContext("experimental-webgl");
-        if (!gl)
-          gl = this.layer_.source.getContext("webgl2");
-        var cssProperties = [
+        var n = this.layer_.source.getContext("webgl");
+        n || (n = this.layer_.source.getContext("experimental-webgl")), n || (n = this.layer_.source.getContext("webgl2"));
+        var a = [
           "position: absolute",
           "top: 0",
           "left: 0",
@@ -4947,102 +2449,86 @@ var cardboardVrDisplay = { exports: {} };
           "padding: 0px",
           "box-sizing: content-box"
         ];
-        gl.canvas.setAttribute("style", cssProperties.join("; ") + ";");
-        safariCssSizeWorkaround(gl.canvas);
+        n.canvas.setAttribute("style", a.join("; ") + ";"), L(n.canvas);
       }
-    };
-    CardboardVRDisplay2.prototype.onViewerChanged_ = function(viewer) {
-      this.deviceInfo_.setViewer(viewer);
-      if (this.distorter_) {
-        this.distorter_.updateDeviceInfo(this.deviceInfo_);
-      }
-      this.fireVRDisplayDeviceParamsChange_();
-    };
-    CardboardVRDisplay2.prototype.fireVRDisplayDeviceParamsChange_ = function() {
-      var event = new CustomEvent("vrdisplaydeviceparamschange", {
+    }, ue.prototype.onViewerChanged_ = function(r) {
+      this.deviceInfo_.setViewer(r), this.distorter_ && this.distorter_.updateDeviceInfo(this.deviceInfo_), this.fireVRDisplayDeviceParamsChange_();
+    }, ue.prototype.fireVRDisplayDeviceParamsChange_ = function() {
+      var r = new CustomEvent("vrdisplaydeviceparamschange", {
         detail: {
           vrdisplay: this,
           deviceInfo: this.deviceInfo_
         }
       });
-      window.dispatchEvent(event);
-    };
-    CardboardVRDisplay2.VRFrameData = VRFrameData;
-    CardboardVRDisplay2.VRDisplay = VRDisplay;
-    return CardboardVRDisplay2;
+      window.dispatchEvent(r);
+    }, ue.VRFrameData = Lr, ue.VRDisplay = se, ue;
   });
-})(cardboardVrDisplay);
-const CardboardVRDisplay = /* @__PURE__ */ getDefaultExportFromCjs(cardboardVrDisplay.exports);
-class XRDevice extends EventTarget$1 {
-  constructor(global2) {
-    super();
-    this.global = global2;
-    this.onWindowResize = this.onWindowResize.bind(this);
-    this.global.window.addEventListener("resize", this.onWindowResize);
-    this.environmentBlendMode = "opaque";
+})(ir);
+const fn = /* @__PURE__ */ un(ir.exports);
+class Ai extends li {
+  constructor(e) {
+    super(), this.global = e, this.onWindowResize = this.onWindowResize.bind(this), this.global.window.addEventListener("resize", this.onWindowResize), this.environmentBlendMode = "opaque";
   }
-  onBaseLayerSet(sessionId, layer) {
+  onBaseLayerSet(e, t) {
     throw new Error("Not implemented");
   }
-  isSessionSupported(mode) {
+  isSessionSupported(e) {
     throw new Error("Not implemented");
   }
-  isFeatureSupported(featureDescriptor) {
+  isFeatureSupported(e) {
     throw new Error("Not implemented");
   }
-  async requestSession(mode, enabledFeatures) {
+  async requestSession(e, t) {
     throw new Error("Not implemented");
   }
-  requestAnimationFrame(callback) {
+  requestAnimationFrame(e) {
     throw new Error("Not implemented");
   }
-  onFrameStart(sessionId) {
+  onFrameStart(e) {
     throw new Error("Not implemented");
   }
-  onFrameEnd(sessionId) {
+  onFrameEnd(e) {
     throw new Error("Not implemented");
   }
-  doesSessionSupportReferenceSpace(sessionId, type) {
+  doesSessionSupportReferenceSpace(e, t) {
     throw new Error("Not implemented");
   }
   requestStageBounds() {
     throw new Error("Not implemented");
   }
-  async requestFrameOfReferenceTransform(type, options) {
-    return void 0;
+  async requestFrameOfReferenceTransform(e, t) {
   }
-  cancelAnimationFrame(handle) {
+  cancelAnimationFrame(e) {
     throw new Error("Not implemented");
   }
-  endSession(sessionId) {
+  endSession(e) {
     throw new Error("Not implemented");
   }
-  getViewSpaces(mode) {
-    return void 0;
+  getViewSpaces(e) {
   }
-  getViewport(sessionId, eye, layer, target, viewIndex) {
+  getViewport(e, t, s, o, h) {
     throw new Error("Not implemented");
   }
-  getProjectionMatrix(eye, viewIndex) {
+  getProjectionMatrix(e, t) {
     throw new Error("Not implemented");
   }
   getBasePoseMatrix() {
     throw new Error("Not implemented");
   }
-  getBaseViewMatrix(eye) {
+  getBaseViewMatrix(e) {
     throw new Error("Not implemented");
   }
   getInputSources() {
     throw new Error("Not implemented");
   }
-  getInputPose(inputSource, coordinateSystem, poseType) {
+  getInputPose(e, t, s) {
     throw new Error("Not implemented");
   }
   onWindowResize() {
     this.onWindowResize();
   }
 }
-let daydream = {
+let pn = {
   mapping: "",
   profiles: ["google-daydream", "generic-trigger-touchpad"],
   buttons: {
@@ -5051,8 +2537,7 @@ let daydream = {
     1: null,
     2: 0
   }
-};
-let viveFocus = {
+}, mn = {
   mapping: "xr-standard",
   profiles: ["htc-vive-focus", "generic-trigger-touchpad"],
   buttons: {
@@ -5061,8 +2546,7 @@ let viveFocus = {
     1: null,
     2: 0
   }
-};
-let oculusGo = {
+}, vn = {
   mapping: "xr-standard",
   profiles: ["oculus-go", "generic-trigger-touchpad"],
   buttons: {
@@ -5074,8 +2558,7 @@ let oculusGo = {
   gripTransform: {
     orientation: [Math.PI * 0.11, 0, 0, 1]
   }
-};
-let oculusTouch = {
+}, Ci = {
   mapping: "xr-standard",
   displayProfiles: {
     "Oculus Quest": ["oculus-touch-v2", "oculus-touch", "generic-trigger-squeeze-thumbstick"]
@@ -5102,8 +2585,7 @@ let oculusTouch = {
     position: [0, -0.02, 0.04, 1],
     orientation: [Math.PI * 0.11, 0, 0, 1]
   }
-};
-let openVr = {
+}, wn = {
   mapping: "xr-standard",
   profiles: ["htc-vive", "generic-trigger-squeeze-touchpad"],
   displayProfiles: {
@@ -5124,14 +2606,13 @@ let openVr = {
     orientation: [Math.PI * -0.08, 0, 0, 1]
   },
   userAgentOverrides: {
-    "Firefox": {
+    Firefox: {
       axes: {
         invert: [1, 3]
       }
     }
   }
-};
-let samsungGearVR = {
+}, yn = {
   mapping: "xr-standard",
   profiles: ["samsung-gearvr", "generic-trigger-touchpad"],
   buttons: {
@@ -5143,8 +2624,7 @@ let samsungGearVR = {
   gripTransform: {
     orientation: [Math.PI * 0.11, 0, 0, 1]
   }
-};
-let samsungOdyssey = {
+}, bn = {
   mapping: "xr-standard",
   profiles: ["samsung-odyssey", "microsoft-mixed-reality", "generic-trigger-squeeze-touchpad-thumbstick"],
   buttons: {
@@ -5158,8 +2638,7 @@ let samsungOdyssey = {
     position: [0, -0.02, 0.04, 1],
     orientation: [Math.PI * 0.11, 0, 0, 1]
   }
-};
-let windowsMixedReality = {
+}, Kt = {
   mapping: "xr-standard",
   profiles: ["microsoft-mixed-reality", "generic-trigger-squeeze-touchpad-thumbstick"],
   buttons: {
@@ -5173,780 +2652,457 @@ let windowsMixedReality = {
     position: [0, -0.02, 0.04, 1],
     orientation: [Math.PI * 0.11, 0, 0, 1]
   }
+}, gn = {
+  "Daydream Controller": pn,
+  "Gear VR Controller": yn,
+  "HTC Vive Focus Controller": mn,
+  "Oculus Go Controller": vn,
+  "Oculus Touch (Right)": Ci,
+  "Oculus Touch (Left)": Ci,
+  "OpenVR Gamepad": wn,
+  "Spatial Controller (Spatial Interaction Source) 045E-065A": Kt,
+  "Spatial Controller (Spatial Interaction Source) 045E-065D": bn,
+  "Windows Mixed Reality (Right)": Kt,
+  "Windows Mixed Reality (Left)": Kt
 };
-let GamepadMappings = {
-  "Daydream Controller": daydream,
-  "Gear VR Controller": samsungGearVR,
-  "HTC Vive Focus Controller": viveFocus,
-  "Oculus Go Controller": oculusGo,
-  "Oculus Touch (Right)": oculusTouch,
-  "Oculus Touch (Left)": oculusTouch,
-  "OpenVR Gamepad": openVr,
-  "Spatial Controller (Spatial Interaction Source) 045E-065A": windowsMixedReality,
-  "Spatial Controller (Spatial Interaction Source) 045E-065D": samsungOdyssey,
-  "Windows Mixed Reality (Right)": windowsMixedReality,
-  "Windows Mixed Reality (Left)": windowsMixedReality
-};
-const HEAD_ELBOW_OFFSET_RIGHTHANDED = fromValues$2(0.155, -0.465, -0.15);
-const HEAD_ELBOW_OFFSET_LEFTHANDED = fromValues$2(-0.155, -0.465, -0.15);
-const ELBOW_WRIST_OFFSET = fromValues$2(0, 0, -0.25);
-const WRIST_CONTROLLER_OFFSET = fromValues$2(0, 0, 0.05);
-const ARM_EXTENSION_OFFSET = fromValues$2(-0.08, 0.14, 0.08);
-const ELBOW_BEND_RATIO = 0.4;
-const EXTENSION_RATIO_WEIGHT = 0.4;
-const MIN_ANGULAR_SPEED = 0.61;
-const MIN_ANGLE_DELTA = 0.175;
-const MIN_EXTENSION_COS = 0.12;
-const MAX_EXTENSION_COS = 0.87;
-const RAD_TO_DEG = 180 / Math.PI;
-function eulerFromQuaternion(out, q, order) {
-  function clamp(value, min, max) {
-    return value < min ? min : value > max ? max : value;
+const Pi = Ie(0.155, -0.465, -0.15), En = Ie(-0.155, -0.465, -0.15), xn = Ie(0, 0, -0.25), Sn = Ie(0, 0, 0.05), Di = Ie(-0.08, 0.14, 0.08), Ii = 0.4, _n = 0.4, Rn = 0.61, Mn = 0.175, Tn = 0.12, Fn = 0.87, Bi = 180 / Math.PI;
+function Cn(i, e, t) {
+  function s(m, v, y) {
+    return m < v ? v : m > y ? y : m;
   }
-  var sqx = q[0] * q[0];
-  var sqy = q[1] * q[1];
-  var sqz = q[2] * q[2];
-  var sqw = q[3] * q[3];
-  if (order === "XYZ") {
-    out[0] = Math.atan2(2 * (q[0] * q[3] - q[1] * q[2]), sqw - sqx - sqy + sqz);
-    out[1] = Math.asin(clamp(2 * (q[0] * q[2] + q[1] * q[3]), -1, 1));
-    out[2] = Math.atan2(2 * (q[2] * q[3] - q[0] * q[1]), sqw + sqx - sqy - sqz);
-  } else if (order === "YXZ") {
-    out[0] = Math.asin(clamp(2 * (q[0] * q[3] - q[1] * q[2]), -1, 1));
-    out[1] = Math.atan2(2 * (q[0] * q[2] + q[1] * q[3]), sqw - sqx - sqy + sqz);
-    out[2] = Math.atan2(2 * (q[0] * q[1] + q[2] * q[3]), sqw - sqx + sqy - sqz);
-  } else if (order === "ZXY") {
-    out[0] = Math.asin(clamp(2 * (q[0] * q[3] + q[1] * q[2]), -1, 1));
-    out[1] = Math.atan2(2 * (q[1] * q[3] - q[2] * q[0]), sqw - sqx - sqy + sqz);
-    out[2] = Math.atan2(2 * (q[2] * q[3] - q[0] * q[1]), sqw - sqx + sqy - sqz);
-  } else if (order === "ZYX") {
-    out[0] = Math.atan2(2 * (q[0] * q[3] + q[2] * q[1]), sqw - sqx - sqy + sqz);
-    out[1] = Math.asin(clamp(2 * (q[1] * q[3] - q[0] * q[2]), -1, 1));
-    out[2] = Math.atan2(2 * (q[0] * q[1] + q[2] * q[3]), sqw + sqx - sqy - sqz);
-  } else if (order === "YZX") {
-    out[0] = Math.atan2(2 * (q[0] * q[3] - q[2] * q[1]), sqw - sqx + sqy - sqz);
-    out[1] = Math.atan2(2 * (q[1] * q[3] - q[0] * q[2]), sqw + sqx - sqy - sqz);
-    out[2] = Math.asin(clamp(2 * (q[0] * q[1] + q[2] * q[3]), -1, 1));
-  } else if (order === "XZY") {
-    out[0] = Math.atan2(2 * (q[0] * q[3] + q[1] * q[2]), sqw - sqx + sqy - sqz);
-    out[1] = Math.atan2(2 * (q[0] * q[2] + q[1] * q[3]), sqw + sqx - sqy - sqz);
-    out[2] = Math.asin(clamp(2 * (q[2] * q[3] - q[0] * q[1]), -1, 1));
-  } else {
+  var o = e[0] * e[0], h = e[1] * e[1], d = e[2] * e[2], u = e[3] * e[3];
+  if (t === "XYZ")
+    i[0] = Math.atan2(2 * (e[0] * e[3] - e[1] * e[2]), u - o - h + d), i[1] = Math.asin(s(2 * (e[0] * e[2] + e[1] * e[3]), -1, 1)), i[2] = Math.atan2(2 * (e[2] * e[3] - e[0] * e[1]), u + o - h - d);
+  else if (t === "YXZ")
+    i[0] = Math.asin(s(2 * (e[0] * e[3] - e[1] * e[2]), -1, 1)), i[1] = Math.atan2(2 * (e[0] * e[2] + e[1] * e[3]), u - o - h + d), i[2] = Math.atan2(2 * (e[0] * e[1] + e[2] * e[3]), u - o + h - d);
+  else if (t === "ZXY")
+    i[0] = Math.asin(s(2 * (e[0] * e[3] + e[1] * e[2]), -1, 1)), i[1] = Math.atan2(2 * (e[1] * e[3] - e[2] * e[0]), u - o - h + d), i[2] = Math.atan2(2 * (e[2] * e[3] - e[0] * e[1]), u - o + h - d);
+  else if (t === "ZYX")
+    i[0] = Math.atan2(2 * (e[0] * e[3] + e[2] * e[1]), u - o - h + d), i[1] = Math.asin(s(2 * (e[1] * e[3] - e[0] * e[2]), -1, 1)), i[2] = Math.atan2(2 * (e[0] * e[1] + e[2] * e[3]), u + o - h - d);
+  else if (t === "YZX")
+    i[0] = Math.atan2(2 * (e[0] * e[3] - e[2] * e[1]), u - o + h - d), i[1] = Math.atan2(2 * (e[1] * e[3] - e[0] * e[2]), u + o - h - d), i[2] = Math.asin(s(2 * (e[0] * e[1] + e[2] * e[3]), -1, 1));
+  else if (t === "XZY")
+    i[0] = Math.atan2(2 * (e[0] * e[3] + e[1] * e[2]), u - o + h - d), i[1] = Math.atan2(2 * (e[0] * e[2] + e[1] * e[3]), u + o - h - d), i[2] = Math.asin(s(2 * (e[2] * e[3] - e[0] * e[1]), -1, 1));
+  else {
     console.log("No order given for quaternion to euler conversion.");
     return;
   }
 }
-class OrientationArmModel {
+class Pn {
   constructor() {
-    this.hand = "right";
-    this.headElbowOffset = HEAD_ELBOW_OFFSET_RIGHTHANDED;
-    this.controllerQ = create$1();
-    this.lastControllerQ = create$1();
-    this.headQ = create$1();
-    this.headPos = create$4();
-    this.elbowPos = create$4();
-    this.wristPos = create$4();
-    this.time = null;
-    this.lastTime = null;
-    this.rootQ = create$1();
-    this.position = create$4();
+    this.hand = "right", this.headElbowOffset = Pi, this.controllerQ = De(), this.lastControllerQ = De(), this.headQ = De(), this.headPos = ke(), this.elbowPos = ke(), this.wristPos = ke(), this.time = null, this.lastTime = null, this.rootQ = De(), this.position = ke();
   }
-  setHandedness(hand) {
-    if (this.hand != hand) {
-      this.hand = hand;
-      if (this.hand == "left") {
-        this.headElbowOffset = HEAD_ELBOW_OFFSET_LEFTHANDED;
-      } else {
-        this.headElbowOffset = HEAD_ELBOW_OFFSET_RIGHTHANDED;
-      }
-    }
+  setHandedness(e) {
+    this.hand != e && (this.hand = e, this.hand == "left" ? this.headElbowOffset = En : this.headElbowOffset = Pi);
   }
-  update(controllerOrientation, headPoseMatrix) {
-    this.time = now$1();
-    if (controllerOrientation) {
-      copy(this.lastControllerQ, this.controllerQ);
-      copy(this.controllerQ, controllerOrientation);
-    }
-    if (headPoseMatrix) {
-      getTranslation(this.headPos, headPoseMatrix);
-      getRotation(this.headQ, headPoseMatrix);
-    }
-    let headYawQ = this.getHeadYawOrientation_();
-    let angleDelta = this.quatAngle_(this.lastControllerQ, this.controllerQ);
-    let timeDelta = (this.time - this.lastTime) / 1e3;
-    let controllerAngularSpeed = angleDelta / timeDelta;
-    if (controllerAngularSpeed > MIN_ANGULAR_SPEED) {
-      slerp(
-        this.rootQ,
-        this.rootQ,
-        headYawQ,
-        Math.min(angleDelta / MIN_ANGLE_DELTA, 1)
-      );
-    } else {
-      copy(this.rootQ, headYawQ);
-    }
-    let controllerForward = fromValues$2(0, 0, -1);
-    transformQuat(controllerForward, controllerForward, this.controllerQ);
-    let controllerDotY = dot(controllerForward, [0, 1, 0]);
-    let extensionRatio = this.clamp_(
-      (controllerDotY - MIN_EXTENSION_COS) / MAX_EXTENSION_COS,
+  update(e, t) {
+    this.time = Yi(), e && (Ht(this.lastControllerQ, this.controllerQ), Ht(this.controllerQ, e)), t && (zi(this.headPos, t), Qi(this.headQ, t));
+    let s = this.getHeadYawOrientation_(), o = this.quatAngle_(this.lastControllerQ, this.controllerQ), h = (this.time - this.lastTime) / 1e3;
+    o / h > Rn ? bt(
+      this.rootQ,
+      this.rootQ,
+      s,
+      Math.min(o / Mn, 1)
+    ) : Ht(this.rootQ, s);
+    let u = Ie(0, 0, -1);
+    Je(u, u, this.controllerQ);
+    let m = ci(u, [0, 1, 0]), v = this.clamp_(
+      (m - Tn) / Fn,
       0,
       1
-    );
-    let controllerCameraQ = clone(this.rootQ);
-    invert$1(controllerCameraQ, controllerCameraQ);
-    multiply(controllerCameraQ, controllerCameraQ, this.controllerQ);
-    let elbowPos = this.elbowPos;
-    copy$2(elbowPos, this.headPos);
-    add(elbowPos, elbowPos, this.headElbowOffset);
-    let elbowOffset = clone$2(ARM_EXTENSION_OFFSET);
-    scale(elbowOffset, elbowOffset, extensionRatio);
-    add(elbowPos, elbowPos, elbowOffset);
-    let totalAngle = this.quatAngle_(controllerCameraQ, create$1());
-    let totalAngleDeg = totalAngle * RAD_TO_DEG;
-    let lerpSuppression = 1 - Math.pow(totalAngleDeg / 180, 4);
+    ), y = xi(this.rootQ);
+    Ei(y, y), gi(y, y, this.controllerQ);
+    let _ = this.elbowPos;
+    yi(_, this.headPos), vt(_, _, this.headElbowOffset);
+    let x = wi(Di);
+    bi(x, x, v), vt(_, _, x);
+    let F = this.quatAngle_(y, De()) * Bi, C = 1 - Math.pow(F / 180, 4);
     sssss;
-    let elbowRatio = ELBOW_BEND_RATIO;
-    let wristRatio = 1 - ELBOW_BEND_RATIO;
-    let lerpValue = lerpSuppression * (elbowRatio + wristRatio * extensionRatio * EXTENSION_RATIO_WEIGHT);
-    let wristQ = create$1();
-    slerp(wristQ, wristQ, controllerCameraQ, lerpValue);
-    let invWristQ = invert$1(create$1(), wristQ);
-    let elbowQ = clone(controllerCameraQ);
-    multiply(elbowQ, elbowQ, invWristQ);
-    let wristPos = this.wristPos;
-    copy$2(wristPos, WRIST_CONTROLLER_OFFSET);
-    transformQuat(wristPos, wristPos, wristQ);
-    add(wristPos, wristPos, ELBOW_WRIST_OFFSET);
-    transformQuat(wristPos, wristPos, elbowQ);
-    add(wristPos, wristPos, elbowPos);
-    let offset = clone$2(ARM_EXTENSION_OFFSET);
-    scale(offset, offset, extensionRatio);
-    add(this.position, this.wristPos, offset);
-    transformQuat(this.position, this.position, this.rootQ);
-    this.lastTime = this.time;
+    let B = Ii, N = 1 - Ii, Q = C * (B + N * v * _n), P = De();
+    bt(P, P, y, Q);
+    let I = Ei(De(), P), G = xi(y);
+    gi(G, G, I);
+    let O = this.wristPos;
+    yi(O, Sn), Je(O, O, P), vt(O, O, xn), Je(O, O, G), vt(O, O, _);
+    let W = wi(Di);
+    bi(W, W, v), vt(this.position, this.wristPos, W), Je(this.position, this.position, this.rootQ), this.lastTime = this.time;
   }
   getPosition() {
     return this.position;
   }
   getHeadYawOrientation_() {
-    let headEuler = create$4();
-    eulerFromQuaternion(headEuler, this.headQ, "YXZ");
-    let destinationQ = fromEuler(create$1(), 0, headEuler[1] * RAD_TO_DEG, 0);
-    return destinationQ;
+    let e = ke();
+    return Cn(e, this.headQ, "YXZ"), Kr(De(), 0, e[1] * Bi, 0);
   }
-  clamp_(value, min, max) {
-    return Math.min(Math.max(value, min), max);
+  clamp_(e, t, s) {
+    return Math.min(Math.max(e, t), s);
   }
-  quatAngle_(q1, q2) {
-    let vec1 = [0, 0, -1];
-    let vec2 = [0, 0, -1];
-    transformQuat(vec1, vec1, q1);
-    transformQuat(vec2, vec2, q2);
-    return angle(vec1, vec2);
+  quatAngle_(e, t) {
+    let s = [0, 0, -1], o = [0, 0, -1];
+    return Je(s, s, e), Je(o, o, t), zr(s, o);
   }
 }
-const PRIVATE$1 = Symbol("@@webxr-polyfill/XRRemappedGamepad");
-const PLACEHOLDER_BUTTON = { pressed: false, touched: false, value: 0 };
-Object.freeze(PLACEHOLDER_BUTTON);
-class XRRemappedGamepad {
-  constructor(gamepad, display, map) {
-    if (!map) {
-      map = {};
-    }
-    if (map.userAgentOverrides) {
-      for (let agent in map.userAgentOverrides) {
-        if (navigator.userAgent.includes(agent)) {
-          let override = map.userAgentOverrides[agent];
-          for (let key in override) {
-            if (key in map) {
-              Object.assign(map[key], override[key]);
-            } else {
-              map[key] = override[key];
-            }
-          }
+const be = Symbol("@@webxr-polyfill/XRRemappedGamepad"), rr = { pressed: !1, touched: !1, value: 0 };
+Object.freeze(rr);
+class Dn {
+  constructor(e, t, s) {
+    if (s || (s = {}), s.userAgentOverrides) {
+      for (let v in s.userAgentOverrides)
+        if (navigator.userAgent.includes(v)) {
+          let y = s.userAgentOverrides[v];
+          for (let _ in y)
+            _ in s ? Object.assign(s[_], y[_]) : s[_] = y[_];
           break;
         }
-      }
     }
-    let axes = new Array(map.axes && map.axes.length ? map.axes.length : gamepad.axes.length);
-    let buttons = new Array(map.buttons && map.buttons.length ? map.buttons.length : gamepad.buttons.length);
-    let gripTransform = null;
-    if (map.gripTransform) {
-      let orientation = map.gripTransform.orientation || [0, 0, 0, 1];
-      gripTransform = create$5();
-      fromRotationTranslation(
-        gripTransform,
-        normalize(orientation, orientation),
-        map.gripTransform.position || [0, 0, 0]
+    let o = new Array(s.axes && s.axes.length ? s.axes.length : e.axes.length), h = new Array(s.buttons && s.buttons.length ? s.buttons.length : e.buttons.length), d = null;
+    if (s.gripTransform) {
+      let v = s.gripTransform.orientation || [0, 0, 0, 1];
+      d = qe(), St(
+        d,
+        Bt(v, v),
+        s.gripTransform.position || [0, 0, 0]
       );
     }
-    let targetRayTransform = null;
-    if (map.targetRayTransform) {
-      let orientation = map.targetRayTransform.orientation || [0, 0, 0, 1];
-      targetRayTransform = create$5();
-      fromRotationTranslation(
-        targetRayTransform,
-        normalize(orientation, orientation),
-        map.targetRayTransform.position || [0, 0, 0]
+    let u = null;
+    if (s.targetRayTransform) {
+      let v = s.targetRayTransform.orientation || [0, 0, 0, 1];
+      u = qe(), St(
+        u,
+        Bt(v, v),
+        s.targetRayTransform.position || [0, 0, 0]
       );
     }
-    let profiles = map.profiles;
-    if (map.displayProfiles) {
-      if (display.displayName in map.displayProfiles) {
-        profiles = map.displayProfiles[display.displayName];
-      }
-    }
-    this[PRIVATE$1] = {
-      gamepad,
-      map,
-      profiles: profiles || [gamepad.id],
-      mapping: map.mapping || gamepad.mapping,
-      axes,
-      buttons,
-      gripTransform,
-      targetRayTransform
-    };
-    this._update();
+    let m = s.profiles;
+    s.displayProfiles && t.displayName in s.displayProfiles && (m = s.displayProfiles[t.displayName]), this[be] = {
+      gamepad: e,
+      map: s,
+      profiles: m || [e.id],
+      mapping: s.mapping || e.mapping,
+      axes: o,
+      buttons: h,
+      gripTransform: d,
+      targetRayTransform: u
+    }, this._update();
   }
   _update() {
-    let gamepad = this[PRIVATE$1].gamepad;
-    let map = this[PRIVATE$1].map;
-    let axes = this[PRIVATE$1].axes;
-    for (let i = 0; i < axes.length; ++i) {
-      if (map.axes && i in map.axes) {
-        if (map.axes[i] === null) {
-          axes[i] = 0;
-        } else {
-          axes[i] = gamepad.axes[map.axes[i]];
-        }
-      } else {
-        axes[i] = gamepad.axes[i];
-      }
-    }
-    if (map.axes && map.axes.invert) {
-      for (let axis of map.axes.invert) {
-        if (axis < axes.length) {
-          axes[axis] *= -1;
-        }
-      }
-    }
-    let buttons = this[PRIVATE$1].buttons;
-    for (let i = 0; i < buttons.length; ++i) {
-      if (map.buttons && i in map.buttons) {
-        if (map.buttons[i] === null) {
-          buttons[i] = PLACEHOLDER_BUTTON;
-        } else {
-          buttons[i] = gamepad.buttons[map.buttons[i]];
-        }
-      } else {
-        buttons[i] = gamepad.buttons[i];
-      }
-    }
+    let e = this[be].gamepad, t = this[be].map, s = this[be].axes;
+    for (let h = 0; h < s.length; ++h)
+      t.axes && h in t.axes ? t.axes[h] === null ? s[h] = 0 : s[h] = e.axes[t.axes[h]] : s[h] = e.axes[h];
+    if (t.axes && t.axes.invert)
+      for (let h of t.axes.invert)
+        h < s.length && (s[h] *= -1);
+    let o = this[be].buttons;
+    for (let h = 0; h < o.length; ++h)
+      t.buttons && h in t.buttons ? t.buttons[h] === null ? o[h] = rr : o[h] = e.buttons[t.buttons[h]] : o[h] = e.buttons[h];
   }
   get id() {
     return "";
   }
   get _profiles() {
-    return this[PRIVATE$1].profiles;
+    return this[be].profiles;
   }
   get index() {
     return -1;
   }
   get connected() {
-    return this[PRIVATE$1].gamepad.connected;
+    return this[be].gamepad.connected;
   }
   get timestamp() {
-    return this[PRIVATE$1].gamepad.timestamp;
+    return this[be].gamepad.timestamp;
   }
   get mapping() {
-    return this[PRIVATE$1].mapping;
+    return this[be].mapping;
   }
   get axes() {
-    return this[PRIVATE$1].axes;
+    return this[be].axes;
   }
   get buttons() {
-    return this[PRIVATE$1].buttons;
+    return this[be].buttons;
   }
   get hapticActuators() {
-    return this[PRIVATE$1].gamepad.hapticActuators;
+    return this[be].gamepad.hapticActuators;
   }
 }
-class GamepadXRInputSource {
-  constructor(polyfill, display, primaryButtonIndex = 0, primarySqueezeButtonIndex = -1) {
-    this.polyfill = polyfill;
-    this.display = display;
-    this.nativeGamepad = null;
-    this.gamepad = null;
-    this.inputSource = new XRInputSource(this);
-    this.lastPosition = create$4();
-    this.emulatedPosition = false;
-    this.basePoseMatrix = create$5();
-    this.outputMatrix = create$5();
-    this.primaryButtonIndex = primaryButtonIndex;
-    this.primaryActionPressed = false;
-    this.primarySqueezeButtonIndex = primarySqueezeButtonIndex;
-    this.primarySqueezeActionPressed = false;
-    this.handedness = "";
-    this.targetRayMode = "gaze";
-    this.armModel = null;
+class In {
+  constructor(e, t, s = 0, o = -1) {
+    this.polyfill = e, this.display = t, this.nativeGamepad = null, this.gamepad = null, this.inputSource = new Ji(this), this.lastPosition = ke(), this.emulatedPosition = !1, this.basePoseMatrix = qe(), this.outputMatrix = qe(), this.primaryButtonIndex = s, this.primaryActionPressed = !1, this.primarySqueezeButtonIndex = o, this.primarySqueezeActionPressed = !1, this.handedness = "", this.targetRayMode = "gaze", this.armModel = null;
   }
   get profiles() {
     return this.gamepad ? this.gamepad._profiles : [];
   }
-  updateFromGamepad(gamepad) {
-    if (this.nativeGamepad !== gamepad) {
-      this.nativeGamepad = gamepad;
-      if (gamepad) {
-        this.gamepad = new XRRemappedGamepad(gamepad, this.display, GamepadMappings[gamepad.id]);
-      } else {
-        this.gamepad = null;
-      }
-    }
-    this.handedness = gamepad.hand === "" ? "none" : gamepad.hand;
-    if (this.gamepad) {
-      this.gamepad._update();
-    }
-    if (gamepad.pose) {
-      this.targetRayMode = "tracked-pointer";
-      this.emulatedPosition = !gamepad.pose.hasPosition;
-    } else if (gamepad.hand === "") {
-      this.targetRayMode = "gaze";
-      this.emulatedPosition = false;
-    }
+  updateFromGamepad(e) {
+    this.nativeGamepad !== e && (this.nativeGamepad = e, e ? this.gamepad = new Dn(e, this.display, gn[e.id]) : this.gamepad = null), this.handedness = e.hand === "" ? "none" : e.hand, this.gamepad && this.gamepad._update(), e.pose ? (this.targetRayMode = "tracked-pointer", this.emulatedPosition = !e.pose.hasPosition) : e.hand === "" && (this.targetRayMode = "gaze", this.emulatedPosition = !1);
   }
   updateBasePoseMatrix() {
     if (this.nativeGamepad && this.nativeGamepad.pose) {
-      let pose = this.nativeGamepad.pose;
-      let position = pose.position;
-      let orientation = pose.orientation;
-      if (!position && !orientation) {
+      let e = this.nativeGamepad.pose, t = e.position, s = e.orientation;
+      if (!t && !s)
         return;
-      }
-      if (!position) {
-        if (!pose.hasPosition) {
-          if (!this.armModel) {
-            this.armModel = new OrientationArmModel();
-          }
-          this.armModel.setHandedness(this.nativeGamepad.hand);
-          this.armModel.update(orientation, this.polyfill.getBasePoseMatrix());
-          position = this.armModel.getPosition();
-        } else {
-          position = this.lastPosition;
-        }
-      } else {
-        this.lastPosition[0] = position[0];
-        this.lastPosition[1] = position[1];
-        this.lastPosition[2] = position[2];
-      }
-      fromRotationTranslation(this.basePoseMatrix, orientation, position);
-    } else {
-      copy$3(this.basePoseMatrix, this.polyfill.getBasePoseMatrix());
-    }
+      t ? (this.lastPosition[0] = t[0], this.lastPosition[1] = t[1], this.lastPosition[2] = t[2]) : e.hasPosition ? t = this.lastPosition : (this.armModel || (this.armModel = new Pn()), this.armModel.setHandedness(this.nativeGamepad.hand), this.armModel.update(s, this.polyfill.getBasePoseMatrix()), t = this.armModel.getPosition()), St(this.basePoseMatrix, s, t);
+    } else
+      Vr(this.basePoseMatrix, this.polyfill.getBasePoseMatrix());
     return this.basePoseMatrix;
   }
-  getXRPose(coordinateSystem, poseType) {
-    this.updateBasePoseMatrix();
-    switch (poseType) {
+  getXRPose(e, t) {
+    switch (this.updateBasePoseMatrix(), t) {
       case "target-ray":
-        coordinateSystem._transformBasePoseMatrix(this.outputMatrix, this.basePoseMatrix);
-        if (this.gamepad && this.gamepad[PRIVATE$1].targetRayTransform) {
-          multiply$1(this.outputMatrix, this.outputMatrix, this.gamepad[PRIVATE$1].targetRayTransform);
-        }
+        e._transformBasePoseMatrix(this.outputMatrix, this.basePoseMatrix), this.gamepad && this.gamepad[be].targetRayTransform && tt(this.outputMatrix, this.outputMatrix, this.gamepad[be].targetRayTransform);
         break;
       case "grip":
-        if (!this.nativeGamepad || !this.nativeGamepad.pose) {
+        if (!this.nativeGamepad || !this.nativeGamepad.pose)
           return null;
-        }
-        coordinateSystem._transformBasePoseMatrix(this.outputMatrix, this.basePoseMatrix);
-        if (this.gamepad && this.gamepad[PRIVATE$1].gripTransform) {
-          multiply$1(this.outputMatrix, this.outputMatrix, this.gamepad[PRIVATE$1].gripTransform);
-        }
+        e._transformBasePoseMatrix(this.outputMatrix, this.basePoseMatrix), this.gamepad && this.gamepad[be].gripTransform && tt(this.outputMatrix, this.outputMatrix, this.gamepad[be].gripTransform);
         break;
       default:
         return null;
     }
-    coordinateSystem._adjustForOriginOffset(this.outputMatrix);
-    return new XRPose(new XRRigidTransform(this.outputMatrix), this.emulatedPosition);
+    return e._adjustForOriginOffset(this.outputMatrix), new XRPose(new XRRigidTransform(this.outputMatrix), this.emulatedPosition);
   }
 }
-const TEST_ENV = false;
-const EXTRA_PRESENTATION_ATTRIBUTES = {
-  highRefreshRate: true
-};
-const PRIMARY_BUTTON_MAP = {
+const Bn = !1, Li = {
+  highRefreshRate: !0
+}, Oi = {
   oculus: 1,
   openvr: 1,
   "spatial controller (spatial interaction source)": 1
 };
-let SESSION_ID$2 = 0;
-class Session$2 {
-  constructor(mode, enabledFeatures, polyfillOptions = {}) {
-    this.mode = mode;
-    this.enabledFeatures = enabledFeatures;
-    this.outputContext = null;
-    this.immersive = mode == "immersive-vr" || mode == "immersive-ar";
-    this.ended = null;
-    this.baseLayer = null;
-    this.id = ++SESSION_ID$2;
-    this.modifiedCanvasLayer = false;
-    if (this.outputContext && !TEST_ENV) {
-      const renderContextType = polyfillOptions.renderContextType || "2d";
-      this.renderContext = this.outputContext.canvas.getContext(renderContextType);
+let Ln = 0;
+class On {
+  constructor(e, t, s = {}) {
+    if (this.mode = e, this.enabledFeatures = t, this.outputContext = null, this.immersive = e == "immersive-vr" || e == "immersive-ar", this.ended = null, this.baseLayer = null, this.id = ++Ln, this.modifiedCanvasLayer = !1, this.outputContext && !Bn) {
+      const o = s.renderContextType || "2d";
+      this.renderContext = this.outputContext.canvas.getContext(o);
     }
   }
 }
-class WebVRDevice extends XRDevice {
-  constructor(global2, display) {
-    const { canPresent } = display.capabilities;
-    super(global2);
-    this.display = display;
-    this.frame = new global2.VRFrameData();
-    this.sessions = /* @__PURE__ */ new Map();
-    this.immersiveSession = null;
-    this.canPresent = canPresent;
-    this.baseModelMatrix = create$5();
-    this.gamepadInputSources = {};
-    this.tempVec3 = new Float32Array(3);
-    this.onVRDisplayPresentChange = this.onVRDisplayPresentChange.bind(this);
-    global2.window.addEventListener("vrdisplaypresentchange", this.onVRDisplayPresentChange);
-    this.CAN_USE_GAMEPAD = global2.navigator && "getGamepads" in global2.navigator;
-    this.HAS_BITMAP_SUPPORT = isImageBitmapSupported(global2);
+class nr extends Ai {
+  constructor(e, t) {
+    const { canPresent: s } = t.capabilities;
+    super(e), this.display = t, this.frame = new e.VRFrameData(), this.sessions = /* @__PURE__ */ new Map(), this.immersiveSession = null, this.canPresent = s, this.baseModelMatrix = qe(), this.gamepadInputSources = {}, this.tempVec3 = new Float32Array(3), this.onVRDisplayPresentChange = this.onVRDisplayPresentChange.bind(this), e.window.addEventListener("vrdisplaypresentchange", this.onVRDisplayPresentChange), this.CAN_USE_GAMEPAD = e.navigator && "getGamepads" in e.navigator, this.HAS_BITMAP_SUPPORT = hn(e);
   }
   get depthNear() {
     return this.display.depthNear;
   }
-  set depthNear(val) {
-    this.display.depthNear = val;
+  set depthNear(e) {
+    this.display.depthNear = e;
   }
   get depthFar() {
     return this.display.depthFar;
   }
-  set depthFar(val) {
-    this.display.depthFar = val;
+  set depthFar(e) {
+    this.display.depthFar = e;
   }
-  onBaseLayerSet(sessionId, layer) {
-    const session = this.sessions.get(sessionId);
-    const canvas = layer.context.canvas;
-    if (session.immersive) {
-      const left = this.display.getEyeParameters("left");
-      const right = this.display.getEyeParameters("right");
-      canvas.width = Math.max(left.renderWidth, right.renderWidth) * 2;
-      canvas.height = Math.max(left.renderHeight, right.renderHeight);
-      this.display.requestPresent([{
-        source: canvas,
-        attributes: EXTRA_PRESENTATION_ATTRIBUTES
+  onBaseLayerSet(e, t) {
+    const s = this.sessions.get(e), o = t.context.canvas;
+    if (s.immersive) {
+      const h = this.display.getEyeParameters("left"), d = this.display.getEyeParameters("right");
+      o.width = Math.max(h.renderWidth, d.renderWidth) * 2, o.height = Math.max(h.renderHeight, d.renderHeight), this.display.requestPresent([{
+        source: o,
+        attributes: Li
       }]).then(() => {
-        if (!this.global.document.body.contains(canvas)) {
-          session.modifiedCanvasLayer = true;
-          this.global.document.body.appendChild(canvas);
-          applyCanvasStylesForMinimalRendering(canvas);
-        }
-        session.baseLayer = layer;
+        this.global.document.body.contains(o) || (s.modifiedCanvasLayer = !0, this.global.document.body.appendChild(o), An(o)), s.baseLayer = t;
       });
-    } else {
-      session.baseLayer = layer;
-    }
+    } else
+      s.baseLayer = t;
   }
-  isSessionSupported(mode) {
-    if (mode == "immersive-ar") {
-      return false;
-    }
-    if (mode == "immersive-vr" && this.canPresent === false) {
-      return false;
-    }
-    return true;
+  isSessionSupported(e) {
+    return !(e == "immersive-ar" || e == "immersive-vr" && this.canPresent === !1);
   }
-  isFeatureSupported(featureDescriptor) {
-    switch (featureDescriptor) {
+  isFeatureSupported(e) {
+    switch (e) {
       case "viewer":
-        return true;
+        return !0;
       case "local":
-        return true;
+        return !0;
       case "local-floor":
-        return true;
+        return !0;
       case "bounded":
-        return false;
+        return !1;
       case "unbounded":
-        return false;
+        return !1;
       default:
-        return false;
+        return !1;
     }
   }
-  async requestSession(mode, enabledFeatures) {
-    if (!this.isSessionSupported(mode)) {
+  async requestSession(e, t) {
+    if (!this.isSessionSupported(e))
       return Promise.reject();
-    }
-    let immersive = mode == "immersive-vr";
-    if (immersive) {
-      const canvas = this.global.document.createElement("canvas");
-      {
-        canvas.getContext("webgl");
-      }
-      await this.display.requestPresent([{
-        source: canvas,
-        attributes: EXTRA_PRESENTATION_ATTRIBUTES
+    let s = e == "immersive-vr";
+    if (s) {
+      const h = this.global.document.createElement("canvas");
+      h.getContext("webgl"), await this.display.requestPresent([{
+        source: h,
+        attributes: Li
       }]);
     }
-    const session = new Session$2(mode, enabledFeatures, {
+    const o = new On(e, t, {
       renderContextType: this.HAS_BITMAP_SUPPORT ? "bitmaprenderer" : "2d"
     });
-    this.sessions.set(session.id, session);
-    if (immersive) {
-      this.immersiveSession = session;
-      this.dispatchEvent("@@webxr-polyfill/vr-present-start", session.id);
-    }
-    return Promise.resolve(session.id);
+    return this.sessions.set(o.id, o), s && (this.immersiveSession = o, this.dispatchEvent("@@webxr-polyfill/vr-present-start", o.id)), Promise.resolve(o.id);
   }
-  requestAnimationFrame(callback) {
-    return this.display.requestAnimationFrame(callback);
+  requestAnimationFrame(e) {
+    return this.display.requestAnimationFrame(e);
   }
-  getPrimaryButtonIndex(gamepad) {
-    let primaryButton = 0;
-    let name = gamepad.id.toLowerCase();
-    for (let key in PRIMARY_BUTTON_MAP) {
-      if (name.includes(key)) {
-        primaryButton = PRIMARY_BUTTON_MAP[key];
+  getPrimaryButtonIndex(e) {
+    let t = 0, s = e.id.toLowerCase();
+    for (let o in Oi)
+      if (s.includes(o)) {
+        t = Oi[o];
         break;
       }
-    }
-    return Math.min(primaryButton, gamepad.buttons.length - 1);
+    return Math.min(t, e.buttons.length - 1);
   }
-  onFrameStart(sessionId, renderState) {
-    this.display.depthNear = renderState.depthNear;
-    this.display.depthFar = renderState.depthFar;
-    this.display.getFrameData(this.frame);
-    const session = this.sessions.get(sessionId);
-    if (session.immersive && this.CAN_USE_GAMEPAD) {
-      let prevInputSources = this.gamepadInputSources;
+  onFrameStart(e, t) {
+    this.display.depthNear = t.depthNear, this.display.depthFar = t.depthFar, this.display.getFrameData(this.frame);
+    const s = this.sessions.get(e);
+    if (s.immersive && this.CAN_USE_GAMEPAD) {
+      let o = this.gamepadInputSources;
       this.gamepadInputSources = {};
-      let gamepads = this.global.navigator.getGamepads();
-      for (let i = 0; i < gamepads.length; ++i) {
-        let gamepad = gamepads[i];
-        if (gamepad && gamepad.displayId > 0) {
-          let inputSourceImpl = prevInputSources[i];
-          if (!inputSourceImpl) {
-            inputSourceImpl = new GamepadXRInputSource(this, this.display, this.getPrimaryButtonIndex(gamepad));
+      let h = this.global.navigator.getGamepads();
+      for (let d = 0; d < h.length; ++d) {
+        let u = h[d];
+        if (u && u.displayId > 0) {
+          let m = o[d];
+          if (m || (m = new In(this, this.display, this.getPrimaryButtonIndex(u))), m.updateFromGamepad(u), this.gamepadInputSources[d] = m, m.primaryButtonIndex != -1) {
+            let v = u.buttons[m.primaryButtonIndex].pressed;
+            v && !m.primaryActionPressed ? this.dispatchEvent("@@webxr-polyfill/input-select-start", { sessionId: s.id, inputSource: m.inputSource }) : !v && m.primaryActionPressed && this.dispatchEvent("@@webxr-polyfill/input-select-end", { sessionId: s.id, inputSource: m.inputSource }), m.primaryActionPressed = v;
           }
-          inputSourceImpl.updateFromGamepad(gamepad);
-          this.gamepadInputSources[i] = inputSourceImpl;
-          if (inputSourceImpl.primaryButtonIndex != -1) {
-            let primaryActionPressed = gamepad.buttons[inputSourceImpl.primaryButtonIndex].pressed;
-            if (primaryActionPressed && !inputSourceImpl.primaryActionPressed) {
-              this.dispatchEvent("@@webxr-polyfill/input-select-start", { sessionId: session.id, inputSource: inputSourceImpl.inputSource });
-            } else if (!primaryActionPressed && inputSourceImpl.primaryActionPressed) {
-              this.dispatchEvent("@@webxr-polyfill/input-select-end", { sessionId: session.id, inputSource: inputSourceImpl.inputSource });
-            }
-            inputSourceImpl.primaryActionPressed = primaryActionPressed;
-          }
-          if (inputSourceImpl.primarySqueezeButtonIndex != -1) {
-            let primarySqueezeActionPressed = gamepad.buttons[inputSourceImpl.primarySqueezeButtonIndex].pressed;
-            if (primarySqueezeActionPressed && !inputSourceImpl.primarySqueezeActionPressed) {
-              this.dispatchEvent("@@webxr-polyfill/input-squeeze-start", { sessionId: session.id, inputSource: inputSourceImpl.inputSource });
-            } else if (!primarySqueezeActionPressed && inputSourceImpl.primarySqueezeActionPressed) {
-              this.dispatchEvent("@@webxr-polyfill/input-squeeze-end", { sessionId: session.id, inputSource: inputSourceImpl.inputSource });
-            }
-            inputSourceImpl.primarySqueezeActionPressed = primarySqueezeActionPressed;
+          if (m.primarySqueezeButtonIndex != -1) {
+            let v = u.buttons[m.primarySqueezeButtonIndex].pressed;
+            v && !m.primarySqueezeActionPressed ? this.dispatchEvent("@@webxr-polyfill/input-squeeze-start", { sessionId: s.id, inputSource: m.inputSource }) : !v && m.primarySqueezeActionPressed && this.dispatchEvent("@@webxr-polyfill/input-squeeze-end", { sessionId: s.id, inputSource: m.inputSource }), m.primarySqueezeActionPressed = v;
           }
         }
       }
     }
-    if (!session.immersive && session.baseLayer) {
-      const canvas = session.baseLayer.context.canvas;
-      perspective$1(
+    if (!s.immersive && s.baseLayer) {
+      const o = s.baseLayer.context.canvas;
+      Xi(
         this.frame.leftProjectionMatrix,
-        renderState.inlineVerticalFieldOfView,
-        canvas.width / canvas.height,
-        renderState.depthNear,
-        renderState.depthFar
+        t.inlineVerticalFieldOfView,
+        o.width / o.height,
+        t.depthNear,
+        t.depthFar
       );
     }
   }
-  onFrameEnd(sessionId) {
-    const session = this.sessions.get(sessionId);
-    if (session.ended || !session.baseLayer) {
-      return;
-    }
-    if (session.outputContext && !(session.immersive && !this.display.capabilities.hasExternalDisplay)) {
-      const mirroring = session.immersive && this.display.capabilities.hasExternalDisplay;
-      const iCanvas = session.baseLayer.context.canvas;
-      const iWidth = mirroring ? iCanvas.width / 2 : iCanvas.width;
-      const iHeight = iCanvas.height;
-      {
-        const oCanvas = session.outputContext.canvas;
-        const oWidth = oCanvas.width;
-        const oHeight = oCanvas.height;
-        const renderContext = session.renderContext;
-        if (this.HAS_BITMAP_SUPPORT) {
-          if (iCanvas.transferToImageBitmap) {
-            renderContext.transferFromImageBitmap(iCanvas.transferToImageBitmap());
-          } else {
-            this.global.createImageBitmap(iCanvas, 0, 0, iWidth, iHeight, {
-              resizeWidth: oWidth,
-              resizeHeight: oHeight
-            }).then((bitmap) => renderContext.transferFromImageBitmap(bitmap));
-          }
-        } else {
-          renderContext.drawImage(
-            iCanvas,
+  onFrameEnd(e) {
+    const t = this.sessions.get(e);
+    if (!(t.ended || !t.baseLayer)) {
+      if (t.outputContext && !(t.immersive && !this.display.capabilities.hasExternalDisplay)) {
+        const s = t.immersive && this.display.capabilities.hasExternalDisplay, o = t.baseLayer.context.canvas, h = s ? o.width / 2 : o.width, d = o.height;
+        {
+          const u = t.outputContext.canvas, m = u.width, v = u.height, y = t.renderContext;
+          this.HAS_BITMAP_SUPPORT ? o.transferToImageBitmap ? y.transferFromImageBitmap(o.transferToImageBitmap()) : this.global.createImageBitmap(o, 0, 0, h, d, {
+            resizeWidth: m,
+            resizeHeight: v
+          }).then((_) => y.transferFromImageBitmap(_)) : y.drawImage(
+            o,
             0,
             0,
-            iWidth,
-            iHeight,
+            h,
+            d,
             0,
             0,
-            oWidth,
-            oHeight
+            m,
+            v
           );
         }
       }
-    }
-    if (session.immersive && session.baseLayer) {
-      this.display.submitFrame();
+      t.immersive && t.baseLayer && this.display.submitFrame();
     }
   }
-  cancelAnimationFrame(handle) {
-    this.display.cancelAnimationFrame(handle);
+  cancelAnimationFrame(e) {
+    this.display.cancelAnimationFrame(e);
   }
-  async endSession(sessionId) {
-    const session = this.sessions.get(sessionId);
-    if (session.ended) {
-      return;
-    }
-    if (session.immersive) {
-      return this.display.exitPresent();
-    } else {
-      session.ended = true;
+  async endSession(e) {
+    const t = this.sessions.get(e);
+    if (!t.ended) {
+      if (t.immersive)
+        return this.display.exitPresent();
+      t.ended = !0;
     }
   }
-  doesSessionSupportReferenceSpace(sessionId, type) {
-    const session = this.sessions.get(sessionId);
-    if (session.ended) {
-      return false;
-    }
-    return session.enabledFeatures.has(type);
+  doesSessionSupportReferenceSpace(e, t) {
+    const s = this.sessions.get(e);
+    return s.ended ? !1 : s.enabledFeatures.has(t);
   }
   requestStageBounds() {
     if (this.display.stageParameters) {
-      const width = this.display.stageParameters.sizeX;
-      const depth = this.display.stageParameters.sizeZ;
-      const data = [];
-      data.push(-width / 2);
-      data.push(-depth / 2);
-      data.push(width / 2);
-      data.push(-depth / 2);
-      data.push(width / 2);
-      data.push(depth / 2);
-      data.push(-width / 2);
-      data.push(depth / 2);
-      return data;
+      const e = this.display.stageParameters.sizeX, t = this.display.stageParameters.sizeZ, s = [];
+      return s.push(-e / 2), s.push(-t / 2), s.push(e / 2), s.push(-t / 2), s.push(e / 2), s.push(t / 2), s.push(-e / 2), s.push(t / 2), s;
     }
     return null;
   }
-  async requestFrameOfReferenceTransform(type, options) {
-    if ((type === "local-floor" || type === "bounded-floor") && this.display.stageParameters && this.display.stageParameters.sittingToStandingTransform) {
-      return this.display.stageParameters.sittingToStandingTransform;
-    }
-    return null;
+  async requestFrameOfReferenceTransform(e, t) {
+    return (e === "local-floor" || e === "bounded-floor") && this.display.stageParameters && this.display.stageParameters.sittingToStandingTransform ? this.display.stageParameters.sittingToStandingTransform : null;
   }
-  getProjectionMatrix(eye) {
-    if (eye === "left") {
+  getProjectionMatrix(e) {
+    if (e === "left")
       return this.frame.leftProjectionMatrix;
-    } else if (eye === "right") {
+    if (e === "right")
       return this.frame.rightProjectionMatrix;
-    } else if (eye === "none") {
+    if (e === "none")
       return this.frame.leftProjectionMatrix;
-    } else {
-      throw new Error(`eye must be of type 'left' or 'right'`);
-    }
+    throw new Error("eye must be of type 'left' or 'right'");
   }
-  getViewport(sessionId, eye, layer, target) {
-    const session = this.sessions.get(sessionId);
-    const { width, height } = layer.context.canvas;
-    if (!session.immersive) {
-      target.x = target.y = 0;
-      target.width = width;
-      target.height = height;
-      return true;
-    }
-    if (eye === "left" || eye === "none") {
-      target.x = 0;
-    } else if (eye === "right") {
-      target.x = width / 2;
-    } else {
-      return false;
-    }
-    target.y = 0;
-    target.width = width / 2;
-    target.height = height;
-    return true;
+  getViewport(e, t, s, o) {
+    const h = this.sessions.get(e), { width: d, height: u } = s.context.canvas;
+    if (!h.immersive)
+      return o.x = o.y = 0, o.width = d, o.height = u, !0;
+    if (t === "left" || t === "none")
+      o.x = 0;
+    else if (t === "right")
+      o.x = d / 2;
+    else
+      return !1;
+    return o.y = 0, o.width = d / 2, o.height = u, !0;
   }
   getBasePoseMatrix() {
-    let { position, orientation } = this.frame.pose;
-    if (!position && !orientation) {
-      return this.baseModelMatrix;
-    }
-    if (!position) {
-      position = this.tempVec3;
-      position[0] = position[1] = position[2] = 0;
-    }
-    fromRotationTranslation(this.baseModelMatrix, orientation, position);
-    return this.baseModelMatrix;
+    let { position: e, orientation: t } = this.frame.pose;
+    return !e && !t ? this.baseModelMatrix : (e || (e = this.tempVec3, e[0] = e[1] = e[2] = 0), St(this.baseModelMatrix, t, e), this.baseModelMatrix);
   }
-  getBaseViewMatrix(eye) {
-    if (eye === "left" || eye === "none") {
+  getBaseViewMatrix(e) {
+    if (e === "left" || e === "none")
       return this.frame.leftViewMatrix;
-    } else if (eye === "right") {
+    if (e === "right")
       return this.frame.rightViewMatrix;
-    } else {
-      throw new Error(`eye must be of type 'left' or 'right'`);
-    }
+    throw new Error("eye must be of type 'left' or 'right'");
   }
   getInputSources() {
-    let inputSources = [];
-    for (let i in this.gamepadInputSources) {
-      inputSources.push(this.gamepadInputSources[i].inputSource);
-    }
-    return inputSources;
+    let e = [];
+    for (let t in this.gamepadInputSources)
+      e.push(this.gamepadInputSources[t].inputSource);
+    return e;
   }
-  getInputPose(inputSource, coordinateSystem, poseType) {
-    if (!coordinateSystem) {
+  getInputPose(e, t, s) {
+    if (!t)
       return null;
-    }
-    for (let i in this.gamepadInputSources) {
-      let inputSourceImpl = this.gamepadInputSources[i];
-      if (inputSourceImpl.inputSource === inputSource) {
-        return inputSourceImpl.getXRPose(coordinateSystem, poseType);
-      }
+    for (let o in this.gamepadInputSources) {
+      let h = this.gamepadInputSources[o];
+      if (h.inputSource === e)
+        return h.getXRPose(t, s);
     }
     return null;
   }
   onWindowResize() {
   }
   onVRDisplayPresentChange(e) {
-    if (!this.display.isPresenting) {
-      this.sessions.forEach((session) => {
-        if (session.immersive && !session.ended) {
-          if (session.modifiedCanvasLayer) {
-            const canvas = session.baseLayer.context.canvas;
-            document.body.removeChild(canvas);
-            canvas.setAttribute("style", "");
-          }
-          if (this.immersiveSession === session) {
-            this.immersiveSession = null;
-          }
-          this.dispatchEvent("@@webxr-polyfill/vr-present-end", session.id);
+    this.display.isPresenting || this.sessions.forEach((t) => {
+      if (t.immersive && !t.ended) {
+        if (t.modifiedCanvasLayer) {
+          const s = t.baseLayer.context.canvas;
+          document.body.removeChild(s), s.setAttribute("style", "");
         }
-      });
-    }
+        this.immersiveSession === t && (this.immersiveSession = null), this.dispatchEvent("@@webxr-polyfill/vr-present-end", t.id);
+      }
+    });
   }
 }
-class CardboardXRDevice extends WebVRDevice {
-  constructor(global2, cardboardConfig) {
-    const display = new CardboardVRDisplay(cardboardConfig || {});
-    super(global2, display);
-    this.display = display;
-    this.frame = {
+class Nn extends nr {
+  constructor(e, t) {
+    const s = new fn(t || {});
+    super(e, s), this.display = s, this.frame = {
       rightViewMatrix: new Float32Array(16),
       leftViewMatrix: new Float32Array(16),
       rightProjectionMatrix: new Float32Array(16),
@@ -5956,581 +3112,405 @@ class CardboardXRDevice extends WebVRDevice {
     };
   }
 }
-let SESSION_ID$1 = 0;
-class Session$1 {
-  constructor(mode, enabledFeatures) {
-    this.mode = mode;
-    this.enabledFeatures = enabledFeatures;
-    this.ended = null;
-    this.baseLayer = null;
-    this.id = ++SESSION_ID$1;
+let kn = 0;
+class Gn {
+  constructor(e, t) {
+    this.mode = e, this.enabledFeatures = t, this.ended = null, this.baseLayer = null, this.id = ++kn;
   }
 }
-class InlineDevice extends XRDevice {
-  constructor(global2) {
-    super(global2);
-    this.sessions = /* @__PURE__ */ new Map();
-    this.projectionMatrix = create$5();
-    this.identityMatrix = create$5();
+class Vn extends Ai {
+  constructor(e) {
+    super(e), this.sessions = /* @__PURE__ */ new Map(), this.projectionMatrix = qe(), this.identityMatrix = qe();
   }
-  onBaseLayerSet(sessionId, layer) {
-    const session = this.sessions.get(sessionId);
-    session.baseLayer = layer;
+  onBaseLayerSet(e, t) {
+    const s = this.sessions.get(e);
+    s.baseLayer = t;
   }
-  isSessionSupported(mode) {
-    return mode == "inline";
+  isSessionSupported(e) {
+    return e == "inline";
   }
-  isFeatureSupported(featureDescriptor) {
-    switch (featureDescriptor) {
+  isFeatureSupported(e) {
+    switch (e) {
       case "viewer":
-        return true;
+        return !0;
       default:
-        return false;
+        return !1;
     }
   }
-  async requestSession(mode, enabledFeatures) {
-    if (!this.isSessionSupported(mode)) {
+  async requestSession(e, t) {
+    if (!this.isSessionSupported(e))
       return Promise.reject();
-    }
-    const session = new Session$1(mode, enabledFeatures);
-    this.sessions.set(session.id, session);
-    return Promise.resolve(session.id);
+    const s = new Gn(e, t);
+    return this.sessions.set(s.id, s), Promise.resolve(s.id);
   }
-  requestAnimationFrame(callback) {
-    return window.requestAnimationFrame(callback);
+  requestAnimationFrame(e) {
+    return window.requestAnimationFrame(e);
   }
-  cancelAnimationFrame(handle) {
-    window.cancelAnimationFrame(handle);
+  cancelAnimationFrame(e) {
+    window.cancelAnimationFrame(e);
   }
-  onFrameStart(sessionId, renderState) {
-    const session = this.sessions.get(sessionId);
-    if (session.baseLayer) {
-      const canvas = session.baseLayer.context.canvas;
-      perspective$1(
+  onFrameStart(e, t) {
+    const s = this.sessions.get(e);
+    if (s.baseLayer) {
+      const o = s.baseLayer.context.canvas;
+      Xi(
         this.projectionMatrix,
-        renderState.inlineVerticalFieldOfView,
-        canvas.width / canvas.height,
-        renderState.depthNear,
-        renderState.depthFar
+        t.inlineVerticalFieldOfView,
+        o.width / o.height,
+        t.depthNear,
+        t.depthFar
       );
     }
   }
-  onFrameEnd(sessionId) {
+  onFrameEnd(e) {
   }
-  async endSession(sessionId) {
-    const session = this.sessions.get(sessionId);
-    session.ended = true;
+  async endSession(e) {
+    const t = this.sessions.get(e);
+    t.ended = !0;
   }
-  doesSessionSupportReferenceSpace(sessionId, type) {
-    const session = this.sessions.get(sessionId);
-    if (session.ended) {
-      return false;
-    }
-    return session.enabledFeatures.has(type);
+  doesSessionSupportReferenceSpace(e, t) {
+    const s = this.sessions.get(e);
+    return s.ended ? !1 : s.enabledFeatures.has(t);
   }
   requestStageBounds() {
     return null;
   }
-  async requestFrameOfReferenceTransform(type, options) {
+  async requestFrameOfReferenceTransform(e, t) {
     return null;
   }
-  getProjectionMatrix(eye) {
+  getProjectionMatrix(e) {
     return this.projectionMatrix;
   }
-  getViewport(sessionId, eye, layer, target) {
-    this.sessions.get(sessionId);
-    const { width, height } = layer.context.canvas;
-    target.x = target.y = 0;
-    target.width = width;
-    target.height = height;
-    return true;
+  getViewport(e, t, s, o) {
+    this.sessions.get(e);
+    const { width: h, height: d } = s.context.canvas;
+    return o.x = o.y = 0, o.width = h, o.height = d, !0;
   }
   getBasePoseMatrix() {
     return this.identityMatrix;
   }
-  getBaseViewMatrix(eye) {
+  getBaseViewMatrix(e) {
     return this.identityMatrix;
   }
   getInputSources() {
     return [];
   }
-  getInputPose(inputSource, coordinateSystem, poseType) {
+  getInputPose(e, t, s) {
     return null;
   }
   onWindowResize() {
   }
 }
-const getWebVRDevice = async function(global2) {
-  let device = null;
-  if ("getVRDisplays" in global2.navigator) {
+const Un = async function(i) {
+  let e = null;
+  if ("getVRDisplays" in i.navigator)
     try {
-      const displays = await global2.navigator.getVRDisplays();
-      if (displays && displays.length) {
-        device = new WebVRDevice(global2, displays[0]);
-      }
-    } catch (e) {
+      const t = await i.navigator.getVRDisplays();
+      t && t.length && (e = new nr(i, t[0]));
+    } catch {
     }
+  return e;
+}, zn = async function(i, e) {
+  if (e.webvr) {
+    let s = await Un(i);
+    if (s)
+      return s;
   }
-  return device;
-};
-const requestXRDevice = async function(global2, config) {
-  if (config.webvr) {
-    let xr = await getWebVRDevice(global2);
-    if (xr) {
-      return xr;
-    }
-  }
-  let mobile = isMobile(global2);
-  if (mobile && config.cardboard || !mobile && config.allowCardboardOnDesktop) {
-    if (!global2.VRFrameData) {
-      global2.VRFrameData = function() {
-        this.rightViewMatrix = new Float32Array(16);
-        this.leftViewMatrix = new Float32Array(16);
-        this.rightProjectionMatrix = new Float32Array(16);
-        this.leftProjectionMatrix = new Float32Array(16);
-        this.pose = null;
-      };
-    }
-    return new CardboardXRDevice(global2, config.cardboardConfig);
-  }
-  return new InlineDevice(global2);
-};
-const CONFIG_DEFAULTS = {
-  global: _global,
-  webvr: true,
-  cardboard: true,
+  let t = dn(i);
+  return t && e.cardboard || !t && e.allowCardboardOnDesktop ? (i.VRFrameData || (i.VRFrameData = function() {
+    this.rightViewMatrix = new Float32Array(16), this.leftViewMatrix = new Float32Array(16), this.rightProjectionMatrix = new Float32Array(16), this.leftProjectionMatrix = new Float32Array(16), this.pose = null;
+  }), new Nn(i, e.cardboardConfig)) : new Vn(i);
+}, Qn = {
+  global: Hi,
+  webvr: !0,
+  cardboard: !0,
   cardboardConfig: null,
-  allowCardboardOnDesktop: false
-};
-const partials = ["navigator", "HTMLCanvasElement", "WebGLRenderingContext"];
-class WebXRPolyfill {
-  constructor(config = {}) {
-    this.config = Object.freeze(Object.assign({}, CONFIG_DEFAULTS, config));
-    this.global = this.config.global;
-    this.nativeWebXR = "xr" in this.global.navigator;
-    this.injected = false;
-    {
-      this._injectPolyfill(this.global);
-    }
+  allowCardboardOnDesktop: !1
+}, Pt = ["navigator", "HTMLCanvasElement", "WebGLRenderingContext"];
+class Xn {
+  constructor(e = {}) {
+    this.config = Object.freeze(Object.assign({}, Qn, e)), this.global = this.config.global, this.nativeWebXR = "xr" in this.global.navigator, this.injected = !1, this._injectPolyfill(this.global);
   }
-  _injectPolyfill(global2) {
-    if (!partials.every((iface) => !!global2[iface])) {
-      throw new Error(`Global must have the following attributes : ${partials}`);
-    }
-    for (const className of Object.keys(API)) {
-      if (global2[className] !== void 0) {
-        console.warn(`${className} already defined on global.`);
-      } else {
-        global2[className] = API[className];
-      }
-    }
-    {
-      polyfillMakeXRCompatible(global2.WebGLRenderingContext);
-      {
-        polyfillGetContext(global2.HTMLCanvasElement);
-        if (global2.OffscreenCanvas) {
-          polyfillGetContext(global2.OffscreenCanvas);
-        }
-        if (global2.WebGL2RenderingContext) {
-          polyfillMakeXRCompatible(global2.WebGL2RenderingContext);
-        }
-        if (!window.isSecureContext) {
-          console.warn(`WebXR Polyfill Warning:
+  _injectPolyfill(e) {
+    if (!Pt.every((t) => !!e[t]))
+      throw new Error(`Global must have the following attributes : ${Pt}`);
+    for (const t of Object.keys(gt))
+      e[t] !== void 0 ? console.warn(`${t} already defined on global.`) : e[t] = gt[t];
+    Ti(e.WebGLRenderingContext), Fi(e.HTMLCanvasElement), e.OffscreenCanvas && Fi(e.OffscreenCanvas), e.WebGL2RenderingContext && Ti(e.WebGL2RenderingContext), window.isSecureContext || console.warn(`WebXR Polyfill Warning:
 This page is not running in a secure context (https:// or localhost)!
 This means that although the page may be able to use the WebXR Polyfill it will
 not be able to use native WebXR implementations, and as such will not be able to
 access dedicated VR or AR hardware, and will not be able to take advantage of
 any performance improvements a native WebXR implementation may offer. Please
 host this content on a secure origin for the best user experience.
-`);
-        }
-      }
-    }
-    this.injected = true;
-    this._patchNavigatorXR();
+`), this.injected = !0, this._patchNavigatorXR();
   }
   _patchNavigatorXR() {
-    let devicePromise = requestXRDevice(this.global, this.config);
-    this.xr = new API.XRSystem(devicePromise);
-    Object.defineProperty(this.global.navigator, "xr", {
+    let e = zn(this.global, this.config);
+    this.xr = new gt.XRSystem(e), Object.defineProperty(this.global.navigator, "xr", {
       value: this.xr,
-      configurable: true
+      configurable: !0
     });
   }
-  _injectCompatibilityShims(global2) {
-    if (!partials.every((iface) => !!global2[iface])) {
-      throw new Error(`Global must have the following attributes : ${partials}`);
-    }
-    if (global2.navigator.xr && "supportsSession" in global2.navigator.xr && !("isSessionSupported" in global2.navigator.xr)) {
-      let originalSupportsSession = global2.navigator.xr.supportsSession;
-      global2.navigator.xr.isSessionSupported = function(mode) {
-        return originalSupportsSession.call(this, mode).then(() => {
-          return true;
-        }).catch(() => {
-          return false;
-        });
-      };
-      global2.navigator.xr.supportsSession = function(mode) {
-        console.warn("navigator.xr.supportsSession() is deprecated. Please call navigator.xr.isSessionSupported() instead and check the boolean value returned when the promise resolves.");
-        return originalSupportsSession.call(this, mode);
+  _injectCompatibilityShims(e) {
+    if (!Pt.every((t) => !!e[t]))
+      throw new Error(`Global must have the following attributes : ${Pt}`);
+    if (e.navigator.xr && "supportsSession" in e.navigator.xr && !("isSessionSupported" in e.navigator.xr)) {
+      let t = e.navigator.xr.supportsSession;
+      e.navigator.xr.isSessionSupported = function(s) {
+        return t.call(this, s).then(() => !0).catch(() => !1);
+      }, e.navigator.xr.supportsSession = function(s) {
+        return console.warn("navigator.xr.supportsSession() is deprecated. Please call navigator.xr.isSessionSupported() instead and check the boolean value returned when the promise resolves."), t.call(this, s);
       };
     }
   }
 }
-var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
-function createCommonjsModule(fn, module) {
-  return module = { exports: {} }, fn(module, module.exports), module.exports;
+var Wn = typeof globalThis < "u" ? globalThis : typeof window < "u" ? window : typeof global < "u" ? global : typeof self < "u" ? self : {};
+function Hn(i, e) {
+  return e = { exports: {} }, i(e, e.exports), e.exports;
 }
-var cbor = createCommonjsModule(function(module) {
-  (function(global2, undefined$1) {
-    var POW_2_24 = Math.pow(2, -24), POW_2_32 = Math.pow(2, 32), POW_2_53 = Math.pow(2, 53);
-    function encode(value) {
-      var data = new ArrayBuffer(256);
-      var dataView = new DataView(data);
-      var lastLength;
-      var offset = 0;
-      function ensureSpace(length2) {
-        var newByteLength = data.byteLength;
-        var requiredLength = offset + length2;
-        while (newByteLength < requiredLength)
-          newByteLength *= 2;
-        if (newByteLength !== data.byteLength) {
-          var oldDataView = dataView;
-          data = new ArrayBuffer(newByteLength);
-          dataView = new DataView(data);
-          var uint32count = offset + 3 >> 2;
-          for (var i2 = 0; i2 < uint32count; ++i2)
-            dataView.setUint32(i2 * 4, oldDataView.getUint32(i2 * 4));
+var sr = Hn(function(i) {
+  (function(e, t) {
+    var s = Math.pow(2, -24), o = Math.pow(2, 32), h = Math.pow(2, 53);
+    function d(v) {
+      var y = new ArrayBuffer(256), _ = new DataView(y), x, R = 0;
+      function F(D) {
+        for (var V = y.byteLength, L = R + D; V < L; )
+          V *= 2;
+        if (V !== y.byteLength) {
+          var M = _;
+          y = new ArrayBuffer(V), _ = new DataView(y);
+          for (var J = R + 3 >> 2, H = 0; H < J; ++H)
+            _.setUint32(H * 4, M.getUint32(H * 4));
         }
-        lastLength = length2;
-        return dataView;
+        return x = D, _;
       }
-      function write() {
-        offset += lastLength;
+      function C() {
+        R += x;
       }
-      function writeFloat64(value2) {
-        write(ensureSpace(8).setFloat64(offset, value2));
+      function B(D) {
+        C(F(8).setFloat64(R, D));
       }
-      function writeUint8(value2) {
-        write(ensureSpace(1).setUint8(offset, value2));
+      function N(D) {
+        C(F(1).setUint8(R, D));
       }
-      function writeUint8Array(value2) {
-        var dataView2 = ensureSpace(value2.length);
-        for (var i2 = 0; i2 < value2.length; ++i2)
-          dataView2.setUint8(offset + i2, value2[i2]);
-        write();
+      function Q(D) {
+        for (var V = F(D.length), L = 0; L < D.length; ++L)
+          V.setUint8(R + L, D[L]);
+        C();
       }
-      function writeUint16(value2) {
-        write(ensureSpace(2).setUint16(offset, value2));
+      function P(D) {
+        C(F(2).setUint16(R, D));
       }
-      function writeUint32(value2) {
-        write(ensureSpace(4).setUint32(offset, value2));
+      function I(D) {
+        C(F(4).setUint32(R, D));
       }
-      function writeUint64(value2) {
-        var low = value2 % POW_2_32;
-        var high = (value2 - low) / POW_2_32;
-        var dataView2 = ensureSpace(8);
-        dataView2.setUint32(offset, high);
-        dataView2.setUint32(offset + 4, low);
-        write();
+      function G(D) {
+        var V = D % o, L = (D - V) / o, M = F(8);
+        M.setUint32(R, L), M.setUint32(R + 4, V), C();
       }
-      function writeTypeAndLength(type, length2) {
-        if (length2 < 24) {
-          writeUint8(type << 5 | length2);
-        } else if (length2 < 256) {
-          writeUint8(type << 5 | 24);
-          writeUint8(length2);
-        } else if (length2 < 65536) {
-          writeUint8(type << 5 | 25);
-          writeUint16(length2);
-        } else if (length2 < 4294967296) {
-          writeUint8(type << 5 | 26);
-          writeUint32(length2);
-        } else {
-          writeUint8(type << 5 | 27);
-          writeUint64(length2);
-        }
+      function O(D, V) {
+        V < 24 ? N(D << 5 | V) : V < 256 ? (N(D << 5 | 24), N(V)) : V < 65536 ? (N(D << 5 | 25), P(V)) : V < 4294967296 ? (N(D << 5 | 26), I(V)) : (N(D << 5 | 27), G(V));
       }
-      function encodeItem(value2) {
-        var i2;
-        if (value2 === false)
-          return writeUint8(244);
-        if (value2 === true)
-          return writeUint8(245);
-        if (value2 === null)
-          return writeUint8(246);
-        if (value2 === undefined$1)
-          return writeUint8(247);
-        switch (typeof value2) {
+      function W(D) {
+        var V;
+        if (D === !1)
+          return N(244);
+        if (D === !0)
+          return N(245);
+        if (D === null)
+          return N(246);
+        if (D === t)
+          return N(247);
+        switch (typeof D) {
           case "number":
-            if (Math.floor(value2) === value2) {
-              if (0 <= value2 && value2 <= POW_2_53)
-                return writeTypeAndLength(0, value2);
-              if (-POW_2_53 <= value2 && value2 < 0)
-                return writeTypeAndLength(1, -(value2 + 1));
+            if (Math.floor(D) === D) {
+              if (0 <= D && D <= h)
+                return O(0, D);
+              if (-h <= D && D < 0)
+                return O(1, -(D + 1));
             }
-            writeUint8(251);
-            return writeFloat64(value2);
+            return N(251), B(D);
           case "string":
-            var utf8data = [];
-            for (i2 = 0; i2 < value2.length; ++i2) {
-              var charCode = value2.charCodeAt(i2);
-              if (charCode < 128) {
-                utf8data.push(charCode);
-              } else if (charCode < 2048) {
-                utf8data.push(192 | charCode >> 6);
-                utf8data.push(128 | charCode & 63);
-              } else if (charCode < 55296) {
-                utf8data.push(224 | charCode >> 12);
-                utf8data.push(128 | charCode >> 6 & 63);
-                utf8data.push(128 | charCode & 63);
-              } else {
-                charCode = (charCode & 1023) << 10;
-                charCode |= value2.charCodeAt(++i2) & 1023;
-                charCode += 65536;
-                utf8data.push(240 | charCode >> 18);
-                utf8data.push(128 | charCode >> 12 & 63);
-                utf8data.push(128 | charCode >> 6 & 63);
-                utf8data.push(128 | charCode & 63);
-              }
+            var L = [];
+            for (V = 0; V < D.length; ++V) {
+              var M = D.charCodeAt(V);
+              M < 128 ? L.push(M) : M < 2048 ? (L.push(192 | M >> 6), L.push(128 | M & 63)) : M < 55296 ? (L.push(224 | M >> 12), L.push(128 | M >> 6 & 63), L.push(128 | M & 63)) : (M = (M & 1023) << 10, M |= D.charCodeAt(++V) & 1023, M += 65536, L.push(240 | M >> 18), L.push(128 | M >> 12 & 63), L.push(128 | M >> 6 & 63), L.push(128 | M & 63));
             }
-            writeTypeAndLength(3, utf8data.length);
-            return writeUint8Array(utf8data);
+            return O(3, L.length), Q(L);
           default:
-            var length2;
-            if (Array.isArray(value2)) {
-              length2 = value2.length;
-              writeTypeAndLength(4, length2);
-              for (i2 = 0; i2 < length2; ++i2)
-                encodeItem(value2[i2]);
-            } else if (value2 instanceof Uint8Array) {
-              writeTypeAndLength(2, value2.length);
-              writeUint8Array(value2);
-            } else {
-              var keys = Object.keys(value2);
-              length2 = keys.length;
-              writeTypeAndLength(5, length2);
-              for (i2 = 0; i2 < length2; ++i2) {
-                var key = keys[i2];
-                encodeItem(key);
-                encodeItem(value2[key]);
+            var J;
+            if (Array.isArray(D))
+              for (J = D.length, O(4, J), V = 0; V < J; ++V)
+                W(D[V]);
+            else if (D instanceof Uint8Array)
+              O(2, D.length), Q(D);
+            else {
+              var H = Object.keys(D);
+              for (J = H.length, O(5, J), V = 0; V < J; ++V) {
+                var $ = H[V];
+                W($), W(D[$]);
               }
             }
         }
       }
-      encodeItem(value);
-      if ("slice" in data)
-        return data.slice(0, offset);
-      var ret = new ArrayBuffer(offset);
-      var retView = new DataView(ret);
-      for (var i = 0; i < offset; ++i)
-        retView.setUint8(i, dataView.getUint8(i));
-      return ret;
+      if (W(v), "slice" in y)
+        return y.slice(0, R);
+      for (var z = new ArrayBuffer(R), Z = new DataView(z), K = 0; K < R; ++K)
+        Z.setUint8(K, _.getUint8(K));
+      return z;
     }
-    function decode(data, tagger, simpleValue) {
-      var dataView = new DataView(data);
-      var offset = 0;
-      if (typeof tagger !== "function")
-        tagger = function(value) {
-          return value;
-        };
-      if (typeof simpleValue !== "function")
-        simpleValue = function() {
-          return undefined$1;
-        };
-      function read(value, length2) {
-        offset += length2;
-        return value;
+    function u(v, y, _) {
+      var x = new DataView(v), R = 0;
+      typeof y != "function" && (y = function(L) {
+        return L;
+      }), typeof _ != "function" && (_ = function() {
+        return t;
+      });
+      function F(L, M) {
+        return R += M, L;
       }
-      function readArrayBuffer(length2) {
-        return read(new Uint8Array(data, offset, length2), length2);
+      function C(L) {
+        return F(new Uint8Array(v, R, L), L);
       }
-      function readFloat16() {
-        var tempArrayBuffer = new ArrayBuffer(4);
-        var tempDataView = new DataView(tempArrayBuffer);
-        var value = readUint16();
-        var sign = value & 32768;
-        var exponent = value & 31744;
-        var fraction = value & 1023;
-        if (exponent === 31744)
-          exponent = 255 << 10;
-        else if (exponent !== 0)
-          exponent += 127 - 15 << 10;
-        else if (fraction !== 0)
-          return fraction * POW_2_24;
-        tempDataView.setUint32(0, sign << 16 | exponent << 13 | fraction << 13);
-        return tempDataView.getFloat32(0);
+      function B() {
+        var L = new ArrayBuffer(4), M = new DataView(L), J = I(), H = J & 32768, $ = J & 31744, Ee = J & 1023;
+        if ($ === 31744)
+          $ = 255 << 10;
+        else if ($ !== 0)
+          $ += 127 - 15 << 10;
+        else if (Ee !== 0)
+          return Ee * s;
+        return M.setUint32(0, H << 16 | $ << 13 | Ee << 13), M.getFloat32(0);
       }
-      function readFloat32() {
-        return read(dataView.getFloat32(offset), 4);
+      function N() {
+        return F(x.getFloat32(R), 4);
       }
-      function readFloat64() {
-        return read(dataView.getFloat64(offset), 8);
+      function Q() {
+        return F(x.getFloat64(R), 8);
       }
-      function readUint8() {
-        return read(dataView.getUint8(offset), 1);
+      function P() {
+        return F(x.getUint8(R), 1);
       }
-      function readUint16() {
-        return read(dataView.getUint16(offset), 2);
+      function I() {
+        return F(x.getUint16(R), 2);
       }
-      function readUint32() {
-        return read(dataView.getUint32(offset), 4);
+      function G() {
+        return F(x.getUint32(R), 4);
       }
-      function readUint64() {
-        return readUint32() * POW_2_32 + readUint32();
+      function O() {
+        return G() * o + G();
       }
-      function readBreak() {
-        if (dataView.getUint8(offset) !== 255)
-          return false;
-        offset += 1;
-        return true;
+      function W() {
+        return x.getUint8(R) !== 255 ? !1 : (R += 1, !0);
       }
-      function readLength(additionalInformation) {
-        if (additionalInformation < 24)
-          return additionalInformation;
-        if (additionalInformation === 24)
-          return readUint8();
-        if (additionalInformation === 25)
-          return readUint16();
-        if (additionalInformation === 26)
-          return readUint32();
-        if (additionalInformation === 27)
-          return readUint64();
-        if (additionalInformation === 31)
+      function z(L) {
+        if (L < 24)
+          return L;
+        if (L === 24)
+          return P();
+        if (L === 25)
+          return I();
+        if (L === 26)
+          return G();
+        if (L === 27)
+          return O();
+        if (L === 31)
           return -1;
         throw "Invalid length encoding";
       }
-      function readIndefiniteStringLength(majorType) {
-        var initialByte = readUint8();
-        if (initialByte === 255)
+      function Z(L) {
+        var M = P();
+        if (M === 255)
           return -1;
-        var length2 = readLength(initialByte & 31);
-        if (length2 < 0 || initialByte >> 5 !== majorType)
+        var J = z(M & 31);
+        if (J < 0 || M >> 5 !== L)
           throw "Invalid indefinite length element";
-        return length2;
+        return J;
       }
-      function appendUtf16data(utf16data, length2) {
-        for (var i = 0; i < length2; ++i) {
-          var value = readUint8();
-          if (value & 128) {
-            if (value < 224) {
-              value = (value & 31) << 6 | readUint8() & 63;
-              length2 -= 1;
-            } else if (value < 240) {
-              value = (value & 15) << 12 | (readUint8() & 63) << 6 | readUint8() & 63;
-              length2 -= 2;
-            } else {
-              value = (value & 15) << 18 | (readUint8() & 63) << 12 | (readUint8() & 63) << 6 | readUint8() & 63;
-              length2 -= 3;
-            }
-          }
-          if (value < 65536) {
-            utf16data.push(value);
-          } else {
-            value -= 65536;
-            utf16data.push(55296 | value >> 10);
-            utf16data.push(56320 | value & 1023);
-          }
+      function K(L, M) {
+        for (var J = 0; J < M; ++J) {
+          var H = P();
+          H & 128 && (H < 224 ? (H = (H & 31) << 6 | P() & 63, M -= 1) : H < 240 ? (H = (H & 15) << 12 | (P() & 63) << 6 | P() & 63, M -= 2) : (H = (H & 15) << 18 | (P() & 63) << 12 | (P() & 63) << 6 | P() & 63, M -= 3)), H < 65536 ? L.push(H) : (H -= 65536, L.push(55296 | H >> 10), L.push(56320 | H & 1023));
         }
       }
-      function decodeItem() {
-        var initialByte = readUint8();
-        var majorType = initialByte >> 5;
-        var additionalInformation = initialByte & 31;
-        var i;
-        var length2;
-        if (majorType === 7) {
-          switch (additionalInformation) {
+      function D() {
+        var L = P(), M = L >> 5, J = L & 31, H, $;
+        if (M === 7)
+          switch (J) {
             case 25:
-              return readFloat16();
+              return B();
             case 26:
-              return readFloat32();
+              return N();
             case 27:
-              return readFloat64();
+              return Q();
           }
-        }
-        length2 = readLength(additionalInformation);
-        if (length2 < 0 && (majorType < 2 || 6 < majorType))
+        if ($ = z(J), $ < 0 && (M < 2 || 6 < M))
           throw "Invalid length";
-        switch (majorType) {
+        switch (M) {
           case 0:
-            return length2;
+            return $;
           case 1:
-            return -1 - length2;
+            return -1 - $;
           case 2:
-            if (length2 < 0) {
-              var elements = [];
-              var fullArrayLength = 0;
-              while ((length2 = readIndefiniteStringLength(majorType)) >= 0) {
-                fullArrayLength += length2;
-                elements.push(readArrayBuffer(length2));
-              }
-              var fullArray = new Uint8Array(fullArrayLength);
-              var fullArrayOffset = 0;
-              for (i = 0; i < elements.length; ++i) {
-                fullArray.set(elements[i], fullArrayOffset);
-                fullArrayOffset += elements[i].length;
-              }
-              return fullArray;
+            if ($ < 0) {
+              for (var Ee = [], Te = 0; ($ = Z(M)) >= 0; )
+                Te += $, Ee.push(C($));
+              var $e = new Uint8Array(Te), Be = 0;
+              for (H = 0; H < Ee.length; ++H)
+                $e.set(Ee[H], Be), Be += Ee[H].length;
+              return $e;
             }
-            return readArrayBuffer(length2);
+            return C($);
           case 3:
-            var utf16data = [];
-            if (length2 < 0) {
-              while ((length2 = readIndefiniteStringLength(majorType)) >= 0)
-                appendUtf16data(utf16data, length2);
-            } else
-              appendUtf16data(utf16data, length2);
-            return String.fromCharCode.apply(null, utf16data);
+            var Xe = [];
+            if ($ < 0)
+              for (; ($ = Z(M)) >= 0; )
+                K(Xe, $);
+            else
+              K(Xe, $);
+            return String.fromCharCode.apply(null, Xe);
           case 4:
-            var retArray;
-            if (length2 < 0) {
-              retArray = [];
-              while (!readBreak())
-                retArray.push(decodeItem());
-            } else {
-              retArray = new Array(length2);
-              for (i = 0; i < length2; ++i)
-                retArray[i] = decodeItem();
-            }
-            return retArray;
+            var g;
+            if ($ < 0)
+              for (g = []; !W(); )
+                g.push(D());
+            else
+              for (g = new Array($), H = 0; H < $; ++H)
+                g[H] = D();
+            return g;
           case 5:
-            var retObject = {};
-            for (i = 0; i < length2 || length2 < 0 && !readBreak(); ++i) {
-              var key = decodeItem();
-              retObject[key] = decodeItem();
+            var ee = {};
+            for (H = 0; H < $ || $ < 0 && !W(); ++H) {
+              var ce = D();
+              ee[ce] = D();
             }
-            return retObject;
+            return ee;
           case 6:
-            return tagger(decodeItem(), length2);
+            return y(D(), $);
           case 7:
-            switch (length2) {
+            switch ($) {
               case 20:
-                return false;
+                return !1;
               case 21:
-                return true;
+                return !0;
               case 22:
                 return null;
               case 23:
-                return undefined$1;
+                return t;
               default:
-                return simpleValue(length2);
+                return _($);
             }
         }
       }
-      var ret = decodeItem();
-      if (offset !== data.byteLength)
+      var V = D();
+      if (R !== v.byteLength)
         throw "Remaining bytes";
-      return ret;
+      return V;
     }
-    var obj = { encode, decode };
-    if (typeof undefined$1 === "function" && undefined$1.amd)
-      undefined$1("cbor/cbor", obj);
-    else if (module.exports)
-      module.exports = obj;
-    else if (!global2.CBOR)
-      global2.CBOR = obj;
-  })(commonjsGlobal);
+    var m = { encode: d, decode: u };
+    typeof t == "function" && t.amd ? t("cbor/cbor", m) : i.exports ? i.exports = m : e.CBOR || (e.CBOR = m);
+  })(Wn);
 });
 /**
  * This files defines the HoloPlayClient class and Message class.
@@ -6543,231 +3523,148 @@ var cbor = createCommonjsModule(function(module) {
  * @version 0.0.8
  * @license SEE LICENSE IN LICENSE.md
  */
-const WebSocket = typeof window === "undefined" ? require("ws") : window.WebSocket;
-class Client {
-  constructor(initCallback, errCallback, closeCallback, debug = false, appId, isGreedy, oncloseBehavior) {
-    this.reqs = [];
-    this.reps = [];
-    this.requestId = this.getRequestId();
-    this.debug = debug;
-    this.isGreedy = isGreedy;
-    this.errCallback = errCallback;
-    this.closeCallback = closeCallback;
-    this.alwaysdebug = false;
-    this.isConnected = false;
-    let initCmd = null;
-    if (appId || isGreedy || oncloseBehavior) {
-      initCmd = new InitMessage(appId, isGreedy, oncloseBehavior, this.debug);
-    } else {
-      if (debug)
-        this.alwaysdebug = true;
-      if (typeof initCallback == "function")
-        initCmd = new InfoMessage();
-    }
-    this.openWebsocket(initCmd, initCallback);
+const Yn = typeof window > "u" ? require("ws") : window.WebSocket;
+class jn {
+  constructor(e, t, s, o = !1, h, d, u) {
+    this.reqs = [], this.reps = [], this.requestId = this.getRequestId(), this.debug = o, this.isGreedy = d, this.errCallback = t, this.closeCallback = s, this.alwaysdebug = !1, this.isConnected = !1;
+    let m = null;
+    h || d || u ? m = new Zn(h, d, u, this.debug) : (o && (this.alwaysdebug = !0), typeof e == "function" && (m = new qn())), this.openWebsocket(m, e);
   }
-  sendMessage(msg, timeoutSecs = 60) {
-    if (this.alwaysdebug)
-      msg.cmd.debug = true;
-    let cborData = msg.toCbor();
-    return this.sendRequestObj(cborData, timeoutSecs);
+  sendMessage(e, t = 60) {
+    this.alwaysdebug && (e.cmd.debug = !0);
+    let s = e.toCbor();
+    return this.sendRequestObj(s, t);
   }
   disconnect() {
     this.ws.close();
   }
-  openWebsocket(firstCmd = null, initCallback = null) {
-    this.ws = new WebSocket("ws://localhost:11222/driver", ["rep.sp.nanomsg.org"]);
-    this.ws.parent = this;
-    this.ws.binaryType = "arraybuffer";
-    this.ws.onmessage = this.messageHandler;
-    this.ws.onopen = () => {
-      this.isConnected = true;
-      if (this.debug) {
-        console.log("socket open");
-      }
-      if (firstCmd != null) {
-        this.sendMessage(firstCmd).then(initCallback);
-      }
-    };
-    this.ws.onerror = this.onSocketError;
-    this.ws.onclose = this.onClose;
+  openWebsocket(e = null, t = null) {
+    this.ws = new Yn("ws://localhost:11222/driver", ["rep.sp.nanomsg.org"]), this.ws.parent = this, this.ws.binaryType = "arraybuffer", this.ws.onmessage = this.messageHandler, this.ws.onopen = () => {
+      this.isConnected = !0, this.debug && console.log("socket open"), e != null && this.sendMessage(e).then(t);
+    }, this.ws.onerror = this.onSocketError, this.ws.onclose = this.onClose;
   }
-  sendRequestObj(data, timeoutSecs) {
-    return new Promise((resolve, reject) => {
-      let reqObj = {
+  sendRequestObj(e, t) {
+    return new Promise((s, o) => {
+      let h = {
         id: this.requestId++,
         parent: this,
-        payload: data,
-        success: resolve,
-        error: reject,
+        payload: e,
+        success: s,
+        error: o,
         send: function() {
-          if (this.debug)
-            console.log("attemtping to send request with ID " + this.id);
-          this.timeout = setTimeout(reqObj.send.bind(this), timeoutSecs * 1e3);
-          let tmp = new Uint8Array(data.byteLength + 4);
-          let view = new DataView(tmp.buffer);
-          view.setUint32(0, this.id);
-          tmp.set(new Uint8Array(this.payload), 4);
-          this.parent.ws.send(tmp.buffer);
+          this.debug && console.log("attemtping to send request with ID " + this.id), this.timeout = setTimeout(h.send.bind(this), t * 1e3);
+          let d = new Uint8Array(e.byteLength + 4);
+          new DataView(d.buffer).setUint32(0, this.id), d.set(new Uint8Array(this.payload), 4), this.parent.ws.send(d.buffer);
         }
       };
-      this.reqs.push(reqObj);
-      reqObj.send();
+      this.reqs.push(h), h.send();
     });
   }
-  messageHandler(event) {
+  messageHandler(e) {
     console.log("message");
-    let data = event.data;
-    if (data.byteLength < 4)
+    let t = e.data;
+    if (t.byteLength < 4)
       return;
-    let view = new DataView(data);
-    let replyId = view.getUint32(0);
-    if (replyId < 2147483648) {
+    let o = new DataView(t).getUint32(0);
+    if (o < 2147483648) {
       this.parent.err("bad nng header");
       return;
     }
-    let i = this.parent.findReqIndex(replyId);
-    if (i == -1) {
+    let h = this.parent.findReqIndex(o);
+    if (h == -1) {
       this.parent.err("got reply that doesn't match known request!");
       return;
     }
-    let rep = { id: replyId, payload: cbor.decode(data.slice(4)) };
-    if (rep.payload.error == 0) {
-      this.parent.reqs[i].success(rep.payload);
-    } else {
-      this.parent.reqs[i].error(rep.payload);
-    }
-    clearTimeout(this.parent.reqs[i].timeout);
-    this.parent.reqs.splice(i, 1);
-    this.parent.reps.push(rep);
-    if (this.debug) {
-      console.log(rep.payload);
-    }
+    let d = { id: o, payload: sr.decode(t.slice(4)) };
+    d.payload.error == 0 ? this.parent.reqs[h].success(d.payload) : this.parent.reqs[h].error(d.payload), clearTimeout(this.parent.reqs[h].timeout), this.parent.reqs.splice(h, 1), this.parent.reps.push(d), this.debug && console.log(d.payload);
   }
   getRequestId() {
     return Math.floor(this.prng() * 2147483647) + 2147483648;
   }
-  onClose(event) {
-    this.parent.isConnected = false;
-    if (this.parent.debug) {
-      console.log("socket closed");
-    }
-    if (typeof this.parent.closeCallback == "function")
-      this.parent.closeCallback(event);
+  onClose(e) {
+    this.parent.isConnected = !1, this.parent.debug && console.log("socket closed"), typeof this.parent.closeCallback == "function" && this.parent.closeCallback(e);
   }
-  onSocketError(error) {
-    if (this.parent.debug) {
-      console.log(error);
-    }
-    if (typeof this.parent.errCallback == "function") {
-      this.parent.errCallback(error);
-    }
+  onSocketError(e) {
+    this.parent.debug && console.log(e), typeof this.parent.errCallback == "function" && this.parent.errCallback(e);
   }
-  err(errorMsg) {
-    if (this.debug) {
-      console.log("[DRIVER ERROR]" + errorMsg);
-    }
+  err(e) {
+    this.debug && console.log("[DRIVER ERROR]" + e);
   }
-  findReqIndex(replyId) {
-    let i = 0;
-    for (; i < this.reqs.length; i++) {
-      if (this.reqs[i].id == replyId) {
-        return i;
-      }
-    }
+  findReqIndex(e) {
+    let t = 0;
+    for (; t < this.reqs.length; t++)
+      if (this.reqs[t].id == e)
+        return t;
     return -1;
   }
   prng() {
-    if (this.rng == void 0) {
-      this.rng = generateRng();
-    }
-    return this.rng();
+    return this.rng == null && (this.rng = $n()), this.rng();
   }
 }
-class Message {
-  constructor(cmd, bin) {
-    this.cmd = cmd;
-    this.bin = bin;
+class ar {
+  constructor(e, t) {
+    this.cmd = e, this.bin = t;
   }
   toCbor() {
-    return cbor.encode(this);
+    return sr.encode(this);
   }
 }
-class InitMessage extends Message {
-  constructor(appId = "", isGreedy = false, onclose = "", debug = false) {
-    let cmd = { "init": {} };
-    if (appId != "")
-      cmd["init"].appid = appId;
-    if (onclose != "")
-      cmd["init"].onclose = onclose;
-    if (isGreedy)
-      cmd["init"].greedy = true;
-    if (debug)
-      cmd["init"].debug = true;
-    super(cmd, null);
+class Zn extends ar {
+  constructor(e = "", t = !1, s = "", o = !1) {
+    let h = { init: {} };
+    e != "" && (h.init.appid = e), s != "" && (h.init.onclose = s), t && (h.init.greedy = !0), o && (h.init.debug = !0), super(h, null);
   }
 }
-class InfoMessage extends Message {
+class qn extends ar {
   constructor() {
-    let cmd = { "info": {} };
-    super(cmd, null);
+    let e = { info: {} };
+    super(e, null);
   }
 }
-function generateRng() {
-  function xmur3(str) {
-    for (var i = 0, h = 1779033703 ^ str.length; i < str.length; i++)
-      h = Math.imul(h ^ str.charCodeAt(i), 3432918353), h = h << 13 | h >>> 19;
+function $n() {
+  function i(o) {
+    for (var h = 0, d = 1779033703 ^ o.length; h < o.length; h++)
+      d = Math.imul(d ^ o.charCodeAt(h), 3432918353), d = d << 13 | d >>> 19;
     return function() {
-      h = Math.imul(h ^ h >>> 16, 2246822507);
-      h = Math.imul(h ^ h >>> 13, 3266489909);
-      return (h ^= h >>> 16) >>> 0;
+      return d = Math.imul(d ^ d >>> 16, 2246822507), d = Math.imul(d ^ d >>> 13, 3266489909), (d ^= d >>> 16) >>> 0;
     };
   }
-  function xoshiro128ss(a, b, c, d) {
+  function e(o, h, d, u) {
     return () => {
-      var t = b << 9, r = a * 5;
-      r = (r << 7 | r >>> 25) * 9;
-      c ^= a;
-      d ^= b;
-      b ^= c;
-      a ^= d;
-      c ^= t;
-      d = d << 11 | d >>> 21;
-      return (r >>> 0) / 4294967296;
+      var m = h << 9, v = o * 5;
+      return v = (v << 7 | v >>> 25) * 9, d ^= o, u ^= h, h ^= d, o ^= u, d ^= m, u = u << 11 | u >>> 21, (v >>> 0) / 4294967296;
     };
   }
-  var state = Date.now();
-  var seed = xmur3(state.toString());
-  return xoshiro128ss(seed(), seed(), seed(), seed());
+  var t = Date.now(), s = i(t.toString());
+  return e(s(), s(), s(), s());
 }
-function glslifyNumbers(strings, ...values) {
-  let s = strings[0];
-  for (let i = 1; i < strings.length; ++i) {
-    const v = values[i - 1];
-    s += typeof v === "number" ? v.toPrecision(10) : v;
-    s += strings[i];
+function Kn(i, ...e) {
+  let t = i[0];
+  for (let s = 1; s < i.length; ++s) {
+    const o = e[s - 1];
+    t += typeof o == "number" ? o.toPrecision(10) : o, t += i[s];
   }
-  return s;
+  return t;
 }
-function Shader(cfg) {
-  return glslifyNumbers`
+function Jt(i) {
+  return Kn`
   precision mediump float;
   uniform int u_viewType;
   uniform sampler2D u_texture;
   varying vec2 v_texcoord;
-  const float pitch    = ${cfg.pitch};
-  const float tilt     = ${cfg.tilt};
-  const float center   = ${cfg.calibration.center.value};
-  const float invView  = ${cfg.calibration.invView.value};
-  const float flipX    = ${cfg.calibration.flipImageX.value};
-  const float flipY    = ${cfg.calibration.flipImageY.value};
-  const float subp     = ${cfg.subp};
-  const float numViews = ${cfg.numViews};
-  const float tilesX   = ${cfg.quiltWidth};
-  const float tilesY   = ${cfg.quiltHeight};
+  const float pitch    = ${i.pitch};
+  const float tilt     = ${i.tilt};
+  const float center   = ${i.calibration.center.value};
+  const float invView  = ${i.calibration.invView.value};
+  const float flipX    = ${i.calibration.flipImageX.value};
+  const float flipY    = ${i.calibration.flipImageY.value};
+  const float subp     = ${i.subp};
+  const float numViews = ${i.numViews};
+  const float tilesX   = ${i.quiltWidth};
+  const float tilesY   = ${i.quiltHeight};
   const vec2 quiltViewPortion = vec2(
-    ${cfg.quiltWidth * cfg.tileWidth / cfg.framebufferWidth},
-    ${cfg.quiltHeight * cfg.tileHeight / cfg.framebufferHeight});
+    ${i.quiltWidth * i.tileWidth / i.framebufferWidth},
+    ${i.quiltHeight * i.tileHeight / i.framebufferHeight});
   vec2 texArr(vec3 uvz) {
     float z = floor(uvz.z * numViews);
     float x = (mod(z, tilesX) + uvz.x) / tilesX;
@@ -6809,17 +3706,15 @@ function Shader(cfg) {
   }
 `;
 }
-const DefaultEyeHeight = 1.6;
-var InlineView;
-(function(InlineView2) {
-  InlineView2[InlineView2["Swizzled"] = 0] = "Swizzled";
-  InlineView2[InlineView2["Center"] = 1] = "Center";
-  InlineView2[InlineView2["Quilt"] = 2] = "Quilt";
-})(InlineView || (InlineView = {}));
-class LookingGlassConfig$1 extends EventTarget {
-  constructor(cfg) {
+const ai = 1.6;
+var oi;
+(function(i) {
+  i[i.Swizzled = 0] = "Swizzled", i[i.Center = 1] = "Center", i[i.Quilt = 2] = "Quilt";
+})(oi || (oi = {}));
+class Jn extends EventTarget {
+  constructor(t) {
     super();
-    __publicField(this, "_calibration", {
+    ye(this, "_calibration", {
       configVersion: "1.0",
       pitch: { value: 45 },
       slope: { value: -5 },
@@ -6835,43 +3730,39 @@ class LookingGlassConfig$1 extends EventTarget {
       flipSubp: { value: 0 },
       serial: "LKG-DEFAULT-#####"
     });
-    __publicField(this, "_viewControls", {
+    ye(this, "_viewControls", {
       tileHeight: 512,
       numViews: 48,
       trackballX: 0,
       trackballY: 0,
       targetX: 0,
-      targetY: DefaultEyeHeight,
+      targetY: ai,
       targetZ: -0.5,
       targetDiam: 2,
       fovy: 13 / 180 * Math.PI,
       depthiness: 1.25,
-      inlineView: InlineView.Center,
-      capturing: false,
+      inlineView: oi.Center,
+      capturing: !1,
       quiltResolution: 3840,
       popup: null,
       XRSession: null,
       lkgCanvas: null,
       appCanvas: null
     });
-    __publicField(this, "LookingGlassDetected");
-    this._viewControls = { ...this._viewControls, ...cfg };
-    this.syncCalibration();
+    ye(this, "LookingGlassDetected");
+    this._viewControls = { ...this._viewControls, ...t }, this.syncCalibration();
   }
   syncCalibration() {
-    new Client((msg) => {
-      if (msg.devices.length < 1) {
+    new jn((t) => {
+      if (t.devices.length < 1) {
         console.log("No Looking Glass devices found");
         return;
       }
-      if (msg.devices.length > 1) {
-        console.log("More than one Looking Glass device found... using the first one");
-      }
-      this.calibration = msg.devices[0].calibration;
+      t.devices.length > 1 && console.log("More than one Looking Glass device found... using the first one"), this.calibration = t.devices[0].calibration;
     });
   }
-  addEventListener(type, callback, options) {
-    super.addEventListener(type, callback, options);
+  addEventListener(t, s, o) {
+    super.addEventListener(t, s, o);
   }
   onConfigChange() {
     this.dispatchEvent(new Event("on-config-changed"));
@@ -6879,21 +3770,17 @@ class LookingGlassConfig$1 extends EventTarget {
   get calibration() {
     return this._calibration;
   }
-  set calibration(value) {
+  set calibration(t) {
     this._calibration = {
       ...this._calibration,
-      ...value
-    };
-    this.onConfigChange();
+      ...t
+    }, this.onConfigChange();
   }
-  updateViewControls(value) {
-    if (value != void 0) {
-      this._viewControls = {
-        ...this._viewControls,
-        ...value
-      };
-      this.onConfigChange();
-    }
+  updateViewControls(t) {
+    t != null && (this._viewControls = {
+      ...this._viewControls,
+      ...t
+    }, this.onConfigChange());
   }
   get tileHeight() {
     return Math.round(this.framebufferHeight / this.quiltHeight);
@@ -6901,8 +3788,8 @@ class LookingGlassConfig$1 extends EventTarget {
   get quiltResolution() {
     return this._viewControls.quiltResolution;
   }
-  set quiltResolution(v) {
-    this.updateViewControls({ quiltResolution: v });
+  set quiltResolution(t) {
+    this.updateViewControls({ quiltResolution: t });
   }
   get numViews() {
     return this.quiltWidth * this.quiltHeight;
@@ -6910,86 +3797,86 @@ class LookingGlassConfig$1 extends EventTarget {
   get targetX() {
     return this._viewControls.targetX;
   }
-  set targetX(v) {
-    this.updateViewControls({ targetX: v });
+  set targetX(t) {
+    this.updateViewControls({ targetX: t });
   }
   get targetY() {
     return this._viewControls.targetY;
   }
-  set targetY(v) {
-    this.updateViewControls({ targetY: v });
+  set targetY(t) {
+    this.updateViewControls({ targetY: t });
   }
   get targetZ() {
     return this._viewControls.targetZ;
   }
-  set targetZ(v) {
-    this.updateViewControls({ targetZ: v });
+  set targetZ(t) {
+    this.updateViewControls({ targetZ: t });
   }
   get trackballX() {
     return this._viewControls.trackballX;
   }
-  set trackballX(v) {
-    this.updateViewControls({ trackballX: v });
+  set trackballX(t) {
+    this.updateViewControls({ trackballX: t });
   }
   get trackballY() {
     return this._viewControls.trackballY;
   }
-  set trackballY(v) {
-    this.updateViewControls({ trackballY: v });
+  set trackballY(t) {
+    this.updateViewControls({ trackballY: t });
   }
   get targetDiam() {
     return this._viewControls.targetDiam;
   }
-  set targetDiam(v) {
-    this.updateViewControls({ targetDiam: v });
+  set targetDiam(t) {
+    this.updateViewControls({ targetDiam: t });
   }
   get fovy() {
     return this._viewControls.fovy;
   }
-  set fovy(v) {
-    this.updateViewControls({ fovy: v });
+  set fovy(t) {
+    this.updateViewControls({ fovy: t });
   }
   get depthiness() {
     return this._viewControls.depthiness;
   }
-  set depthiness(v) {
-    this.updateViewControls({ depthiness: v });
+  set depthiness(t) {
+    this.updateViewControls({ depthiness: t });
   }
   get inlineView() {
     return this._viewControls.inlineView;
   }
-  set inlineView(v) {
-    this.updateViewControls({ inlineView: v });
+  set inlineView(t) {
+    this.updateViewControls({ inlineView: t });
   }
   get capturing() {
     return this._viewControls.capturing;
   }
-  set capturing(v) {
-    this.updateViewControls({ capturing: v });
+  set capturing(t) {
+    this.updateViewControls({ capturing: t });
   }
   get popup() {
     return this._viewControls.popup;
   }
-  set popup(v) {
-    this.updateViewControls({ popup: v });
+  set popup(t) {
+    this.updateViewControls({ popup: t });
   }
   get XRSession() {
     return this._viewControls.XRSession;
   }
-  set XRSession(v) {
-    this.updateViewControls({ XRSession: v });
+  set XRSession(t) {
+    this.updateViewControls({ XRSession: t });
   }
   get lkgCanvas() {
     return this._viewControls.lkgCanvas;
   }
-  set lkgCanvas(v) {
-    this.updateViewControls({ lkgCanvas: v });
+  set lkgCanvas(t) {
+    this.updateViewControls({ lkgCanvas: t });
   }
   get appCanvas() {
     return this._viewControls.appCanvas;
   }
-  set appCanvas(v) {
-    this.updateViewControls({ appCanvas: v });
+  set appCanvas(t) {
+    this.updateViewControls({ appCanvas: t });
   }
   get aspect() {
     return this._calibration.screenW.value / this._calibration.screenH.value;
@@ -6998,38 +3885,16 @@ class LookingGlassConfig$1 extends EventTarget {
     return Math.round(this.framebufferWidth / this.quiltWidth);
   }
   get framebufferWidth() {
-    if (this._calibration.screenW.value < 7e3)
-      return this._viewControls.quiltResolution;
-    else
-      return 7680;
+    return this._calibration.screenW.value < 7e3 ? this._viewControls.quiltResolution : 7680;
   }
   get quiltWidth() {
-    if (this.calibration.screenW.value == 1536) {
-      return 8;
-    } else if (this.calibration.screenW.value == 3840) {
-      return 5;
-    } else if (this.calibration.screenW.value > 7e3) {
-      return 5;
-    } else {
-      return 8;
-    }
+    return this.calibration.screenW.value == 1536 ? 8 : this.calibration.screenW.value == 3840 || this.calibration.screenW.value > 7e3 ? 5 : 8;
   }
   get quiltHeight() {
-    if (this.calibration.screenW.value == 1536) {
-      return 6;
-    } else if (this.calibration.screenW.value == 3840) {
-      return 9;
-    } else if (this.calibration.screenW.value > 7e3) {
-      return 9;
-    } else {
-      return 6;
-    }
+    return this.calibration.screenW.value == 1536 ? 6 : this.calibration.screenW.value == 3840 || this.calibration.screenW.value > 7e3 ? 9 : 6;
   }
   get framebufferHeight() {
-    if (this._calibration.screenW.value < 7e3)
-      return this._viewControls.quiltResolution;
-    else
-      return 4320;
+    return this._calibration.screenW.value < 7e3 ? this._viewControls.quiltResolution : 4320;
   }
   get viewCone() {
     return this._calibration.viewCone.value * this.depthiness / 180 * Math.PI;
@@ -7037,447 +3902,139 @@ class LookingGlassConfig$1 extends EventTarget {
   get tilt() {
     return this._calibration.screenH.value / (this._calibration.screenW.value * this._calibration.slope.value) * (this._calibration.flipImageX.value ? -1 : 1);
   }
-  set tilt(windowHeight) {
+  set tilt(t) {
   }
   get subp() {
     return 1 / (this._calibration.screenW.value * 3);
   }
   get pitch() {
-    const screenInches = this._calibration.screenW.value / this._calibration.DPI.value;
-    return this._calibration.pitch.value * screenInches * Math.cos(Math.atan(1 / this._calibration.slope.value));
+    const t = this._calibration.screenW.value / this._calibration.DPI.value;
+    return this._calibration.pitch.value * t * Math.cos(Math.atan(1 / this._calibration.slope.value));
   }
 }
-let globalLkgConfig = null;
-function getLookingGlassConfig() {
-  if (globalLkgConfig == null) {
-    globalLkgConfig = new LookingGlassConfig$1();
-  }
-  return globalLkgConfig;
+let ei = null;
+function Pe() {
+  return ei == null && (ei = new Jn()), ei;
 }
-function updateLookingGlassConfig(viewControls) {
-  const lkgConfig = getLookingGlassConfig();
-  if (viewControls != void 0) {
-    lkgConfig.updateViewControls(viewControls);
-  }
+function Ni(i) {
+  const e = Pe();
+  i != null && e.updateViewControls(i);
 }
-var EPSILON = 1e-6;
-var ARRAY_TYPE = typeof Float32Array !== "undefined" ? Float32Array : Array;
-function create() {
-  var out = new ARRAY_TYPE(16);
-  if (ARRAY_TYPE != Float32Array) {
-    out[1] = 0;
-    out[2] = 0;
-    out[3] = 0;
-    out[4] = 0;
-    out[6] = 0;
-    out[7] = 0;
-    out[8] = 0;
-    out[9] = 0;
-    out[11] = 0;
-    out[12] = 0;
-    out[13] = 0;
-    out[14] = 0;
-  }
-  out[0] = 1;
-  out[5] = 1;
-  out[10] = 1;
-  out[15] = 1;
-  return out;
+var es = 1e-6, ki = typeof Float32Array < "u" ? Float32Array : Array;
+function ze() {
+  var i = new ki(16);
+  return ki != Float32Array && (i[1] = 0, i[2] = 0, i[3] = 0, i[4] = 0, i[6] = 0, i[7] = 0, i[8] = 0, i[9] = 0, i[11] = 0, i[12] = 0, i[13] = 0, i[14] = 0), i[0] = 1, i[5] = 1, i[10] = 1, i[15] = 1, i;
 }
-function set(out, m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33) {
-  out[0] = m00;
-  out[1] = m01;
-  out[2] = m02;
-  out[3] = m03;
-  out[4] = m10;
-  out[5] = m11;
-  out[6] = m12;
-  out[7] = m13;
-  out[8] = m20;
-  out[9] = m21;
-  out[10] = m22;
-  out[11] = m23;
-  out[12] = m30;
-  out[13] = m31;
-  out[14] = m32;
-  out[15] = m33;
-  return out;
+function ts(i, e, t, s, o, h, d, u, m, v, y, _, x, R, F, C, B) {
+  return i[0] = e, i[1] = t, i[2] = s, i[3] = o, i[4] = h, i[5] = d, i[6] = u, i[7] = m, i[8] = v, i[9] = y, i[10] = _, i[11] = x, i[12] = R, i[13] = F, i[14] = C, i[15] = B, i;
 }
-function invert(out, a) {
-  var a00 = a[0], a01 = a[1], a02 = a[2], a03 = a[3];
-  var a10 = a[4], a11 = a[5], a12 = a[6], a13 = a[7];
-  var a20 = a[8], a21 = a[9], a22 = a[10], a23 = a[11];
-  var a30 = a[12], a31 = a[13], a32 = a[14], a33 = a[15];
-  var b00 = a00 * a11 - a01 * a10;
-  var b01 = a00 * a12 - a02 * a10;
-  var b02 = a00 * a13 - a03 * a10;
-  var b03 = a01 * a12 - a02 * a11;
-  var b04 = a01 * a13 - a03 * a11;
-  var b05 = a02 * a13 - a03 * a12;
-  var b06 = a20 * a31 - a21 * a30;
-  var b07 = a20 * a32 - a22 * a30;
-  var b08 = a20 * a33 - a23 * a30;
-  var b09 = a21 * a32 - a22 * a31;
-  var b10 = a21 * a33 - a23 * a31;
-  var b11 = a22 * a33 - a23 * a32;
-  var det = b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06;
-  if (!det) {
-    return null;
-  }
-  det = 1 / det;
-  out[0] = (a11 * b11 - a12 * b10 + a13 * b09) * det;
-  out[1] = (a02 * b10 - a01 * b11 - a03 * b09) * det;
-  out[2] = (a31 * b05 - a32 * b04 + a33 * b03) * det;
-  out[3] = (a22 * b04 - a21 * b05 - a23 * b03) * det;
-  out[4] = (a12 * b08 - a10 * b11 - a13 * b07) * det;
-  out[5] = (a00 * b11 - a02 * b08 + a03 * b07) * det;
-  out[6] = (a32 * b02 - a30 * b05 - a33 * b01) * det;
-  out[7] = (a20 * b05 - a22 * b02 + a23 * b01) * det;
-  out[8] = (a10 * b10 - a11 * b08 + a13 * b06) * det;
-  out[9] = (a01 * b08 - a00 * b10 - a03 * b06) * det;
-  out[10] = (a30 * b04 - a31 * b02 + a33 * b00) * det;
-  out[11] = (a21 * b02 - a20 * b04 - a23 * b00) * det;
-  out[12] = (a11 * b07 - a10 * b09 - a12 * b06) * det;
-  out[13] = (a00 * b09 - a01 * b07 + a02 * b06) * det;
-  out[14] = (a31 * b01 - a30 * b03 - a32 * b00) * det;
-  out[15] = (a20 * b03 - a21 * b01 + a22 * b00) * det;
-  return out;
+function Gi(i, e) {
+  var t = e[0], s = e[1], o = e[2], h = e[3], d = e[4], u = e[5], m = e[6], v = e[7], y = e[8], _ = e[9], x = e[10], R = e[11], F = e[12], C = e[13], B = e[14], N = e[15], Q = t * u - s * d, P = t * m - o * d, I = t * v - h * d, G = s * m - o * u, O = s * v - h * u, W = o * v - h * m, z = y * C - _ * F, Z = y * B - x * F, K = y * N - R * F, D = _ * B - x * C, V = _ * N - R * C, L = x * N - R * B, M = Q * L - P * V + I * D + G * K - O * Z + W * z;
+  return M ? (M = 1 / M, i[0] = (u * L - m * V + v * D) * M, i[1] = (o * V - s * L - h * D) * M, i[2] = (C * W - B * O + N * G) * M, i[3] = (x * O - _ * W - R * G) * M, i[4] = (m * K - d * L - v * Z) * M, i[5] = (t * L - o * K + h * Z) * M, i[6] = (B * I - F * W - N * P) * M, i[7] = (y * W - x * I + R * P) * M, i[8] = (d * V - u * K + v * z) * M, i[9] = (s * K - t * V - h * z) * M, i[10] = (F * O - C * I + N * Q) * M, i[11] = (_ * I - y * O - R * Q) * M, i[12] = (u * Z - d * D - m * z) * M, i[13] = (t * D - s * Z + o * z) * M, i[14] = (C * P - F * G - B * Q) * M, i[15] = (y * G - _ * P + x * Q) * M, i) : null;
 }
-function translate(out, a, v) {
-  var x = v[0], y = v[1], z = v[2];
-  var a00 = void 0, a01 = void 0, a02 = void 0, a03 = void 0;
-  var a10 = void 0, a11 = void 0, a12 = void 0, a13 = void 0;
-  var a20 = void 0, a21 = void 0, a22 = void 0, a23 = void 0;
-  if (a === out) {
-    out[12] = a[0] * x + a[4] * y + a[8] * z + a[12];
-    out[13] = a[1] * x + a[5] * y + a[9] * z + a[13];
-    out[14] = a[2] * x + a[6] * y + a[10] * z + a[14];
-    out[15] = a[3] * x + a[7] * y + a[11] * z + a[15];
-  } else {
-    a00 = a[0];
-    a01 = a[1];
-    a02 = a[2];
-    a03 = a[3];
-    a10 = a[4];
-    a11 = a[5];
-    a12 = a[6];
-    a13 = a[7];
-    a20 = a[8];
-    a21 = a[9];
-    a22 = a[10];
-    a23 = a[11];
-    out[0] = a00;
-    out[1] = a01;
-    out[2] = a02;
-    out[3] = a03;
-    out[4] = a10;
-    out[5] = a11;
-    out[6] = a12;
-    out[7] = a13;
-    out[8] = a20;
-    out[9] = a21;
-    out[10] = a22;
-    out[11] = a23;
-    out[12] = a00 * x + a10 * y + a20 * z + a[12];
-    out[13] = a01 * x + a11 * y + a21 * z + a[13];
-    out[14] = a02 * x + a12 * y + a22 * z + a[14];
-    out[15] = a03 * x + a13 * y + a23 * z + a[15];
-  }
-  return out;
+function Vi(i, e, t) {
+  var s = t[0], o = t[1], h = t[2], d = void 0, u = void 0, m = void 0, v = void 0, y = void 0, _ = void 0, x = void 0, R = void 0, F = void 0, C = void 0, B = void 0, N = void 0;
+  return e === i ? (i[12] = e[0] * s + e[4] * o + e[8] * h + e[12], i[13] = e[1] * s + e[5] * o + e[9] * h + e[13], i[14] = e[2] * s + e[6] * o + e[10] * h + e[14], i[15] = e[3] * s + e[7] * o + e[11] * h + e[15]) : (d = e[0], u = e[1], m = e[2], v = e[3], y = e[4], _ = e[5], x = e[6], R = e[7], F = e[8], C = e[9], B = e[10], N = e[11], i[0] = d, i[1] = u, i[2] = m, i[3] = v, i[4] = y, i[5] = _, i[6] = x, i[7] = R, i[8] = F, i[9] = C, i[10] = B, i[11] = N, i[12] = d * s + y * o + F * h + e[12], i[13] = u * s + _ * o + C * h + e[13], i[14] = m * s + x * o + B * h + e[14], i[15] = v * s + R * o + N * h + e[15]), i;
 }
-function rotate(out, a, rad, axis) {
-  var x = axis[0], y = axis[1], z = axis[2];
-  var len2 = Math.sqrt(x * x + y * y + z * z);
-  var s = void 0, c = void 0, t = void 0;
-  var a00 = void 0, a01 = void 0, a02 = void 0, a03 = void 0;
-  var a10 = void 0, a11 = void 0, a12 = void 0, a13 = void 0;
-  var a20 = void 0, a21 = void 0, a22 = void 0, a23 = void 0;
-  var b00 = void 0, b01 = void 0, b02 = void 0;
-  var b10 = void 0, b11 = void 0, b12 = void 0;
-  var b20 = void 0, b21 = void 0, b22 = void 0;
-  if (len2 < EPSILON) {
-    return null;
-  }
-  len2 = 1 / len2;
-  x *= len2;
-  y *= len2;
-  z *= len2;
-  s = Math.sin(rad);
-  c = Math.cos(rad);
-  t = 1 - c;
-  a00 = a[0];
-  a01 = a[1];
-  a02 = a[2];
-  a03 = a[3];
-  a10 = a[4];
-  a11 = a[5];
-  a12 = a[6];
-  a13 = a[7];
-  a20 = a[8];
-  a21 = a[9];
-  a22 = a[10];
-  a23 = a[11];
-  b00 = x * x * t + c;
-  b01 = y * x * t + z * s;
-  b02 = z * x * t - y * s;
-  b10 = x * y * t - z * s;
-  b11 = y * y * t + c;
-  b12 = z * y * t + x * s;
-  b20 = x * z * t + y * s;
-  b21 = y * z * t - x * s;
-  b22 = z * z * t + c;
-  out[0] = a00 * b00 + a10 * b01 + a20 * b02;
-  out[1] = a01 * b00 + a11 * b01 + a21 * b02;
-  out[2] = a02 * b00 + a12 * b01 + a22 * b02;
-  out[3] = a03 * b00 + a13 * b01 + a23 * b02;
-  out[4] = a00 * b10 + a10 * b11 + a20 * b12;
-  out[5] = a01 * b10 + a11 * b11 + a21 * b12;
-  out[6] = a02 * b10 + a12 * b11 + a22 * b12;
-  out[7] = a03 * b10 + a13 * b11 + a23 * b12;
-  out[8] = a00 * b20 + a10 * b21 + a20 * b22;
-  out[9] = a01 * b20 + a11 * b21 + a21 * b22;
-  out[10] = a02 * b20 + a12 * b21 + a22 * b22;
-  out[11] = a03 * b20 + a13 * b21 + a23 * b22;
-  if (a !== out) {
-    out[12] = a[12];
-    out[13] = a[13];
-    out[14] = a[14];
-    out[15] = a[15];
-  }
-  return out;
+function Ui(i, e, t, s) {
+  var o = s[0], h = s[1], d = s[2], u = Math.sqrt(o * o + h * h + d * d), m = void 0, v = void 0, y = void 0, _ = void 0, x = void 0, R = void 0, F = void 0, C = void 0, B = void 0, N = void 0, Q = void 0, P = void 0, I = void 0, G = void 0, O = void 0, W = void 0, z = void 0, Z = void 0, K = void 0, D = void 0, V = void 0, L = void 0, M = void 0, J = void 0;
+  return u < es ? null : (u = 1 / u, o *= u, h *= u, d *= u, m = Math.sin(t), v = Math.cos(t), y = 1 - v, _ = e[0], x = e[1], R = e[2], F = e[3], C = e[4], B = e[5], N = e[6], Q = e[7], P = e[8], I = e[9], G = e[10], O = e[11], W = o * o * y + v, z = h * o * y + d * m, Z = d * o * y - h * m, K = o * h * y - d * m, D = h * h * y + v, V = d * h * y + o * m, L = o * d * y + h * m, M = h * d * y - o * m, J = d * d * y + v, i[0] = _ * W + C * z + P * Z, i[1] = x * W + B * z + I * Z, i[2] = R * W + N * z + G * Z, i[3] = F * W + Q * z + O * Z, i[4] = _ * K + C * D + P * V, i[5] = x * K + B * D + I * V, i[6] = R * K + N * D + G * V, i[7] = F * K + Q * D + O * V, i[8] = _ * L + C * M + P * J, i[9] = x * L + B * M + I * J, i[10] = R * L + N * M + G * J, i[11] = F * L + Q * M + O * J, e !== i && (i[12] = e[12], i[13] = e[13], i[14] = e[14], i[15] = e[15]), i);
 }
-function fromTranslation(out, v) {
-  out[0] = 1;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = 1;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = 0;
-  out[10] = 1;
-  out[11] = 0;
-  out[12] = v[0];
-  out[13] = v[1];
-  out[14] = v[2];
-  out[15] = 1;
-  return out;
+function ti(i, e) {
+  return i[0] = 1, i[1] = 0, i[2] = 0, i[3] = 0, i[4] = 0, i[5] = 1, i[6] = 0, i[7] = 0, i[8] = 0, i[9] = 0, i[10] = 1, i[11] = 0, i[12] = e[0], i[13] = e[1], i[14] = e[2], i[15] = 1, i;
 }
-function perspective(out, fovy, aspect, near, far) {
-  var f = 1 / Math.tan(fovy / 2), nf = void 0;
-  out[0] = f / aspect;
-  out[1] = 0;
-  out[2] = 0;
-  out[3] = 0;
-  out[4] = 0;
-  out[5] = f;
-  out[6] = 0;
-  out[7] = 0;
-  out[8] = 0;
-  out[9] = 0;
-  out[11] = -1;
-  out[12] = 0;
-  out[13] = 0;
-  out[15] = 0;
-  if (far != null && far !== Infinity) {
-    nf = 1 / (near - far);
-    out[10] = (far + near) * nf;
-    out[14] = 2 * far * near * nf;
-  } else {
-    out[10] = -1;
-    out[14] = -2 * near;
-  }
-  return out;
+function is(i, e, t, s, o) {
+  var h = 1 / Math.tan(e / 2), d = void 0;
+  return i[0] = h / t, i[1] = 0, i[2] = 0, i[3] = 0, i[4] = 0, i[5] = h, i[6] = 0, i[7] = 0, i[8] = 0, i[9] = 0, i[11] = -1, i[12] = 0, i[13] = 0, i[15] = 0, o != null && o !== 1 / 0 ? (d = 1 / (s - o), i[10] = (o + s) * d, i[14] = 2 * o * s * d) : (i[10] = -1, i[14] = -2 * s), i;
 }
-async function LookingGlassMediaController() {
-  const cfg = getLookingGlassConfig();
-  let currentInlineView = 2;
-  function downloadImage() {
-    if (cfg.appCanvas != null) {
+async function rs() {
+  const i = Pe();
+  let e = 2;
+  function t() {
+    if (i.appCanvas != null)
       try {
-        let url = cfg.appCanvas.toDataURL();
-        const a = document.createElement("a");
-        a.style.display = "none";
-        a.href = url;
-        a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(url);
-      } catch (error) {
-        console.error("Error while capturing canvas data:", error);
+        let o = i.appCanvas.toDataURL();
+        const h = document.createElement("a");
+        h.style.display = "none", h.href = o, h.download = `hologram_qs${i.quiltWidth}x${i.quiltHeight}a${i.aspect}.png`, document.body.appendChild(h), h.click(), document.body.removeChild(h), window.URL.revokeObjectURL(o);
+      } catch (o) {
+        console.error("Error while capturing canvas data:", o);
       } finally {
-        cfg.inlineView = currentInlineView;
+        i.inlineView = e;
       }
+  }
+  const s = document.getElementById("screenshotbutton");
+  s && s.addEventListener("click", () => {
+    e = i.inlineView;
+    const o = Et.getInstance();
+    if (!o) {
+      console.warn("LookingGlassXRDevice not initialized");
+      return;
     }
-  }
-  const screenshotButton = document.getElementById("screenshotbutton");
-  if (screenshotButton) {
-    screenshotButton.addEventListener("click", () => {
-      currentInlineView = cfg.inlineView;
-      const xrDevice = LookingGlassXRDevice.getInstance();
-      if (!xrDevice) {
-        console.warn("LookingGlassXRDevice not initialized");
-        return;
-      }
-      cfg.inlineView = 2;
-      xrDevice.captureScreenshot = true;
-      setTimeout(() => {
-        xrDevice.screenshotCallback = downloadImage;
-      }, 100);
-    });
-  }
+    i.inlineView = 2, o.captureScreenshot = !0, setTimeout(() => {
+      o.screenshotCallback = t;
+    }, 100);
+  });
 }
-function initLookingGlassControlGUI() {
-  var _a;
-  const cfg = getLookingGlassConfig();
-  console.log(cfg, "for debugging purposes");
-  if (cfg.lkgCanvas == null) {
+function ns() {
+  var e;
+  const i = Pe();
+  if (console.log(i, "for debugging purposes"), i.lkgCanvas == null)
     console.warn("window placement called without a valid XR Session!");
-  } else {
-    let flyCamera = function() {
-      let kx = keys.d - keys.a;
-      let ky = keys.w - keys.s;
-      if (kx && ky) {
-        kx *= Math.sqrt(0.5);
-        ky *= Math.sqrt(0.5);
-      }
-      const tx = cfg.trackballX, ty = cfg.trackballY;
-      const dx = Math.cos(tx) * kx - Math.sin(tx) * Math.cos(ty) * ky;
-      const dy = -Math.sin(ty) * ky;
-      const dz = -Math.sin(tx) * kx - Math.cos(tx) * Math.cos(ty) * ky;
-      cfg.targetX = cfg.targetX + dx * cfg.targetDiam * 0.03;
-      cfg.targetY = cfg.targetY + dy * cfg.targetDiam * 0.03;
-      cfg.targetZ = cfg.targetZ + dz * cfg.targetDiam * 0.03;
-      requestAnimationFrame(flyCamera);
+  else {
+    let t = function() {
+      let x = _.d - _.a, R = _.w - _.s;
+      x && R && (x *= Math.sqrt(0.5), R *= Math.sqrt(0.5));
+      const F = i.trackballX, C = i.trackballY, B = Math.cos(F) * x - Math.sin(F) * Math.cos(C) * R, N = -Math.sin(C) * R, Q = -Math.sin(F) * x - Math.cos(F) * Math.cos(C) * R;
+      i.targetX = i.targetX + B * i.targetDiam * 0.03, i.targetY = i.targetY + N * i.targetDiam * 0.03, i.targetZ = i.targetZ + Q * i.targetDiam * 0.03, requestAnimationFrame(t);
     };
-    const styleElement = document.createElement("style");
-    document.head.appendChild(styleElement);
-    (_a = styleElement.sheet) == null ? void 0 : _a.insertRule("#LookingGlassWebXRControls * { all: revert; font-family: sans-serif }");
-    const c = document.createElement("div");
-    c.id = "LookingGlassWebXRControls";
-    c.style.position = "fixed";
-    c.style.zIndex = "1000";
-    c.style.padding = "15px";
-    c.style.width = "320px";
-    c.style.maxWidth = "calc(100vw - 18px)";
-    c.style.maxHeight = "calc(100vh - 18px)";
-    c.style.whiteSpace = "nowrap";
-    c.style.background = "rgba(0, 0, 0, 0.6)";
-    c.style.color = "white";
-    c.style.borderRadius = "10px";
-    c.style.right = "15px";
-    c.style.bottom = "15px";
-    c.style.flex = "row";
-    const title = document.createElement("div");
-    c.appendChild(title);
-    title.style.width = "100%";
-    title.style.textAlign = "center";
-    title.style.fontWeight = "bold";
-    title.style.marginBottom = "8px";
-    title.innerText = "Looking Glass Controls";
-    const screenshotbutton = document.createElement("button");
-    screenshotbutton.style.display = "block";
-    screenshotbutton.style.margin = "auto";
-    screenshotbutton.style.width = "100%";
-    screenshotbutton.style.height = "35px";
-    screenshotbutton.style.padding = "4px";
-    screenshotbutton.style.marginBottom = "8px";
-    screenshotbutton.style.borderRadius = "8px";
-    screenshotbutton.id = "screenshotbutton";
-    c.appendChild(screenshotbutton);
-    screenshotbutton.innerText = "Save Hologram";
-    const copybutton = document.createElement("button");
-    copybutton.style.display = "block";
-    copybutton.style.margin = "auto";
-    copybutton.style.width = "100%";
-    copybutton.style.height = "35px";
-    copybutton.style.padding = "4px";
-    copybutton.style.marginBottom = "8px";
-    copybutton.style.borderRadius = "8px";
-    copybutton.id = "copybutton";
-    c.appendChild(copybutton);
-    copybutton.innerText = "Copy Config";
-    copybutton.addEventListener("click", () => {
-      copyConfigToClipboard(cfg);
+    const s = document.createElement("style");
+    document.head.appendChild(s), (e = s.sheet) == null || e.insertRule("#LookingGlassWebXRControls * { all: revert; font-family: sans-serif }");
+    const o = document.createElement("div");
+    o.id = "LookingGlassWebXRControls", o.style.position = "fixed", o.style.zIndex = "1000", o.style.padding = "15px", o.style.width = "320px", o.style.maxWidth = "calc(100vw - 18px)", o.style.maxHeight = "calc(100vh - 18px)", o.style.whiteSpace = "nowrap", o.style.background = "rgba(0, 0, 0, 0.6)", o.style.color = "white", o.style.borderRadius = "10px", o.style.right = "15px", o.style.bottom = "15px", o.style.flex = "row";
+    const h = document.createElement("div");
+    o.appendChild(h), h.style.width = "100%", h.style.textAlign = "center", h.style.fontWeight = "bold", h.style.marginBottom = "8px", h.innerText = "Looking Glass Controls";
+    const d = document.createElement("button");
+    d.style.display = "block", d.style.margin = "auto", d.style.width = "100%", d.style.height = "35px", d.style.padding = "4px", d.style.marginBottom = "8px", d.style.borderRadius = "8px", d.id = "screenshotbutton", o.appendChild(d), d.innerText = "Save Hologram";
+    const u = document.createElement("button");
+    u.style.display = "block", u.style.margin = "auto", u.style.width = "100%", u.style.height = "35px", u.style.padding = "4px", u.style.marginBottom = "8px", u.style.borderRadius = "8px", u.id = "copybutton", o.appendChild(u), u.innerText = "Copy Config", u.addEventListener("click", () => {
+      ss(i);
     });
-    const help = document.createElement("div");
-    c.appendChild(help);
-    help.style.width = "290px";
-    help.style.whiteSpace = "normal";
-    help.style.color = "rgba(255,255,255,0.7)";
-    help.style.fontSize = "14px";
-    help.style.margin = "5px 0";
-    help.innerHTML = "Click the popup and use WASD, mouse left/right drag, and scroll.";
-    const controlListDiv = document.createElement("div");
-    c.appendChild(controlListDiv);
-    const addControl = (name, attrs, opts) => {
-      const stringify = opts.stringify;
-      const controlLineDiv = document.createElement("div");
-      controlLineDiv.style.marginBottom = "8px";
-      controlListDiv.appendChild(controlLineDiv);
-      const controlID = name;
-      const initialValue = cfg[name];
-      const label = document.createElement("label");
-      controlLineDiv.appendChild(label);
-      label.innerText = opts.label;
-      label.setAttribute("for", controlID);
-      label.style.width = "100px";
-      label.style.display = "inline-block";
-      label.style.textDecoration = "dotted underline 1px";
-      label.style.fontFamily = `"Courier New"`;
-      label.style.fontSize = "13px";
-      label.style.fontWeight = "bold";
-      label.title = opts.title;
-      const control = document.createElement("input");
-      controlLineDiv.appendChild(control);
-      Object.assign(control, attrs);
-      control.id = controlID;
-      control.title = opts.title;
-      control.value = attrs.value !== void 0 ? attrs.value : initialValue;
-      const updateValue = (newValue) => {
-        cfg[name] = newValue;
-        updateNumberText(newValue);
+    const m = document.createElement("div");
+    o.appendChild(m), m.style.width = "290px", m.style.whiteSpace = "normal", m.style.color = "rgba(255,255,255,0.7)", m.style.fontSize = "14px", m.style.margin = "5px 0", m.innerHTML = "Click the popup and use WASD, mouse left/right drag, and scroll.";
+    const v = document.createElement("div");
+    o.appendChild(v);
+    const y = (x, R, F) => {
+      const C = F.stringify, B = document.createElement("div");
+      B.style.marginBottom = "8px", v.appendChild(B);
+      const N = x, Q = i[x], P = document.createElement("label");
+      B.appendChild(P), P.innerText = F.label, P.setAttribute("for", N), P.style.width = "100px", P.style.display = "inline-block", P.style.textDecoration = "dotted underline 1px", P.style.fontFamily = '"Courier New"', P.style.fontSize = "13px", P.style.fontWeight = "bold", P.title = F.title;
+      const I = document.createElement("input");
+      B.appendChild(I), Object.assign(I, R), I.id = N, I.title = F.title, I.value = R.value !== void 0 ? R.value : Q;
+      const G = (z) => {
+        i[x] = z, W(z);
       };
-      control.oninput = () => {
-        const newValue = attrs.type === "range" ? parseFloat(control.value) : attrs.type === "checkbox" ? control.checked : control.value;
-        updateValue(newValue);
+      I.oninput = () => {
+        const z = R.type === "range" ? parseFloat(I.value) : R.type === "checkbox" ? I.checked : I.value;
+        G(z);
       };
-      const updateExternally = (callback) => {
-        let newValue = callback(cfg[name]);
-        if (opts.fixRange) {
-          newValue = opts.fixRange(newValue);
-          control.max = Math.max(parseFloat(control.max), newValue).toString();
-          control.min = Math.min(parseFloat(control.min), newValue).toString();
-        }
-        control.value = newValue;
-        updateValue(newValue);
+      const O = (z) => {
+        let Z = z(i[x]);
+        F.fixRange && (Z = F.fixRange(Z), I.max = Math.max(parseFloat(I.max), Z).toString(), I.min = Math.min(parseFloat(I.min), Z).toString()), I.value = Z, G(Z);
       };
-      if (attrs.type === "range") {
-        control.style.width = "110px";
-        control.style.height = "8px";
-        control.onwheel = (ev) => {
-          updateExternally((oldValue) => oldValue + Math.sign(ev.deltaX - ev.deltaY) * attrs.step);
-        };
+      R.type === "range" && (I.style.width = "110px", I.style.height = "8px", I.onwheel = (z) => {
+        O((Z) => Z + Math.sign(z.deltaX - z.deltaY) * R.step);
+      });
+      let W = (z) => {
+      };
+      if (C) {
+        const z = document.createElement("span");
+        z.style.fontFamily = '"Courier New"', z.style.fontSize = "13px", z.style.marginLeft = "3px", B.appendChild(z), W = (Z) => {
+          z.innerHTML = C(Z);
+        }, W(Q);
       }
-      let updateNumberText = (value) => {
-      };
-      if (stringify) {
-        const numberText = document.createElement("span");
-        numberText.style.fontFamily = `"Courier New"`;
-        numberText.style.fontSize = "13px";
-        numberText.style.marginLeft = "3px";
-        controlLineDiv.appendChild(numberText);
-        updateNumberText = (v) => {
-          numberText.innerHTML = stringify(v);
-        };
-        updateNumberText(initialValue);
-      }
-      return updateExternally;
+      return O;
     };
-    addControl("fovy", {
+    y("fovy", {
       type: "range",
       min: 1 / 180 * Math.PI,
       max: 120.1 / 180 * Math.PI,
@@ -7485,265 +4042,172 @@ function initLookingGlassControlGUI() {
     }, {
       label: "fov",
       title: "perspective fov (degrades stereo effect)",
-      fixRange: (v) => Math.max(1 / 180 * Math.PI, Math.min(v, 120.1 / 180 * Math.PI)),
-      stringify: (v) => {
-        const xdeg = v / Math.PI * 180;
-        const ydeg = Math.atan(Math.tan(v / 2) * cfg.aspect) * 2 / Math.PI * 180;
-        return `${xdeg.toFixed()}&deg;&times;${ydeg.toFixed()}&deg;`;
+      fixRange: (x) => Math.max(1 / 180 * Math.PI, Math.min(x, 120.1 / 180 * Math.PI)),
+      stringify: (x) => {
+        const R = x / Math.PI * 180, F = Math.atan(Math.tan(x / 2) * i.aspect) * 2 / Math.PI * 180;
+        return `${R.toFixed()}&deg;&times;${F.toFixed()}&deg;`;
       }
-    });
-    addControl("depthiness", { type: "range", min: 0, max: 2, step: 0.01 }, {
+    }), y("depthiness", { type: "range", min: 0, max: 2, step: 0.01 }, {
       label: "depthiness",
       title: "exaggerates depth by multiplying the width of the view cone (as reported by the firmware) - can somewhat compensate for depthiness lost using higher fov.",
-      fixRange: (v) => Math.max(0, v),
-      stringify: (v) => `${v.toFixed(2)}x`
-    });
-    addControl("inlineView", { type: "range", min: 0, max: 2, step: 1 }, {
+      fixRange: (x) => Math.max(0, x),
+      stringify: (x) => `${x.toFixed(2)}x`
+    }), y("inlineView", { type: "range", min: 0, max: 2, step: 1 }, {
       label: "inline view",
       title: "what to show inline on the original canvas (swizzled = no overwrite)",
-      fixRange: (v) => Math.max(0, Math.min(v, 2)),
-      stringify: (v) => v === 0 ? "swizzled" : v === 1 ? "center" : v === 2 ? "quilt" : "?"
+      fixRange: (x) => Math.max(0, Math.min(x, 2)),
+      stringify: (x) => x === 0 ? "swizzled" : x === 1 ? "center" : x === 2 ? "quilt" : "?"
+    }), i.lkgCanvas.oncontextmenu = (x) => {
+      x.preventDefault();
+    }, i.lkgCanvas.addEventListener("wheel", (x) => {
+      const R = i.targetDiam, F = 1.1, C = Math.log(R) / Math.log(F);
+      return i.targetDiam = Math.pow(F, C + x.deltaY * 0.01);
+    }), i.lkgCanvas.addEventListener("mousemove", (x) => {
+      const R = x.movementX, F = -x.movementY;
+      if (x.buttons & 2 || x.buttons & 1 && (x.shiftKey || x.ctrlKey)) {
+        const C = i.trackballX, B = i.trackballY, N = -Math.cos(C) * R + Math.sin(C) * Math.sin(B) * F, Q = -Math.cos(B) * F, P = Math.sin(C) * R + Math.cos(C) * Math.sin(B) * F;
+        i.targetX = i.targetX + N * i.targetDiam * 1e-3, i.targetY = i.targetY + Q * i.targetDiam * 1e-3, i.targetZ = i.targetZ + P * i.targetDiam * 1e-3;
+      } else
+        x.buttons & 1 && (i.trackballX = i.trackballX - R * 0.01, i.trackballY = i.trackballY - F * 0.01);
     });
-    cfg.lkgCanvas.oncontextmenu = (ev) => {
-      ev.preventDefault();
-    };
-    cfg.lkgCanvas.addEventListener("wheel", (ev) => {
-      const old = cfg.targetDiam;
-      const GAMMA = 1.1;
-      const logOld = Math.log(old) / Math.log(GAMMA);
-      return cfg.targetDiam = Math.pow(GAMMA, logOld + ev.deltaY * 0.01);
-    });
-    cfg.lkgCanvas.addEventListener("mousemove", (ev) => {
-      const mx = ev.movementX, my = -ev.movementY;
-      if (ev.buttons & 2 || ev.buttons & 1 && (ev.shiftKey || ev.ctrlKey)) {
-        const tx = cfg.trackballX, ty = cfg.trackballY;
-        const dx = -Math.cos(tx) * mx + Math.sin(tx) * Math.sin(ty) * my;
-        const dy = -Math.cos(ty) * my;
-        const dz = Math.sin(tx) * mx + Math.cos(tx) * Math.sin(ty) * my;
-        cfg.targetX = cfg.targetX + dx * cfg.targetDiam * 1e-3;
-        cfg.targetY = cfg.targetY + dy * cfg.targetDiam * 1e-3;
-        cfg.targetZ = cfg.targetZ + dz * cfg.targetDiam * 1e-3;
-      } else if (ev.buttons & 1) {
-        cfg.trackballX = cfg.trackballX - mx * 0.01;
-        cfg.trackballY = cfg.trackballY - my * 0.01;
-      }
-    });
-    const keys = { w: 0, a: 0, s: 0, d: 0 };
-    cfg.lkgCanvas.addEventListener("keydown", (ev) => {
-      switch (ev.code) {
+    const _ = { w: 0, a: 0, s: 0, d: 0 };
+    return i.lkgCanvas.addEventListener("keydown", (x) => {
+      switch (x.code) {
         case "KeyW":
-          keys.w = 1;
+          _.w = 1;
           break;
         case "KeyA":
-          keys.a = 1;
+          _.a = 1;
           break;
         case "KeyS":
-          keys.s = 1;
+          _.s = 1;
           break;
         case "KeyD":
-          keys.d = 1;
+          _.d = 1;
           break;
       }
-    });
-    cfg.lkgCanvas.addEventListener("keyup", (ev) => {
-      switch (ev.code) {
+    }), i.lkgCanvas.addEventListener("keyup", (x) => {
+      switch (x.code) {
         case "KeyW":
-          keys.w = 0;
+          _.w = 0;
           break;
         case "KeyA":
-          keys.a = 0;
+          _.a = 0;
           break;
         case "KeyS":
-          keys.s = 0;
+          _.s = 0;
           break;
         case "KeyD":
-          keys.d = 0;
+          _.d = 0;
           break;
       }
-    });
-    requestAnimationFrame(flyCamera);
-    setTimeout(() => {
-      LookingGlassMediaController();
-    }, 1e3);
-    return c;
+    }), requestAnimationFrame(t), setTimeout(() => {
+      rs();
+    }, 1e3), o;
   }
 }
-function copyConfigToClipboard(cfg) {
-  const camera = {
-    targetX: cfg.targetX,
-    targetY: cfg.targetY,
-    targetZ: cfg.targetZ,
-    fovy: `${Math.round(cfg.fovy / Math.PI * 180)} * Math.PI / 180`,
-    targetDiam: cfg.targetDiam,
-    trackballX: cfg.trackballX,
-    trackballY: cfg.trackballY,
-    depthiness: cfg.depthiness
+function ss(i) {
+  const e = {
+    targetX: i.targetX,
+    targetY: i.targetY,
+    targetZ: i.targetZ,
+    fovy: `${Math.round(i.fovy / Math.PI * 180)} * Math.PI / 180`,
+    targetDiam: i.targetDiam,
+    trackballX: i.trackballX,
+    trackballY: i.trackballY,
+    depthiness: i.depthiness
   };
-  let config = JSON.stringify(camera, null, 4).replace(/"/g, "").replace(/{/g, "").replace(/}/g, "");
-  navigator.clipboard.writeText(config);
+  let t = JSON.stringify(e, null, 4).replace(/"/g, "").replace(/{/g, "").replace(/}/g, "");
+  navigator.clipboard.writeText(t);
 }
-let controls;
-const moveCanvasToWindow = (enabled, onbeforeunload) => {
-  const cfg = getLookingGlassConfig();
-  if (cfg.lkgCanvas == null) {
+let Dt;
+const as = (i, e) => {
+  const t = Pe();
+  if (t.lkgCanvas == null) {
     console.warn("window placement called without a valid XR Session!");
     return;
-  } else if (enabled == false) {
-    closeWindow(cfg, controls);
-  } else {
-    if (controls == null) {
-      controls = initLookingGlassControlGUI();
-    }
-    cfg.lkgCanvas.style.position = "fixed";
-    cfg.lkgCanvas.style.bottom = "0";
-    cfg.lkgCanvas.style.left = "0";
-    cfg.lkgCanvas.width = cfg.calibration.screenW.value;
-    cfg.lkgCanvas.height = cfg.calibration.screenH.value;
-    document.body.appendChild(controls);
-    const screenPlacement = "getScreenDetails" in window;
-    console.log(screenPlacement, "Screen placement API exists");
-    if (screenPlacement) {
-      placeWindow(cfg.lkgCanvas, cfg, onbeforeunload);
-    } else {
-      openPopup(cfg, cfg.lkgCanvas, onbeforeunload);
-    }
+  } else if (i == !1)
+    ls(t, Dt);
+  else {
+    Dt == null && (Dt = ns()), t.lkgCanvas.style.position = "fixed", t.lkgCanvas.style.bottom = "0", t.lkgCanvas.style.left = "0", t.lkgCanvas.width = t.calibration.screenW.value, t.lkgCanvas.height = t.calibration.screenH.value, document.body.appendChild(Dt);
+    const s = "getScreenDetails" in window;
+    console.log(s, "Screen placement API exists"), s ? os(t.lkgCanvas, t, e) : or(t, t.lkgCanvas, e);
   }
 };
-async function placeWindow(lkgCanvas, config, onbeforeunload) {
-  const screenDetails = await window.getScreenDetails();
-  console.log(screenDetails);
-  const LKG = screenDetails.screens.filter((screen2) => screen2.label.includes("LKG"))[0];
-  console.log(LKG, "monitors");
-  if (LKG === void 0) {
-    console.log("no Looking Glass monitor detected - manually opening popup window");
-    openPopup(config, lkgCanvas, onbeforeunload);
+async function os(i, e, t) {
+  const s = await window.getScreenDetails();
+  console.log(s);
+  const o = s.screens.filter((h) => h.label.includes("LKG"))[0];
+  if (console.log(o, "monitors"), o === void 0) {
+    console.log("no Looking Glass monitor detected - manually opening popup window"), or(e, i, t);
     return;
   } else {
-    console.log("monitor ID", LKG.label, "serial number", config.calibration);
-    const features = [
-      `left=${LKG.left}`,
-      `top=${LKG.top}`,
-      `width=${LKG.width}`,
-      `height=${LKG.height}`,
-      `menubar=no`,
-      `toolbar=no`,
-      `location=no`,
-      `status=no`,
-      `resizable=yes`,
-      `scrollbars=no`,
-      `fullscreenEnabled=true`
+    console.log("monitor ID", o.label, "serial number", e.calibration);
+    const h = [
+      `left=${o.left}`,
+      `top=${o.top}`,
+      `width=${o.width}`,
+      `height=${o.height}`,
+      "menubar=no",
+      "toolbar=no",
+      "location=no",
+      "status=no",
+      "resizable=yes",
+      "scrollbars=no",
+      "fullscreenEnabled=true"
     ].join(",");
-    config.popup = window.open("", "new", features);
-    if (config.popup) {
-      config.popup.document.body.style.background = "black";
-      config.popup.document.body.style.transform = "1.0";
-      preventZoom(config);
-      config.popup.document.body.appendChild(lkgCanvas);
-      console.assert(onbeforeunload);
-      config.popup.onbeforeunload = onbeforeunload;
-    }
+    e.popup = window.open("", "new", h), e.popup && (e.popup.document.body.style.background = "black", e.popup.document.body.style.transform = "1.0", lr(e), e.popup.document.body.appendChild(i), console.assert(t), e.popup.onbeforeunload = t);
   }
 }
-function openPopup(cfg, lkgCanvas, onbeforeunload) {
-  cfg.popup = window.open("", void 0, "width=640,height=360");
-  if (cfg.popup) {
-    cfg.popup.document.title = "Looking Glass Window (fullscreen me on Looking Glass!)";
-    cfg.popup.document.body.style.background = "black";
-    cfg.popup.document.body.style.transform = "1.0";
-    preventZoom(cfg);
-    cfg.popup.document.body.appendChild(lkgCanvas);
-    console.assert(onbeforeunload);
-    cfg.popup.onbeforeunload = onbeforeunload;
-  }
+function or(i, e, t) {
+  i.popup = window.open("", void 0, "width=640,height=360"), i.popup && (i.popup.document.title = "Looking Glass Window (fullscreen me on Looking Glass!)", i.popup.document.body.style.background = "black", i.popup.document.body.style.transform = "1.0", lr(i), i.popup.document.body.appendChild(e), console.assert(t), i.popup.onbeforeunload = t);
 }
-function closeWindow(cfg, controls2) {
-  var _a;
-  (_a = controls2.parentElement) == null ? void 0 : _a.removeChild(controls2);
-  if (cfg.popup) {
-    cfg.popup.onbeforeunload = null;
-    cfg.popup.close();
-    cfg.popup = null;
-  }
+function ls(i, e) {
+  var t;
+  (t = e.parentElement) == null || t.removeChild(e), i.popup && (i.popup.onbeforeunload = null, i.popup.close(), i.popup = null);
 }
-function preventZoom(cfg) {
-  if (cfg.popup) {
-    cfg.popup.document.addEventListener("keydown", (e) => {
-      if (e.ctrlKey && (e.key === "=" || e.key === "-" || e.key === "+")) {
-        e.preventDefault();
-      }
-    });
-  }
+function lr(i) {
+  i.popup && i.popup.document.addEventListener("keydown", (e) => {
+    e.ctrlKey && (e.key === "=" || e.key === "-" || e.key === "+") && e.preventDefault();
+  });
 }
-const PRIVATE = Symbol("LookingGlassXRWebGLLayer");
-class LookingGlassXRWebGLLayer extends XRWebGLLayer {
-  constructor(session, gl, layerInit) {
-    super(session, gl, layerInit);
-    const cfg = getLookingGlassConfig();
-    cfg.appCanvas = gl.canvas;
-    cfg.lkgCanvas = document.createElement("canvas");
-    cfg.lkgCanvas.tabIndex = 0;
-    const lkgCtx = cfg.lkgCanvas.getContext("2d", { alpha: false });
-    cfg.lkgCanvas.addEventListener("dblclick", function() {
+const Qe = Symbol("LookingGlassXRWebGLLayer");
+class cs extends tr {
+  constructor(e, t, s) {
+    super(e, t, s);
+    const o = Pe();
+    o.appCanvas = t.canvas, o.lkgCanvas = document.createElement("canvas"), o.lkgCanvas.tabIndex = 0;
+    const h = o.lkgCanvas.getContext("2d", { alpha: !1 });
+    o.lkgCanvas.addEventListener("dblclick", function() {
       this.requestFullscreen();
     });
-    const config = this[PRIVATE$3].config;
-    const texture = gl.createTexture();
-    let depthStencil, dsConfig;
-    const framebuffer = gl.createFramebuffer();
-    const OES_VAO = gl.getExtension("OES_vertex_array_object");
-    const GL_VERTEX_ARRAY_BINDING = 34229;
-    const glBindVertexArray = OES_VAO ? OES_VAO.bindVertexArrayOES.bind(OES_VAO) : gl.bindVertexArray.bind(gl);
-    if (config.depth || config.stencil) {
-      if (config.depth && config.stencil) {
-        dsConfig = {
-          format: gl.DEPTH_STENCIL,
-          attachment: gl.DEPTH_STENCIL_ATTACHMENT
-        };
-      } else if (config.depth) {
-        dsConfig = {
-          format: gl.DEPTH_COMPONENT16,
-          attachment: gl.DEPTH_ATTACHMENT
-        };
-      } else if (config.stencil) {
-        dsConfig = {
-          format: gl.STENCIL_INDEX8,
-          attachment: gl.STENCIL_ATTACHMENT
-        };
-      }
-      depthStencil = gl.createRenderbuffer();
-    }
-    const allocateFramebufferAttachments = (gl2, texture2, depthStencil2, dsConfig2, cfg2) => {
-      allocateTexture(gl2, texture2, cfg2.framebufferWidth, cfg2.framebufferHeight);
-      if (depthStencil2) {
-        allocateDepthStencil(gl2, depthStencil2, dsConfig2, cfg2.framebufferWidth, cfg2.framebufferHeight);
-      }
+    const d = this[Ze].config, u = t.createTexture();
+    let m, v;
+    const y = t.createFramebuffer(), _ = t.getExtension("OES_vertex_array_object"), x = 34229, R = _ ? _.bindVertexArrayOES.bind(_) : t.bindVertexArray.bind(t);
+    (d.depth || d.stencil) && (d.depth && d.stencil ? v = {
+      format: t.DEPTH_STENCIL,
+      attachment: t.DEPTH_STENCIL_ATTACHMENT
+    } : d.depth ? v = {
+      format: t.DEPTH_COMPONENT16,
+      attachment: t.DEPTH_ATTACHMENT
+    } : d.stencil && (v = {
+      format: t.STENCIL_INDEX8,
+      attachment: t.STENCIL_ATTACHMENT
+    }), m = t.createRenderbuffer());
+    const F = (g, ee, ce, re, de) => {
+      C(g, ee, de.framebufferWidth, de.framebufferHeight), ce && B(g, ce, re, de.framebufferWidth, de.framebufferHeight);
+    }, C = (g, ee, ce, re) => {
+      const de = g.getParameter(g.TEXTURE_BINDING_2D);
+      g.bindTexture(g.TEXTURE_2D, ee), g.texImage2D(g.TEXTURE_2D, 0, g.RGBA, ce, re, 0, g.RGBA, g.UNSIGNED_BYTE, null), g.texParameteri(g.TEXTURE_2D, g.TEXTURE_MIN_FILTER, g.LINEAR), g.bindTexture(g.TEXTURE_2D, de);
+    }, B = (g, ee, ce, re, de) => {
+      const me = g.getParameter(g.RENDERBUFFER_BINDING);
+      g.bindRenderbuffer(g.RENDERBUFFER, ee), g.renderbufferStorage(g.RENDERBUFFER, ce.format, re, de), g.bindRenderbuffer(g.RENDERBUFFER, me);
+    }, N = (g, ee, ce, re, de, me) => {
+      const Ke = g.getParameter(g.FRAMEBUFFER_BINDING);
+      g.bindFramebuffer(g.FRAMEBUFFER, ee), g.framebufferTexture2D(g.FRAMEBUFFER, g.COLOR_ATTACHMENT0, g.TEXTURE_2D, ce, 0), (me.depth || me.stencil) && g.framebufferRenderbuffer(g.FRAMEBUFFER, re.attachment, g.RENDERBUFFER, de), g.bindFramebuffer(g.FRAMEBUFFER, Ke);
     };
-    const allocateTexture = (gl2, texture2, width, height) => {
-      const oldTextureBinding = gl2.getParameter(gl2.TEXTURE_BINDING_2D);
-      gl2.bindTexture(gl2.TEXTURE_2D, texture2);
-      gl2.texImage2D(gl2.TEXTURE_2D, 0, gl2.RGBA, width, height, 0, gl2.RGBA, gl2.UNSIGNED_BYTE, null);
-      gl2.texParameteri(gl2.TEXTURE_2D, gl2.TEXTURE_MIN_FILTER, gl2.LINEAR);
-      gl2.bindTexture(gl2.TEXTURE_2D, oldTextureBinding);
-    };
-    const allocateDepthStencil = (gl2, depthStencil2, dsConfig2, width, height) => {
-      const oldRenderbufferBinding = gl2.getParameter(gl2.RENDERBUFFER_BINDING);
-      gl2.bindRenderbuffer(gl2.RENDERBUFFER, depthStencil2);
-      gl2.renderbufferStorage(gl2.RENDERBUFFER, dsConfig2.format, width, height);
-      gl2.bindRenderbuffer(gl2.RENDERBUFFER, oldRenderbufferBinding);
-    };
-    const setupFramebuffer = (gl2, framebuffer2, texture2, dsConfig2, depthStencil2, config2) => {
-      const oldFramebufferBinding = gl2.getParameter(gl2.FRAMEBUFFER_BINDING);
-      gl2.bindFramebuffer(gl2.FRAMEBUFFER, framebuffer2);
-      gl2.framebufferTexture2D(gl2.FRAMEBUFFER, gl2.COLOR_ATTACHMENT0, gl2.TEXTURE_2D, texture2, 0);
-      if (config2.depth || config2.stencil) {
-        gl2.framebufferRenderbuffer(gl2.FRAMEBUFFER, dsConfig2.attachment, gl2.RENDERBUFFER, depthStencil2);
-      }
-      gl2.bindFramebuffer(gl2.FRAMEBUFFER, oldFramebufferBinding);
-    };
-    allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg);
-    cfg.addEventListener("on-config-changed", () => allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg));
-    setupFramebuffer(gl, framebuffer, texture, dsConfig, depthStencil, config);
-    const vertexShaderSource = `
+    F(t, u, m, v, o), o.addEventListener("on-config-changed", () => F(t, u, m, v, o)), N(t, y, u, v, m, d);
+    const Q = `
 		attribute vec2 a_position;
 		varying vec2 v_texcoord;
 		void main() {
@@ -7751,415 +4215,219 @@ class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 		  v_texcoord = a_position;
 		}
 	  `;
-    function createShader(gl2, type, source) {
-      const shader = gl2.createShader(type);
-      gl2.shaderSource(shader, source);
-      gl2.compileShader(shader);
-      if (!gl2.getShaderParameter(shader, gl2.COMPILE_STATUS)) {
-        console.warn(gl2.getShaderInfoLog(shader));
-        return null;
-      }
-      return shader;
+    function P(g, ee, ce) {
+      const re = g.createShader(ee);
+      return g.shaderSource(re, ce), g.compileShader(re), g.getShaderParameter(re, g.COMPILE_STATUS) ? re : (console.warn(g.getShaderInfoLog(re)), null);
     }
-    function setupShaderProgram(gl2, vertexShaderSource2, fragmentShaderSource) {
-      let program2 = gl2.createProgram();
-      const vs = createShader(gl2, gl2.VERTEX_SHADER, vertexShaderSource2);
-      const fs = createShader(gl2, gl2.FRAGMENT_SHADER, fragmentShaderSource);
-      if (vs === null || fs === null) {
-        console.error("There was a problem with shader construction");
-        return null;
-      }
-      gl2.attachShader(program2, vs);
-      gl2.attachShader(program2, fs);
-      gl2.linkProgram(program2);
-      if (!gl2.getProgramParameter(program2, gl2.LINK_STATUS)) {
-        console.warn(gl2.getProgramInfoLog(program2));
-        return null;
-      }
-      return program2;
+    function I(g, ee, ce) {
+      let re = g.createProgram();
+      const de = P(g, g.VERTEX_SHADER, ee), me = P(g, g.FRAGMENT_SHADER, ce);
+      return de === null || me === null ? (console.error("There was a problem with shader construction"), null) : (g.attachShader(re, de), g.attachShader(re, me), g.linkProgram(re), g.getProgramParameter(re, g.LINK_STATUS) ? re : (console.warn(g.getProgramInfoLog(re)), null));
     }
-    let currentFs;
-    let lastGeneratedFSSource;
-    let a_location;
-    let u_viewType;
-    const recompileFragmentShaderIfNeeded = (gl2, cfg2, shaderFn) => {
-      const fsSource = shaderFn(cfg2);
-      if (fsSource === lastGeneratedFSSource)
+    let G, O, W, z;
+    const Z = (g, ee, ce) => {
+      const re = ce(ee);
+      if (re === O)
         return;
-      lastGeneratedFSSource = fsSource;
-      const newFs = createShader(gl2, gl2.FRAGMENT_SHADER, fsSource);
-      if (newFs === null)
+      O = re;
+      const de = P(g, g.FRAGMENT_SHADER, re);
+      if (de === null)
         return;
-      if (currentFs) {
-        gl2.deleteShader(currentFs);
-      }
-      currentFs = newFs;
-      const newProgram = setupShaderProgram(gl2, vertexShaderSource, fsSource);
-      if (newProgram === null) {
+      G && g.deleteShader(G), G = de;
+      const me = I(g, Q, re);
+      if (me === null) {
         console.warn("There was a problem with shader construction");
         return;
       }
-      a_location = gl2.getAttribLocation(newProgram, "a_position");
-      u_viewType = gl2.getUniformLocation(newProgram, "u_viewType");
-      const u_texture = gl2.getUniformLocation(newProgram, "u_texture");
-      const oldProgram = gl2.getParameter(gl2.CURRENT_PROGRAM);
-      {
-        gl2.useProgram(newProgram);
-        gl2.uniform1i(u_texture, 0);
-      }
-      gl2.useProgram(oldProgram);
-      if (program) {
-        gl2.deleteProgram(program);
-      }
-      program = newProgram;
+      W = g.getAttribLocation(me, "a_position"), z = g.getUniformLocation(me, "u_viewType");
+      const Ke = g.getUniformLocation(me, "u_texture"), Mt = g.getParameter(g.CURRENT_PROGRAM);
+      g.useProgram(me), g.uniform1i(Ke, 0), g.useProgram(Mt), K && g.deleteProgram(K), K = me;
     };
-    console.log(Shader(cfg));
-    let program = setupShaderProgram(gl, vertexShaderSource, Shader(cfg));
-    if (program === null) {
-      console.warn("There was a problem with shader construction");
-    }
-    cfg.addEventListener("on-config-changed", () => {
-      recompileFragmentShaderIfNeeded(gl, cfg, Shader);
+    console.log(Jt(o));
+    let K = I(t, Q, Jt(o));
+    K === null && console.warn("There was a problem with shader construction"), o.addEventListener("on-config-changed", () => {
+      Z(t, o, Jt);
     });
-    const vao = OES_VAO ? OES_VAO.createVertexArrayOES() : gl.createVertexArray();
-    const vbo = gl.createBuffer();
-    const oldBufferBinding = gl.getParameter(gl.ARRAY_BUFFER_BINDING);
-    const oldVAO = gl.getParameter(GL_VERTEX_ARRAY_BINDING);
-    {
-      glBindVertexArray(vao);
-      gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-      gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), gl.STATIC_DRAW);
-      gl.enableVertexAttribArray(a_location);
-      gl.vertexAttribPointer(a_location, 2, gl.FLOAT, false, 0, 0);
-    }
-    glBindVertexArray(oldVAO);
-    gl.bindBuffer(gl.ARRAY_BUFFER, oldBufferBinding);
-    const clearFramebuffer = () => {
-      console.assert(this[PRIVATE].LookingGlassEnabled);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, this.framebuffer);
-      const currentClearColor = gl.getParameter(gl.COLOR_CLEAR_VALUE);
-      const currentClearDepth = gl.getParameter(gl.DEPTH_CLEAR_VALUE);
-      const currentClearStencil = gl.getParameter(gl.STENCIL_CLEAR_VALUE);
-      gl.clearColor(0, 0, 0, 0);
-      gl.clearDepth(1);
-      gl.clearStencil(0);
-      gl.clear(gl.DEPTH_BUFFER_BIT | gl.COLOR_BUFFER_BIT | gl.STENCIL_BUFFER_BIT);
-      gl.clearColor(currentClearColor[0], currentClearColor[1], currentClearColor[2], currentClearColor[3]);
-      gl.clearDepth(currentClearDepth);
-      gl.clearStencil(currentClearStencil);
+    const D = _ ? _.createVertexArrayOES() : t.createVertexArray(), V = t.createBuffer(), L = t.getParameter(t.ARRAY_BUFFER_BINDING), M = t.getParameter(x);
+    R(D), t.bindBuffer(t.ARRAY_BUFFER, V), t.bufferData(t.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), t.STATIC_DRAW), t.enableVertexAttribArray(W), t.vertexAttribPointer(W, 2, t.FLOAT, !1, 0, 0), R(M), t.bindBuffer(t.ARRAY_BUFFER, L);
+    const J = () => {
+      console.assert(this[Qe].LookingGlassEnabled), t.bindFramebuffer(t.FRAMEBUFFER, this.framebuffer);
+      const g = t.getParameter(t.COLOR_CLEAR_VALUE), ee = t.getParameter(t.DEPTH_CLEAR_VALUE), ce = t.getParameter(t.STENCIL_CLEAR_VALUE);
+      t.clearColor(0, 0, 0, 0), t.clearDepth(1), t.clearStencil(0), t.clear(t.DEPTH_BUFFER_BIT | t.COLOR_BUFFER_BIT | t.STENCIL_BUFFER_BIT), t.clearColor(g[0], g[1], g[2], g[3]), t.clearDepth(ee), t.clearStencil(ce);
     };
-    function blitTextureToDefaultFramebufferIfNeeded() {
-      if (!cfg.appCanvas || !cfg.lkgCanvas) {
+    function H() {
+      if (!o.appCanvas || !o.lkgCanvas)
         return;
-      }
-      if (cfg.appCanvas.width !== cfg.framebufferWidth || cfg.appCanvas.height !== cfg.framebufferHeight) {
-        cfg.appCanvas.width;
-        cfg.appCanvas.height;
-        cfg.appCanvas.width = cfg.framebufferWidth;
-        cfg.appCanvas.height = cfg.framebufferHeight;
-      }
-      const oldState = saveWebGLState();
-      setupRenderState();
-      renderSubPixelArrangement();
-      updateLookingGlassCanvas();
-      renderInlineView();
-      restoreWebGLState(oldState);
+      (o.appCanvas.width !== o.framebufferWidth || o.appCanvas.height !== o.framebufferHeight) && (o.appCanvas.width, o.appCanvas.height, o.appCanvas.width = o.framebufferWidth, o.appCanvas.height = o.framebufferHeight), t.isEnabled(t.SCISSOR_TEST);
+      const g = Ee();
+      Te(), $e(), Be(), Xe(), $(g);
     }
-    function restoreWebGLState(oldState) {
-      gl.activeTexture(oldState.activeTexture);
-      gl.bindTexture(gl.TEXTURE_2D, oldState.textureBinding);
-      gl.useProgram(oldState.program);
-      gl.bindRenderbuffer(gl.RENDERBUFFER, oldState.renderbufferBinding);
-      gl.bindFramebuffer(gl.FRAMEBUFFER, oldState.framebufferBinding);
-      if (oldState.scissorTest) {
-        gl.enable(gl.SCISSOR_TEST);
-      } else {
-        gl.disable(gl.SCISSOR_TEST);
-      }
-      if (oldState.stencilTest) {
-        gl.enable(gl.STENCIL_TEST);
-      } else {
-        gl.disable(gl.STENCIL_TEST);
-      }
-      if (oldState.depthTest) {
-        gl.enable(gl.DEPTH_TEST);
-      } else {
-        gl.disable(gl.DEPTH_TEST);
-      }
-      if (oldState.blend) {
-        gl.enable(gl.BLEND);
-      } else {
-        gl.disable(gl.BLEND);
-      }
-      if (oldState.cullFace) {
-        gl.enable(gl.CULL_FACE);
-      } else {
-        gl.disable(gl.CULL_FACE);
-      }
-      glBindVertexArray(oldState.VAO);
+    function $(g) {
+      t.activeTexture(g.activeTexture), t.bindTexture(t.TEXTURE_2D, g.textureBinding), t.useProgram(g.program), t.bindRenderbuffer(t.RENDERBUFFER, g.renderbufferBinding), t.bindFramebuffer(t.FRAMEBUFFER, g.framebufferBinding), g.scissorTest ? t.enable(t.SCISSOR_TEST) : t.disable(t.SCISSOR_TEST), g.stencilTest ? t.enable(t.STENCIL_TEST) : t.disable(t.STENCIL_TEST), g.depthTest ? t.enable(t.DEPTH_TEST) : t.disable(t.DEPTH_TEST), g.blend ? t.enable(t.BLEND) : t.disable(t.BLEND), g.cullFace ? t.enable(t.CULL_FACE) : t.disable(t.CULL_FACE), g.scissorTest ? t.enable(t.SCISSOR_TEST) : t.disable(t.SCISSOR_TEST), t.scissor(g.scissorBox[0], g.scissorBox[1], g.scissorBox[2], g.scissorBox[3]), R(g.VAO);
     }
-    function saveWebGLState() {
+    function Ee() {
       return {
-        VAO: gl.getParameter(gl.VERTEX_ARRAY_BINDING),
-        cullFace: gl.getParameter(gl.CULL_FACE),
-        blend: gl.getParameter(gl.BLEND),
-        depthTest: gl.getParameter(gl.DEPTH_TEST),
-        stencilTest: gl.getParameter(gl.STENCIL_TEST),
-        scissorTest: gl.getParameter(gl.SCISSOR_TEST),
-        viewport: gl.getParameter(gl.VIEWPORT),
-        framebufferBinding: gl.getParameter(gl.FRAMEBUFFER_BINDING),
-        renderbufferBinding: gl.getParameter(gl.RENDERBUFFER_BINDING),
-        program: gl.getParameter(gl.CURRENT_PROGRAM),
-        activeTexture: gl.getParameter(gl.ACTIVE_TEXTURE),
-        textureBinding: gl.getParameter(gl.TEXTURE_BINDING_2D)
+        VAO: t.getParameter(t.VERTEX_ARRAY_BINDING),
+        cullFace: t.getParameter(t.CULL_FACE),
+        blend: t.getParameter(t.BLEND),
+        depthTest: t.getParameter(t.DEPTH_TEST),
+        stencilTest: t.getParameter(t.STENCIL_TEST),
+        scissorTest: t.getParameter(t.SCISSOR_TEST),
+        viewport: t.getParameter(t.VIEWPORT),
+        framebufferBinding: t.getParameter(t.FRAMEBUFFER_BINDING),
+        renderbufferBinding: t.getParameter(t.RENDERBUFFER_BINDING),
+        program: t.getParameter(t.CURRENT_PROGRAM),
+        activeTexture: t.getParameter(t.ACTIVE_TEXTURE),
+        textureBinding: t.getParameter(t.TEXTURE_BINDING_2D),
+        scissorBox: new Int32Array(t.getParameter(t.SCISSOR_BOX))
       };
     }
-    function setupRenderState() {
-      gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-      gl.useProgram(program);
-      glBindVertexArray(vao);
-      gl.activeTexture(gl.TEXTURE0);
-      gl.bindTexture(gl.TEXTURE_2D, texture);
-      gl.disable(gl.BLEND);
-      gl.disable(gl.CULL_FACE);
-      gl.disable(gl.DEPTH_TEST);
-      gl.disable(gl.STENCIL_TEST);
-      gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
+    function Te() {
+      t.bindFramebuffer(t.FRAMEBUFFER, null), t.useProgram(K), R(D), t.activeTexture(t.TEXTURE0), t.bindTexture(t.TEXTURE_2D, u), t.disable(t.BLEND), t.disable(t.CULL_FACE), t.disable(t.DEPTH_TEST), t.disable(t.STENCIL_TEST), t.viewport(0, 0, t.drawingBufferWidth, t.drawingBufferHeight);
     }
-    function renderSubPixelArrangement() {
-      gl.uniform1i(u_viewType, 0);
-      gl.drawArrays(gl.TRIANGLES, 0, 6);
+    function $e() {
+      t.uniform1i(z, 0), t.drawArrays(t.TRIANGLES, 0, 6);
     }
-    function updateLookingGlassCanvas() {
-      if (!cfg.lkgCanvas || !cfg.appCanvas) {
+    function Be() {
+      if (!o.lkgCanvas || !o.appCanvas) {
         console.warn("Looking Glass Canvas is not defined");
         return;
       }
-      lkgCtx == null ? void 0 : lkgCtx.clearRect(0, 0, cfg.lkgCanvas.width, cfg.lkgCanvas.height);
-      lkgCtx == null ? void 0 : lkgCtx.drawImage(cfg.appCanvas, 0, 0, cfg.framebufferWidth, cfg.framebufferHeight, 0, 0, cfg.calibration.screenW.value, cfg.calibration.screenH.value);
+      h == null || h.clearRect(0, 0, o.lkgCanvas.width, o.lkgCanvas.height), h == null || h.drawImage(o.appCanvas, 0, 0, o.framebufferWidth, o.framebufferHeight, 0, 0, o.calibration.screenW.value, o.calibration.screenH.value);
     }
-    function renderInlineView() {
-      if (!cfg.appCanvas) {
+    function Xe() {
+      if (!o.appCanvas) {
         console.warn("Looking Glass Canvas is not defined");
         return;
       }
-      if (cfg.inlineView !== 0) {
-        if (cfg.capturing && cfg.appCanvas.width !== cfg.framebufferWidth) {
-          cfg.appCanvas.width = cfg.framebufferWidth;
-          cfg.appCanvas.height = cfg.framebufferHeight;
-          gl.viewport(0, 0, cfg.framebufferHeight, cfg.framebufferWidth);
-        }
-        gl.uniform1i(u_viewType, cfg.inlineView);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-      }
+      o.inlineView !== 0 && (o.capturing && o.appCanvas.width !== o.framebufferWidth && (o.appCanvas.width = o.framebufferWidth, o.appCanvas.height = o.framebufferHeight, t.viewport(0, 0, o.framebufferHeight, o.framebufferWidth)), t.uniform1i(z, o.inlineView), t.drawArrays(t.TRIANGLES, 0, 6));
     }
     window.addEventListener("unload", () => {
-      if (cfg.popup)
-        cfg.popup.close();
-      cfg.popup = null;
-    });
-    this[PRIVATE] = {
-      LookingGlassEnabled: false,
-      framebuffer,
-      clearFramebuffer,
-      blitTextureToDefaultFramebufferIfNeeded,
-      moveCanvasToWindow
+      o.popup && o.popup.close(), o.popup = null;
+    }), this[Qe] = {
+      LookingGlassEnabled: !1,
+      framebuffer: y,
+      clearFramebuffer: J,
+      blitTextureToDefaultFramebufferIfNeeded: H,
+      moveCanvasToWindow: as
     };
   }
   get framebuffer() {
-    return this[PRIVATE].LookingGlassEnabled ? this[PRIVATE].framebuffer : null;
+    return this[Qe].LookingGlassEnabled ? this[Qe].framebuffer : null;
   }
   get framebufferWidth() {
-    return getLookingGlassConfig().framebufferWidth;
+    return Pe().framebufferWidth;
   }
   get framebufferHeight() {
-    return getLookingGlassConfig().framebufferHeight;
+    return Pe().framebufferHeight;
   }
 }
-const _LookingGlassXRDevice = class extends XRDevice {
-  constructor(global2) {
-    super(global2);
-    this.sessions = /* @__PURE__ */ new Map();
-    this.viewSpaces = [];
-    this.basePoseMatrix = create();
-    this.inlineProjectionMatrix = create();
-    this.inlineInverseViewMatrix = create();
-    this.LookingGlassProjectionMatrices = [];
-    this.LookingGlassInverseViewMatrices = [];
-    this.captureScreenshot = false;
-    this.screenshotCallback = null;
-    if (!_LookingGlassXRDevice.instance) {
-      _LookingGlassXRDevice.instance = this;
-    }
+const xt = class extends Ai {
+  constructor(e) {
+    super(e), this.sessions = /* @__PURE__ */ new Map(), this.viewSpaces = [], this.basePoseMatrix = ze(), this.inlineProjectionMatrix = ze(), this.inlineInverseViewMatrix = ze(), this.LookingGlassProjectionMatrices = [], this.LookingGlassInverseViewMatrices = [], this.captureScreenshot = !1, this.screenshotCallback = null, xt.instance || (xt.instance = this);
   }
   static getInstance() {
-    return _LookingGlassXRDevice.instance;
+    return xt.instance;
   }
-  onBaseLayerSet(sessionId, layer) {
-    const session = this.sessions.get(sessionId);
-    session.baseLayer = layer;
-    const cfg = getLookingGlassConfig();
-    const baseLayerPrivate = layer[PRIVATE];
-    baseLayerPrivate.LookingGlassEnabled = session.immersive;
-    if (session.immersive) {
-      cfg.XRSession = this.sessions.get(sessionId);
-      if (cfg.popup == null) {
-        baseLayerPrivate.moveCanvasToWindow(true, () => {
-          this.endSession(sessionId);
-        });
-      } else {
-        console.warn("attempted to assign baselayer twice?");
-      }
-    }
+  onBaseLayerSet(e, t) {
+    const s = this.sessions.get(e);
+    s.baseLayer = t;
+    const o = Pe(), h = t[Qe];
+    h.LookingGlassEnabled = s.immersive, s.immersive && (o.XRSession = this.sessions.get(e), o.popup == null ? h.moveCanvasToWindow(!0, () => {
+      this.endSession(e);
+    }) : console.warn("attempted to assign baselayer twice?"));
   }
-  isSessionSupported(mode) {
-    return mode === "inline" || mode === "immersive-vr";
+  isSessionSupported(e) {
+    return e === "inline" || e === "immersive-vr";
   }
-  isFeatureSupported(featureDescriptor) {
-    switch (featureDescriptor) {
+  isFeatureSupported(e) {
+    switch (e) {
       case "viewer":
-        return true;
+        return !0;
       case "local":
-        return true;
+        return !0;
       case "local-floor":
-        return true;
+        return !0;
       case "bounded-floor":
-        return false;
+        return !1;
       case "unbounded":
-        return false;
+        return !1;
       default:
-        console.warn("LookingGlassXRDevice.isFeatureSupported: feature not understood:", featureDescriptor);
-        return false;
+        return console.warn("LookingGlassXRDevice.isFeatureSupported: feature not understood:", e), !1;
     }
   }
-  async requestSession(mode, enabledFeatures) {
-    if (!this.isSessionSupported(mode)) {
+  async requestSession(e, t) {
+    if (!this.isSessionSupported(e))
       return Promise.reject();
-    }
-    const immersive = mode !== "inline";
-    const session = new Session(mode, enabledFeatures);
-    this.sessions.set(session.id, session);
-    if (immersive) {
-      this.dispatchEvent("@@webxr-polyfill/vr-present-start", session.id);
-    }
-    return Promise.resolve(session.id);
+    const s = e !== "inline", o = new ds(e, t);
+    return this.sessions.set(o.id, o), s && this.dispatchEvent("@@webxr-polyfill/vr-present-start", o.id), Promise.resolve(o.id);
   }
-  requestAnimationFrame(callback) {
-    return this.global.requestAnimationFrame(callback);
+  requestAnimationFrame(e) {
+    return this.global.requestAnimationFrame(e);
   }
-  cancelAnimationFrame(handle) {
-    this.global.cancelAnimationFrame(handle);
+  cancelAnimationFrame(e) {
+    this.global.cancelAnimationFrame(e);
   }
-  onFrameStart(sessionId, renderState) {
-    const session = this.sessions.get(sessionId);
-    const cfg = getLookingGlassConfig();
-    if (session.immersive) {
-      const tanHalfFovy = Math.tan(0.5 * cfg.fovy);
-      const focalDistance = 0.5 * cfg.targetDiam / tanHalfFovy;
-      const clipPlaneBias = focalDistance - cfg.targetDiam;
-      const mPose = this.basePoseMatrix;
-      fromTranslation(mPose, [cfg.targetX, cfg.targetY, cfg.targetZ]);
-      rotate(mPose, mPose, cfg.trackballX, [0, 1, 0]);
-      rotate(mPose, mPose, -cfg.trackballY, [1, 0, 0]);
-      translate(mPose, mPose, [0, 0, focalDistance]);
-      for (let i = 0; i < cfg.numViews; ++i) {
-        const fractionAlongViewCone = (i + 0.5) / cfg.numViews - 0.5;
-        const tanAngleToThisCamera = Math.tan(cfg.viewCone * fractionAlongViewCone);
-        const offsetAlongBaseline = focalDistance * tanAngleToThisCamera;
-        const mView = this.LookingGlassInverseViewMatrices[i] = this.LookingGlassInverseViewMatrices[i] || create();
-        translate(mView, mPose, [offsetAlongBaseline, 0, 0]);
-        invert(mView, mView);
-        const n = Math.max(clipPlaneBias + renderState.depthNear, 0.01);
-        const f = clipPlaneBias + renderState.depthFar;
-        const halfYRange = n * tanHalfFovy;
-        const t = halfYRange, b = -halfYRange;
-        const midpointX = n * -tanAngleToThisCamera;
-        const halfXRange = cfg.aspect * halfYRange;
-        const r = midpointX + halfXRange, l = midpointX - halfXRange;
-        const mProj = this.LookingGlassProjectionMatrices[i] = this.LookingGlassProjectionMatrices[i] || create();
-        set(mProj, 2 * n / (r - l), 0, 0, 0, 0, 2 * n / (t - b), 0, 0, (r + l) / (r - l), (t + b) / (t - b), -(f + n) / (f - n), -1, 0, 0, -2 * f * n / (f - n), 0);
+  onFrameStart(e, t) {
+    const s = this.sessions.get(e), o = Pe();
+    if (s.immersive) {
+      const h = Math.tan(0.5 * o.fovy), d = 0.5 * o.targetDiam / h, u = d - o.targetDiam, m = this.basePoseMatrix;
+      ti(m, [o.targetX, o.targetY, o.targetZ]), Ui(m, m, o.trackballX, [0, 1, 0]), Ui(m, m, -o.trackballY, [1, 0, 0]), Vi(m, m, [0, 0, d]);
+      for (let y = 0; y < o.numViews; ++y) {
+        const _ = (y + 0.5) / o.numViews - 0.5, x = Math.tan(o.viewCone * _), R = d * x, F = this.LookingGlassInverseViewMatrices[y] = this.LookingGlassInverseViewMatrices[y] || ze();
+        Vi(F, m, [R, 0, 0]), Gi(F, F);
+        const C = Math.max(u + t.depthNear, 0.01), B = u + t.depthFar, N = C * h, Q = N, P = -N, I = C * -x, G = o.aspect * N, O = I + G, W = I - G, z = this.LookingGlassProjectionMatrices[y] = this.LookingGlassProjectionMatrices[y] || ze();
+        ts(z, 2 * C / (O - W), 0, 0, 0, 0, 2 * C / (Q - P), 0, 0, (O + W) / (O - W), (Q + P) / (Q - P), -(B + C) / (B - C), -1, 0, 0, -2 * B * C / (B - C), 0);
       }
-      const baseLayerPrivate = session.baseLayer[PRIVATE];
-      baseLayerPrivate.clearFramebuffer();
+      s.baseLayer[Qe].clearFramebuffer();
     } else {
-      const gl = session.baseLayer.context;
-      const aspect = gl.drawingBufferWidth / gl.drawingBufferHeight;
-      perspective(this.inlineProjectionMatrix, renderState.inlineVerticalFieldOfView, aspect, renderState.depthNear, renderState.depthFar);
-      fromTranslation(this.basePoseMatrix, [0, DefaultEyeHeight, 0]);
-      invert(this.inlineInverseViewMatrix, this.basePoseMatrix);
+      const h = s.baseLayer.context, d = h.drawingBufferWidth / h.drawingBufferHeight;
+      is(this.inlineProjectionMatrix, t.inlineVerticalFieldOfView, d, t.depthNear, t.depthFar), ti(this.basePoseMatrix, [0, ai, 0]), Gi(this.inlineInverseViewMatrix, this.basePoseMatrix);
     }
   }
-  onFrameEnd(sessionId) {
-    const session = this.sessions.get(sessionId);
-    session.baseLayer[PRIVATE].blitTextureToDefaultFramebufferIfNeeded();
-    if (this.captureScreenshot && this.screenshotCallback) {
-      this.screenshotCallback();
-      this.captureScreenshot = false;
-    }
+  onFrameEnd(e) {
+    this.sessions.get(e).baseLayer[Qe].blitTextureToDefaultFramebufferIfNeeded(), this.captureScreenshot && this.screenshotCallback && (this.screenshotCallback(), this.captureScreenshot = !1);
   }
-  async requestFrameOfReferenceTransform(type, options) {
-    const matrix = create();
-    switch (type) {
+  async requestFrameOfReferenceTransform(e, t) {
+    const s = ze();
+    switch (e) {
       case "viewer":
       case "local":
-        fromTranslation(matrix, [0, -DefaultEyeHeight, 0]);
-        return matrix;
+        return ti(s, [0, -ai, 0]), s;
       case "local-floor":
-        return matrix;
+        return s;
       default:
         throw new Error("XRReferenceSpaceType not understood");
     }
   }
-  endSession(sessionId) {
-    const session = this.sessions.get(sessionId);
-    if (session.immersive && session.baseLayer) {
-      session.baseLayer[PRIVATE].moveCanvasToWindow(false);
-      this.dispatchEvent("@@webxr-polyfill/vr-present-end", sessionId);
-    }
-    session.ended = true;
+  endSession(e) {
+    const t = this.sessions.get(e);
+    t.immersive && t.baseLayer && (t.baseLayer[Qe].moveCanvasToWindow(!1), this.dispatchEvent("@@webxr-polyfill/vr-present-end", e)), t.ended = !0;
   }
-  doesSessionSupportReferenceSpace(sessionId, type) {
-    const session = this.sessions.get(sessionId);
-    if (session.ended) {
-      return false;
-    }
-    return session.enabledFeatures.has(type);
+  doesSessionSupportReferenceSpace(e, t) {
+    const s = this.sessions.get(e);
+    return s.ended ? !1 : s.enabledFeatures.has(t);
   }
-  getViewSpaces(mode) {
-    if (mode === "immersive-vr") {
-      const cfg = getLookingGlassConfig();
-      for (let i = this.viewSpaces.length; i < cfg.numViews; ++i) {
-        this.viewSpaces[i] = new LookingGlassXRSpace(i);
-      }
-      this.viewSpaces.length = cfg.numViews;
-      return this.viewSpaces;
+  getViewSpaces(e) {
+    if (e === "immersive-vr") {
+      const t = Pe();
+      for (let s = this.viewSpaces.length; s < t.numViews; ++s)
+        this.viewSpaces[s] = new As(s);
+      return this.viewSpaces.length = t.numViews, this.viewSpaces;
     }
-    return void 0;
   }
-  getViewport(sessionId, eye, layer, target, viewIndex) {
-    if (viewIndex === void 0) {
-      const session = this.sessions.get(sessionId);
-      const gl = session.baseLayer.context;
-      target.x = 0;
-      target.y = 0;
-      target.width = gl.drawingBufferWidth;
-      target.height = gl.drawingBufferHeight;
+  getViewport(e, t, s, o, h) {
+    if (h === void 0) {
+      const u = this.sessions.get(e).baseLayer.context;
+      o.x = 0, o.y = 0, o.width = u.drawingBufferWidth, o.height = u.drawingBufferHeight;
     } else {
-      const cfg = getLookingGlassConfig();
-      const col = viewIndex % cfg.quiltWidth;
-      const row = Math.floor(viewIndex / cfg.quiltWidth);
-      target.x = cfg.framebufferWidth / cfg.quiltWidth * col;
-      target.y = cfg.framebufferHeight / cfg.quiltHeight * row;
-      target.width = cfg.framebufferWidth / cfg.quiltWidth;
-      target.height = cfg.framebufferHeight / cfg.quiltHeight;
+      const d = Pe(), u = h % d.quiltWidth, m = Math.floor(h / d.quiltWidth);
+      o.x = d.framebufferWidth / d.quiltWidth * u, o.y = d.framebufferHeight / d.quiltHeight * m, o.width = d.framebufferWidth / d.quiltWidth, o.height = d.framebufferHeight / d.quiltHeight;
     }
-    return true;
+    return !0;
   }
-  getProjectionMatrix(eye, viewIndex) {
-    if (viewIndex === void 0) {
-      return this.inlineProjectionMatrix;
-    }
-    return this.LookingGlassProjectionMatrices[viewIndex] || create();
+  getProjectionMatrix(e, t) {
+    return t === void 0 ? this.inlineProjectionMatrix : this.LookingGlassProjectionMatrices[t] || ze();
   }
   getBasePoseMatrix() {
     return this.basePoseMatrix;
@@ -8167,140 +4435,106 @@ const _LookingGlassXRDevice = class extends XRDevice {
   getBaseViewMatrix() {
     return this.inlineInverseViewMatrix;
   }
-  _getViewMatrixByIndex(viewIndex) {
-    return this.LookingGlassInverseViewMatrices[viewIndex] = this.LookingGlassInverseViewMatrices[viewIndex] || create();
+  _getViewMatrixByIndex(e) {
+    return this.LookingGlassInverseViewMatrices[e] = this.LookingGlassInverseViewMatrices[e] || ze();
   }
   getInputSources() {
     return [];
   }
-  getInputPose(inputSource, coordinateSystem, poseType) {
+  getInputPose(e, t, s) {
     return null;
   }
   onWindowResize() {
   }
 };
-let LookingGlassXRDevice = _LookingGlassXRDevice;
-__publicField(LookingGlassXRDevice, "instance", null);
-let SESSION_ID = 0;
-class Session {
-  constructor(mode, enabledFeatures) {
-    __publicField(this, "mode");
-    __publicField(this, "immersive");
-    __publicField(this, "id");
-    __publicField(this, "baseLayer");
-    __publicField(this, "inlineVerticalFieldOfView");
-    __publicField(this, "ended");
-    __publicField(this, "enabledFeatures");
-    this.mode = mode;
-    this.immersive = mode === "immersive-vr" || mode === "immersive-ar";
-    this.id = ++SESSION_ID;
-    this.baseLayer = null;
-    this.inlineVerticalFieldOfView = Math.PI * 0.5;
-    this.ended = false;
-    this.enabledFeatures = enabledFeatures;
+let Et = xt;
+ye(Et, "instance", null);
+let hs = 0;
+class ds {
+  constructor(e, t) {
+    ye(this, "mode");
+    ye(this, "immersive");
+    ye(this, "id");
+    ye(this, "baseLayer");
+    ye(this, "inlineVerticalFieldOfView");
+    ye(this, "ended");
+    ye(this, "enabledFeatures");
+    this.mode = e, this.immersive = e === "immersive-vr" || e === "immersive-ar", this.id = ++hs, this.baseLayer = null, this.inlineVerticalFieldOfView = Math.PI * 0.5, this.ended = !1, this.enabledFeatures = t;
   }
 }
-class LookingGlassXRSpace extends XRSpace {
-  constructor(viewIndex) {
+class As extends it {
+  constructor(t) {
     super();
-    __publicField(this, "viewIndex");
-    this.viewIndex = viewIndex;
+    ye(this, "viewIndex");
+    this.viewIndex = t;
   }
   get eye() {
     return "none";
   }
-  _onPoseUpdate(device) {
-    this._inverseBaseMatrix = device._getViewMatrixByIndex(this.viewIndex);
+  _onPoseUpdate(t) {
+    this._inverseBaseMatrix = t._getViewMatrixByIndex(this.viewIndex);
   }
 }
-class LookingGlassWebXRPolyfill extends WebXRPolyfill {
-  constructor(cfg) {
+class cr extends Xn {
+  constructor(t) {
     super();
-    __publicField(this, "vrButton");
-    __publicField(this, "device");
-    __publicField(this, "isPresenting", false);
-    updateLookingGlassConfig(cfg);
-    this.loadPolyfill();
+    ye(this, "vrButton");
+    ye(this, "device");
+    ye(this, "isPresenting", !1);
+    Ni(t), this.loadPolyfill();
   }
-  static async init(cfg) {
-    new LookingGlassWebXRPolyfill(cfg);
+  static async init(t) {
+    new cr(t);
   }
   async loadPolyfill() {
-    this.overrideDefaultVRButton();
-    console.warn('Looking Glass WebXR "polyfill" overriding native WebXR API.');
-    for (const className in API) {
-      this.global[className] = API[className];
-    }
-    this.global.XRWebGLLayer = LookingGlassXRWebGLLayer;
-    this.injected = true;
-    this.device = new LookingGlassXRDevice(this.global);
-    this.xr = new XRSystem(Promise.resolve(this.device));
-    Object.defineProperty(this.global.navigator, "xr", {
+    this.overrideDefaultVRButton(), console.warn('Looking Glass WebXR "polyfill" overriding native WebXR API.');
+    for (const t in gt)
+      this.global[t] = gt[t];
+    this.global.XRWebGLLayer = cs, this.injected = !0, this.device = new Et(this.global), this.xr = new Wi(Promise.resolve(this.device)), Object.defineProperty(this.global.navigator, "xr", {
       value: this.xr,
-      configurable: true
+      configurable: !0
     });
   }
   async overrideDefaultVRButton() {
-    this.vrButton = await waitForElement("VRButton");
-    if (this.vrButton && this.device) {
-      this.device.addEventListener("@@webxr-polyfill/vr-present-start", () => {
-        this.isPresenting = true;
-        this.updateVRButtonUI();
-      });
-      this.device.addEventListener("@@webxr-polyfill/vr-present-end", () => {
-        this.isPresenting = false;
-        this.updateVRButtonUI();
-      });
-      this.vrButton.addEventListener("click", (ev) => {
-        this.updateVRButtonUI();
-      });
+    this.vrButton = await us("VRButton"), this.vrButton && this.device ? (this.device.addEventListener("@@webxr-polyfill/vr-present-start", () => {
+      this.isPresenting = !0, this.updateVRButtonUI();
+    }), this.device.addEventListener("@@webxr-polyfill/vr-present-end", () => {
+      this.isPresenting = !1, this.updateVRButtonUI();
+    }), this.vrButton.addEventListener("click", (t) => {
       this.updateVRButtonUI();
-    } else {
-      console.warn("Unable to find VRButton");
-    }
+    }), this.updateVRButtonUI()) : console.warn("Unable to find VRButton");
   }
   async updateVRButtonUI() {
     if (this.vrButton) {
-      await delay(100);
-      if (this.isPresenting) {
-        this.vrButton.innerHTML = "EXIT LOOKING GLASS";
-      } else {
-        this.vrButton.innerHTML = "ENTER LOOKING GLASS";
-      }
-      const width = 220;
-      this.vrButton.style.width = `${width}px`;
-      this.vrButton.style.left = `calc(50% - ${width / 2}px)`;
+      await fs(100), this.isPresenting ? this.vrButton.innerHTML = "EXIT LOOKING GLASS" : this.vrButton.innerHTML = "ENTER LOOKING GLASS";
+      const t = 220;
+      this.vrButton.style.width = `${t}px`, this.vrButton.style.left = `calc(50% - ${t / 2}px)`;
     }
   }
-  update(cfg) {
-    updateLookingGlassConfig(cfg);
+  update(t) {
+    Ni(t);
   }
 }
-async function waitForElement(id) {
-  return new Promise((resolve) => {
-    const observer = new MutationObserver(function(mutations) {
-      mutations.forEach(function(mutation) {
-        mutation.addedNodes.forEach(function(node) {
-          const el = node;
-          if (el.id === id) {
-            resolve(el);
-            observer.disconnect();
-          }
+async function us(i) {
+  return new Promise((e) => {
+    const t = new MutationObserver(function(s) {
+      s.forEach(function(o) {
+        o.addedNodes.forEach(function(h) {
+          const d = h;
+          d.id === i && (e(d), t.disconnect());
         });
       });
     });
-    observer.observe(document.body, { subtree: false, childList: true });
-    setTimeout(() => {
-      observer.disconnect();
-      resolve(null);
+    t.observe(document.body, { subtree: !1, childList: !0 }), setTimeout(() => {
+      t.disconnect(), e(null);
     }, 5e3);
   });
 }
-function delay(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
+function fs(i) {
+  return new Promise((e) => setTimeout(e, i));
 }
-const LookingGlassConfig = getLookingGlassConfig();
+const ms = Pe();
 export {
-  LookingGlassConfig,
-  LookingGlassWebXRPolyfill
+  ms as LookingGlassConfig,
+  cr as LookingGlassWebXRPolyfill
 };

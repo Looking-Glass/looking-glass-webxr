@@ -23,13 +23,24 @@ export default defineConfig(({ mode }) => {
 				https: false,
 			},
 			publicDir: false,
+			resolve: {
+				alias: [
+					{
+						find: "~",
+						replacement: path.resolve(__dirname, "./src"),
+					},
+				],
+			},
 			build: {
-				minify: false,
+				manifest: true,
+				minify: true,
+				reportCompressedSize: true,
 				lib: {
-					entry: resolve(__dirname, "src/LookingGlassWebXRPolyfill.ts"),
+					entry: path.resolve(process.cwd(), "src/index.ts"),
 					name: "Looking Glass WebXR",
 					// the proper extensions will be added
 					fileName: "bundle/webxr",
+					formats: ["es", "cjs"],
 				},
 				emptyOutDir: false,
 				rollupOptions: {
@@ -38,6 +49,7 @@ export default defineConfig(({ mode }) => {
 						// Provide global variables to use in the UMD build
 						// for externalized deps
 					},
+					external: [],
 					// specically fix an issue when bundling the webxr-polyfill library
 					plugins: [
 						...plugins,
@@ -53,13 +65,22 @@ export default defineConfig(({ mode }) => {
 	else if (mode === "build") {
 		return {
 			publicDir: false,
+			resolve: {
+				alias: [
+					{
+						find: "~",
+						replacement: path.resolve(__dirname, "./src"),
+					},
+				],
+			},
 			build: {
 				minify: true,
 				lib: {
-					entry: resolve(__dirname, "src/LookingGlassWebXRPolyfill.ts"),
+					entry: resolve(__dirname, "src/index.ts"),
 					name: "Looking Glass WebXR",
 					// the proper extensions will be added
 					fileName: "webxr",
+					formats: ["es", "cjs"],
 				},
 				emptyOutDir: false,
 				rollupOptions: {

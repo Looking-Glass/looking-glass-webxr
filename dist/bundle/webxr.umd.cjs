@@ -7862,6 +7862,7 @@ host this content on a secure origin for the best user experience.
           cfg.appCanvas.width = cfg.framebufferWidth;
           cfg.appCanvas.height = cfg.framebufferHeight;
         }
+        gl.isEnabled(gl.SCISSOR_TEST);
         const oldState = saveWebGLState();
         setupRenderState();
         renderSubPixelArrangement();
@@ -7900,6 +7901,12 @@ host this content on a secure origin for the best user experience.
         } else {
           gl.disable(gl.CULL_FACE);
         }
+        if (oldState.scissorTest) {
+          gl.enable(gl.SCISSOR_TEST);
+        } else {
+          gl.disable(gl.SCISSOR_TEST);
+        }
+        gl.scissor(oldState.scissorBox[0], oldState.scissorBox[1], oldState.scissorBox[2], oldState.scissorBox[3]);
         glBindVertexArray(oldState.VAO);
       }
       function saveWebGLState() {
@@ -7915,7 +7922,8 @@ host this content on a secure origin for the best user experience.
           renderbufferBinding: gl.getParameter(gl.RENDERBUFFER_BINDING),
           program: gl.getParameter(gl.CURRENT_PROGRAM),
           activeTexture: gl.getParameter(gl.ACTIVE_TEXTURE),
-          textureBinding: gl.getParameter(gl.TEXTURE_BINDING_2D)
+          textureBinding: gl.getParameter(gl.TEXTURE_BINDING_2D),
+          scissorBox: new Int32Array(gl.getParameter(gl.SCISSOR_BOX))
         };
       }
       function setupRenderState() {
