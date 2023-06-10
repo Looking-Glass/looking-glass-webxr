@@ -24,6 +24,7 @@ export default defineConfig(({ mode }) => {
 			},
 			publicDir: false,
 			resolve: {
+				extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mjs'],
 				alias: [
 					{
 						find: "~",
@@ -66,6 +67,7 @@ export default defineConfig(({ mode }) => {
 		return {
 			publicDir: false,
 			resolve: {
+				extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mjs'],
 				alias: [
 					{
 						find: "~",
@@ -92,18 +94,21 @@ export default defineConfig(({ mode }) => {
 						// Provide global variables to use in the UMD build
 						// for externalized deps
 						globals: {
-							"@lookingglass/webxr-polyfill/src/WebXRPolyfill": "@lookingglass/webxr-polyfill/src/WebXRPolyfill",
-							"@lookingglass/webxr-polyfill/src/api/index": "@lookingglass/webxr-polyfill/src/api/index",
-							"@lookingglass/webxr-polyfill/src/api/XRSpace": "@lookingglass/webxr-polyfill/src/api/XRSpace",
-							"@lookingglass/webxr-polyfill/src/api/XRSystem": "@lookingglass/webxr-polyfill/src/api/XRSystem",
-							"@lookingglass/webxr-polyfill/src/devices/XRDevice": "@lookingglass/webxr-polyfill/src/devices/XRDevice",
-							"@lookingglass/webxr-polyfill/src/api/XRWebGLLayer": "@lookingglass/webxr-polyfill/src/api/XRWebGLLayer",
+							"@lookingglass/webxr-polyfill/src/WebXRPolyfill": "@lookingglass/webxr-polyfill/src/WebXRPolyfill.js",
+							"@lookingglass/webxr-polyfill/src/api/index": "@lookingglass/webxr-polyfill/src/api/index.js",
+							"@lookingglass/webxr-polyfill/src/api/XRSpace": "@lookingglass/webxr-polyfill/src/api/XRSpace.js",
+							"@lookingglass/webxr-polyfill/src/api/XRSystem": "@lookingglass/webxr-polyfill/src/api/XRSystem.js",
+							"@lookingglass/webxr-polyfill/src/devices/XRDevice": "@lookingglass/webxr-polyfill/src/devices/XRDevice.js",
+							"@lookingglass/webxr-polyfill/src/api/XRWebGLLayer": "@lookingglass/webxr-polyfill/src/api/XRWebGLLayer.js",
 							"gl-matrix": "glMatrix",
 							"holoplay-core": "holoPlayCore",
 							"holoplay-core/dist/holoplaycore.module.js": "holoPlayCore",
 						},
 					},
-					plugins,
+					plugins: [
+						...plugins,
+						addJsExtension(),
+					],
 				},
 			},
 		}
@@ -113,3 +118,23 @@ export default defineConfig(({ mode }) => {
 		console.log("you didn't pass a build argument in, please make sure the package.json file is configured properly")
 	}
 })
+
+
+function addJsExtension() {
+	return {
+	  name: 'add-js-extension',
+	  generateBundle(options, bundle) {
+		for (const fileName in bundle) {
+		  const file = bundle[fileName];
+		  if (file.type === 'chunk') {
+			file.code = file.code.replace(/from\s+['"]([^'"]+)['"]/g, (match, moduleId) => {
+			  if (!moduleId.startsWith('.') && !moduleId.endsWith('.js')) {
+				return `from '${moduleId}.js'`;
+			  }
+			  return match;
+			});
+		  }
+		}
+	  }
+	}
+  }

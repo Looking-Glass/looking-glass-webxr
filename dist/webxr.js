@@ -1,15 +1,15 @@
 var ce = Object.defineProperty;
 var ue = (n, a, e) => a in n ? ce(n, a, { enumerable: !0, configurable: !0, writable: !0, value: e }) : n[a] = e;
 var R = (n, a, e) => (ue(n, typeof a != "symbol" ? a + "" : a, e), e);
-import q from "@lookingglass/webxr-polyfill/src/api/index";
-import de from "@lookingglass/webxr-polyfill/src/api/XRSystem";
-import he from "@lookingglass/webxr-polyfill/src/WebXRPolyfill";
-import * as fe from "holoplay-core";
-import { Shader as W } from "holoplay-core";
-import pe from "@lookingglass/webxr-polyfill/src/devices/XRDevice";
-import me from "@lookingglass/webxr-polyfill/src/api/XRSpace";
-import { mat4 as E } from "gl-matrix";
-import be, { PRIVATE as ve } from "@lookingglass/webxr-polyfill/src/api/XRWebGLLayer";
+import q from '@lookingglass/webxr-polyfill/src/api/index.js';
+import de from '@lookingglass/webxr-polyfill/src/api/XRSystem.js';
+import he from '@lookingglass/webxr-polyfill/src/WebXRPolyfill.js';
+import * as fe from 'holoplay-core.js';
+import { Shader as W } from 'holoplay-core.js';
+import pe from '@lookingglass/webxr-polyfill/src/devices/XRDevice.js';
+import me from '@lookingglass/webxr-polyfill/src/api/XRSpace.js';
+import { mat4 as E } from 'gl-matrix.js';
+import be, { PRIVATE as ve } from '@lookingglass/webxr-polyfill/src/api/XRWebGLLayer.js';
 const H = 1.6;
 var O;
 (function(n) {
