@@ -128,8 +128,13 @@ function addJsExtension() {
 		  const file = bundle[fileName];
 		  if (file.type === 'chunk') {
 			file.code = file.code.replace(/from\s+['"]([^'"]+)['"]/g, (match, moduleId) => {
-			  if (!moduleId.startsWith('.') && !moduleId.endsWith('.js')) {
-				return `from '${moduleId}.js'`;
+			  if (!moduleId.endsWith('.js')
+					&& (
+						moduleId.startsWith('.')
+						|| moduleId.startsWith('@lookingglass') && moduleId.split('/').length > 2
+					)
+				) {
+					return `from '${moduleId}.js'`;
 			  }
 			  return match;
 			});
