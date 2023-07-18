@@ -4,8 +4,8 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/webxr.js",
-  "module": "./dist/webxr.cjs",
+  "main": "./dist/webxr.cjs",
+  "module": "./dist/webxr.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
