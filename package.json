@@ -22,9 +22,9 @@
     "url": "git+https://github.com/Looking-Glass/looking-glass-webxr.git"
   },
   "scripts": {
-    "dev": "vite build --mode dev && vite --mode dev --host",
+    "dev": "vite --mode react",
     "build": "vite build --mode build",
-    "production": "vite build --mode dev && vite build --mode build"
+    "build:react": "vite build --mode react"
   },
   "devDependencies": {
     "@babylonjs/core": "^5.43.2",
@@ -32,11 +32,18 @@
     "@babylonjs/materials": "^5.43.2",
     "@rollup/plugin-replace": "^5.0.1",
     "@rollup/plugin-typescript": "^9.0.2",
+    "@types/node": "^18.11.2",
+    "@types/react": "^18.0.28",
+    "@types/react-dom": "^18.0.11",
+    "@types/webxr": "^0.5.2",
+    "@vitejs/plugin-react": "^4.0.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "rollup-plugin-typescript-paths": "^1.4.0",
     "three": "^0.146.0",
     "tslib": "^2.4.1",
     "typescript": "^4.8.4",
-    "vite": "^3.1.2",
+    "vite": "^4.2.0",
     "webgl-strict-types": "^1.0.5"
   },
   "dependencies": {

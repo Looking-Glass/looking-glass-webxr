@@ -1,21 +1,34 @@
 {
 	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"@library/*": ["src/library/*"]
+		},
 		"target": "ESNext",
-		"useDefineForClassFields": true,
+		"lib": ["DOM", "DOM.Iterable", "ESNext"],
 		"module": "ESNext",
-		"lib": ["ESNext", "DOM"],
-		"moduleResolution": "Node",
-		"strict": true,
-		"resolveJsonModule": true,
-		"isolatedModules": false,
+		"skipLibCheck": true,
+		"types": ["vite/client", "node"],
+		"allowJs": false,
 		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+		"forceConsistentCasingInFileNames": true,
+		"moduleResolution": "Node",
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"strict": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noFallthroughCasesInSwitch": true,
+		"outDir": "./dist",
+		"rootDir": "./src",
+		"jsx": "react-jsx",
+		"useDefineForClassFields": true,
 		"noEmit": false,
 		"noImplicitAny": false,
-		"noUnusedLocals": false,
-		"noUnusedParameters": true,
 		"noImplicitReturns": true,
-		"skipLibCheck": true,
-		"allowJs": true
+	
 	},
-	"include": ["src", "src/index.d.ts","node_modules/webgl-strict-types/index.d.ts"]
+	"include": ["src", "src/index.d.ts","node_modules/webgl-strict-types/index.d.ts"],
+	"exclude": ["node_modules"]
 }

@@ -3,6 +3,8 @@ import typescript from "@rollup/plugin-typescript"
 import path, { resolve } from "path"
 import { typescriptPaths } from "rollup-plugin-typescript-paths"
 import { defineConfig } from "vite"
+import react from "@vitejs/plugin-react"
+
 const plugins = [
 	typescriptPaths({
 		preserveExtensions: true,
@@ -15,55 +17,8 @@ const plugins = [
 ]
 
 export default defineConfig(({ mode }) => {
-	// if dev, we want to bundle the dependencies into the webXR library so it can be used in script tags.
-	if (mode === "dev") {
-		return {
-			server: {
-				port: 5173,
-				https: false,
-			},
-			publicDir: false,
-			resolve: {
-				extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mjs'],
-				alias: [
-					{
-						find: "~",
-						replacement: path.resolve(__dirname, "./src"),
-					},
-				],
-			},
-			build: {
-				manifest: true,
-				minify: true,
-				reportCompressedSize: true,
-				lib: {
-					entry: path.resolve(process.cwd(), "src/index.ts"),
-					name: "Looking Glass WebXR",
-					// the proper extensions will be added
-					fileName: "bundle/webxr",
-					formats: ["es", "cjs"],
-				},
-				emptyOutDir: false,
-				rollupOptions: {
-					output: {
-						sourcemapExcludeSources: true,
-						// Provide global variables to use in the UMD build
-						// for externalized deps
-					},
-					external: [],
-					// specically fix an issue when bundling the webxr-polyfill library
-					plugins: [
-						...plugins,
-						replace({
-							"process.env.NODE_ENV": JSON.stringify("production"),
-						}),
-					],
-				},
-			},
-		}
-	}
-	// if build, build the normal non-bundled version of the library. This is the version installed from npm
-	else if (mode === "build") {
+	// build the webXR library
+	if (mode === "library") {
 		return {
 			publicDir: false,
 			resolve: {
@@ -110,6 +65,81 @@ export default defineConfig(({ mode }) => {
 						addJsExtension(),
 					],
 				},
+			},
+		}
+	}
+	// bundle the webXR library and its dependencies
+	else if (mode === "bundle") {
+		return {
+			server: {
+				port: 5173,
+				https: false,
+			},
+			publicDir: false,
+			resolve: {
+				extensions: ['.js', '.jsx', '.ts', '.tsx', '.json', '.mjs'],
+				alias: [
+					{
+						find: "~",
+						replacement: path.resolve(__dirname, "./src"),
+					},
+				],
+			},
+			build: {
+				manifest: true,
+				minify: true,
+				reportCompressedSize: true,
+				lib: {
+					entry: path.resolve(process.cwd(), "src/index.ts"),
+					name: "Looking Glass WebXR",
+					// the proper extensions will be added
+					fileName: "bundle/webxr",
+					formats: ["es", "cjs"],
+				},
+				emptyOutDir: false,
+				rollupOptions: {
+					output: {
+						sourcemapExcludeSources: true,
+						// Provide global variables to use in the UMD build
+						// for externalized deps
+					},
+					external: [],
+					// specically fix an issue when bundling the webxr-polyfill library
+					plugins: [
+						...plugins,
+						replace({
+							"process.env.NODE_ENV": JSON.stringify("production"),
+						}),
+					],
+				},
+			},
+		}
+	}
+	// build a react app
+	else if (mode === "react") {
+		return {
+			build: {
+				outDir: "app",
+			},
+			plugins: [react()],
+			resolve: {
+				alias: {
+					"@library": path.resolve(__dirname, "./src/library"),
+				},
+			},
+			rollupOptions: {
+				external: [],
+				plugins: [
+					typescriptPaths({
+						preserveExtensions: true,
+					}),
+					typescript({
+						tsconfig: path.resolve(__dirname, "src/react-app/tsconfig.json"),
+						sourceMap: false,
+						declaration: true,
+						outDir: "app",
+					}),
+				],
 			},
 		}
 	}

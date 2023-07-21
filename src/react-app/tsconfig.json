@@ -1,0 +1,12 @@
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		"composite": true,
+		"jsx": "react-jsx",
+		"outDir": "../../app",
+		"allowImportingTsExtensions": true,
+		"noEmit": true,
+		
+	},
+	"include": ["**/*.ts", "**/*.tsx", "../library/**/*.ts", "../index.d.ts", ]
+}
