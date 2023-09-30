@@ -1,7 +1,7 @@
 {
-  "src/index.ts": {
+  "src/library/index.ts": {
     "file": "bundle/webxr.cjs",
-    "src": "src/index.ts",
-    "isEntry": true
+    "isEntry": true,
+    "src": "src/library/index.ts"
   }
 }

@@ -13,7 +13,7 @@
       "require": "./dist/webxr.cjs"
     }
   },
-  "version": "0.4.0-alpha.9",
+  "version": "0.4.1-alpha",
   "license": "Apache-2.0",
   "private": false,
   "description": "Official WebXR implementation for Looking Glass Holographic Displays.",
@@ -23,7 +23,7 @@
   },
   "scripts": {
     "dev": "vite --mode react",
-    "build": "vite build --mode build",
+    "library": "vite build --mode library && node ./post-build.js && vite build --mode bundle",
     "build:react": "vite build --mode react"
   },
   "devDependencies": {

@@ -12,11 +12,19 @@
 				display: block;
 			}
 		</style>
+		<script type="importmap">
+		{
+			"imports": {
+			"three": "https://unpkg.com/three@0.157.0/build/three.module.js",
+			"three/addons/": "https://unpkg.com/three@0.157.0/examples/jsm/"
+			}
+		}
+		</script>
 	</head>
 	<body>
 		<script type="module">
 			import * as THREE from "three"
-			import { VRButton } from "three/examples/jsm/webxr/VRButton.js"
+			import { VRButton } from "three/addons/webxr/VRButton.js"
 			import { LookingGlassWebXRPolyfill } from "../dist/bundle/webxr.js"
 
 			LookingGlassWebXRPolyfill.init({
@@ -42,7 +50,6 @@
 
 			const renderer = new THREE.WebGLRenderer({ antialias: true })
 			document.body.append(renderer.domElement)
-			console.log("I'm enabling XR")
 
 			setTimeout(function () {
 				renderer.xr.enabled = true

@@ -95,7 +95,7 @@
 			// add a button element and have it call a function to start an XR session
 			const button = document.createElement('button')
 			button.className = "xrbutton"
-			button.textContent = 'ENTER LOOKING GLASS'
+			button.textContent = 'CAST TO LOOKING GLASS'
 			app?.appendChild(button)
 			button.addEventListener('click', async () => {
 				const xrHelper = await WebXRExperienceHelper.CreateAsync(scene);

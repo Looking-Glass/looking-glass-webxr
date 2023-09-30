@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import * as THREE from "three"
 import { VRButton } from "three/examples/jsm/webxr/VRButton.js"
 import { LookingGlassWebXRPolyfill } from "@library/index"
@@ -6,19 +6,10 @@ import { LookingGlassWebXRPolyfill } from "@library/index"
 function ThreeScene() {
 	const mount = useRef<HTMLDivElement | null>(null)
 	const vrButtonContainer = useRef<HTMLDivElement | null>(null)
+	const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null)
 
 	useEffect(() => {
 		if (!mount.current && vrButtonContainer.current) return
-		// Initialize
-		LookingGlassWebXRPolyfill.init({
-			tileHeight: 512,
-			numViews: 45,
-			targetY: 1,
-			targetZ: 0,
-			targetDiam: 3,
-			fovy: (14 * Math.PI) / 180,
-		})
-
 		const scene = new THREE.Scene()
 
 		const cube = new THREE.Mesh(new THREE.BoxGeometry(2, 0.1, 0.1), new THREE.MeshStandardMaterial({ color: "red" }))
@@ -31,18 +22,16 @@ function ThreeScene() {
 		directionalLight.position.set(3, 3, 3)
 		scene.add(directionalLight)
 
-		const renderer = new THREE.WebGLRenderer({ antialias: true })
+		setRenderer(new THREE.WebGLRenderer({ antialias: true }))
 		renderer.setSize(window.innerWidth, window.innerHeight)
 
 		// The actual mount to the DOM
 		mount.current?.appendChild(renderer.domElement)
 
-		const vrbutton = VRButton.createButton(renderer.current)
-
-		// setTimeout(function () {
-			renderer.xr.enabled = true
-			document.body.append(vrbutton)
-		// }, 2000)
+		const vrbutton = VRButton.createButton(renderer)
+		renderer.xr.enabled = true
+		mount.current?.appendChild(vrbutton)
+	
 
 		const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight)
 		camera.position.set(0, 1.3, 3)
@@ -71,13 +60,26 @@ function ThreeScene() {
 		return () => {
 			mount?.current?.removeChild(renderer.domElement)
 			window.removeEventListener("resize", resize)
-			document.body.removeChild(vrbutton)
+			mount.current?.removeChild(vrbutton)
 		}
 	}, [])
 
+	useEffect(() => {
+		LookingGlassWebXRPolyfill.init({
+			tileHeight: 512,
+			numViews: 45,
+			targetY: 1,
+			targetZ: 0,
+			targetDiam: 3,
+			fovy: (14 * Math.PI) / 180,
+		})
+	}, [])
+
 	return (
-		<div ref={vrButtonContainer} className="threejs-iframe">
-			<div ref={mount} style={{ width: "100%", height: "100%" }}></div>
+		<div className="relative-wrapper">
+			<div ref={vrButtonContainer} className="threejs-iframe">
+				<div ref={mount} style={{ width: "100%", height: "100%" }}></div>
+			</div>
 		</div>
 	)
 }

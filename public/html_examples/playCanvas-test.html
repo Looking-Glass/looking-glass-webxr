@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>PlayCanvas Hello Cube</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no' />
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        canvas {
+            top: 0;
+            left: 0;
+        }
+    </style>
+    <script src='https://code.playcanvas.com/playcanvas-stable.min.js'></script>
+
+        <link rel="stylesheet" href="../index.css" />
+</head>
+<body>
+    <canvas id='application'></canvas>
+    <script>
+        // ensure the SDK is loaded before running any code
+        window.lookingGlassSdkReady = false;
+
+        console.log('this script is initializing');
+        let script = document.createElement('script');
+        script.type = "module";
+        script.innerHTML = "import { LookingGlassWebXRPolyfill, LookingGlassConfig } from '../dist/bundle/webxr.js';  new LookingGlassWebXRPolyfill({tileHeight: 512,numViews: 45,targetY: 0,targetZ: 0,targetDiam: 3,fovy: 14 * (Math.PI / 180),inlineView: 2}); console.log(navigator.xr, 'should be polyfilled'); const app = window.pc ? pc.Application.getApplication() : null; if (app) { app.fire('lookingGlassSdkReady'); } window.lookingGlassSdkReady = true;";
+
+        document.head.appendChild(script);
+        // create a PlayCanvas application
+        const canvas = document.getElementById('application');
+        const app = new pc.Application(canvas);
+
+        const onLookingGlassSdkReady = () => {
+        app.xr._deviceAvailabilityCheck();
+        };
+
+        if (window.lookingGlassSdkReady) {
+            onLookingGlassSdkReady();
+        } else {
+            app.once('lookingGlassSdkReady', onLookingGlassSdkReady);
+        }
+        // create box entity
+        const box = new pc.Entity('cube');
+        box.addComponent('model', {
+            type: 'box'
+        });
+        app.root.addChild(box);
+
+        // create camera entity
+        const camera = new pc.Entity('camera');
+        camera.addComponent('camera', {
+            clearColor: new pc.Color(0.1, 0.1, 0.1)
+        });
+        app.root.addChild(camera);
+        camera.setPosition(0, 0, 3);
+        console.log(camera.camera.startXr, 'camera');
+        // create directional light entity
+        const light = new pc.Entity('light');
+        light.addComponent('light');
+        app.root.addChild(light);
+        light.setEulerAngles(45, 0, 0);
+
+
+         // add a button to start the XR scene
+        const vrButton = document.createElement("button")
+        vrButton.className = "xrbutton"
+        vrButton.textContent = "CAST TO LOOKING GLASS"
+        document.body.appendChild(vrButton)
+
+        // setup scene for XR
+        let XR = app.xr;
+
+        vrButton.addEventListener("click", (ev) => {
+            if (app.xr.active) {
+                camera.camera.endXr();
+            } else {
+                let canvas = app.graphicsDevice.canvas;
+                const gl = canvas.getContext('webgl2');
+                gl.makeXRCompatible();
+                camera.camera.startXr(pc.XRTYPE_VR, pc.XRSPACE_LOCAL, {
+                    callback: function (err) {
+                        if (err) {
+                            console.log(err);
+                        }
+                    }
+                });    
+            }
+        });
+
+        // rotate the box according to the delta time since the last frame
+        app.on('update', dt => box.rotate(10 * dt, 20 * dt, 30 * dt));
+        
+        app.start();
+     
+    </script>
+</body>
+</html>

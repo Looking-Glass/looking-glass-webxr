@@ -10,9 +10,10 @@ const plugins = [
 		preserveExtensions: true,
 	}),
 	typescript({
+		tsconfig: path.resolve(__dirname, "src/library/tsconfig.json"),
 		sourceMap: false,
 		declaration: true,
-		outDir: "dist",
+		outDir: path.resolve(__dirname, "dist"),
 	}),
 ]
 
@@ -31,15 +32,16 @@ export default defineConfig(({ mode }) => {
 				],
 			},
 			build: {
+				manifest: true,
 				minify: true,
+				reportCompressedSize: true,
 				lib: {
-					entry: resolve(__dirname, "src/index.ts"),
+					entry: path.resolve(process.cwd(), "src/library/index.ts"),
 					name: "Looking Glass WebXR",
 					// the proper extensions will be added
 					fileName: "webxr",
 					formats: ["es", "cjs"],
 				},
-				emptyOutDir: false,
 				rollupOptions: {
 					// make sure to externalize deps that shouldn't be bundled
 					// into your library
@@ -61,8 +63,15 @@ export default defineConfig(({ mode }) => {
 						},
 					},
 					plugins: [
-						...plugins,
-						addJsExtension(),
+						typescriptPaths({
+							preserveExtensions: true,
+						}),
+						typescript({
+							tsconfig: path.resolve(__dirname, "src/library/tsconfig.json"),
+							sourceMap: false,
+							declaration: true,
+							outDir: path.resolve(__dirname, "dist"),
+						}),
 					],
 				},
 			},
@@ -90,7 +99,7 @@ export default defineConfig(({ mode }) => {
 				minify: true,
 				reportCompressedSize: true,
 				lib: {
-					entry: path.resolve(process.cwd(), "src/index.ts"),
+					entry: path.resolve(process.cwd(), "src/library/index.ts"),
 					name: "Looking Glass WebXR",
 					// the proper extensions will be added
 					fileName: "bundle/webxr",

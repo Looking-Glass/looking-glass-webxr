@@ -29,6 +29,6 @@
 		"noImplicitReturns": true,
 	
 	},
-	"include": ["src", "src/index.d.ts","node_modules/webgl-strict-types/index.d.ts"],
+	"include": ["src","node_modules/webgl-strict-types/index.d.ts"],
 	"exclude": ["node_modules"]
 }

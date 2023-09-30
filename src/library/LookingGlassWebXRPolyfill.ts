@@ -91,7 +91,7 @@ export class LookingGlassWebXRPolyfill extends WebXRPolyfill {
 			if (this.isPresenting) {
 				this.vrButton.innerHTML = "EXIT LOOKING GLASS"
 			} else {
-				this.vrButton.innerHTML = "ENTER LOOKING GLASS"
+				this.vrButton.innerHTML = "CAST TO LOOKING GLASS"
 			}
 
 			const width = 220

@@ -80,7 +80,7 @@
             // add a button to start the XR scene
             const button = document.createElement("button")
             button.className = "xrbutton"
-            button.textContent = "ENTER LOOKING GLASS"
+            button.textContent = "CAST TO LOOKING GLASS"
             document.body.appendChild(button)
             button.addEventListener("click", async () => {
                 const xrHelper = await BABYLON.WebXRExperienceHelper.CreateAsync(scene)
