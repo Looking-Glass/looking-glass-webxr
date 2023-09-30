@@ -4,7 +4,6 @@ import { LookingGlassMediaController } from "./LookingGlassMediaController"
 //lkgCanvas is stored in the Looking Glass config after being created. 
 export function initLookingGlassControlGUI() {
 	const cfg = getLookingGlassConfig()
-	console.log(cfg, 'for debugging purposes')
 	if (cfg.lkgCanvas == null) {
 	console.warn('window placement called without a valid XR Session!')
 	}

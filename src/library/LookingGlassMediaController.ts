@@ -7,6 +7,7 @@ export async function LookingGlassMediaController() {
 
 	// the function to download the image from the canvas
 	function downloadImage() {
+		console.log("Downloading image")
 		if (cfg.appCanvas != null) {
 			try {
 				let url = cfg.appCanvas.toDataURL()
@@ -31,6 +32,7 @@ export async function LookingGlassMediaController() {
 	// add screenshot button listener, this calls the downloadImage function only at the end of the frame loop
 	if (screenshotButton) {
 		screenshotButton.addEventListener("click", () => {
+			console.log("Taking screenshot")
 			currentInlineView = cfg.inlineView
 			const xrDevice = LookingGlassXRDevice.getInstance()
 			if (!xrDevice) {

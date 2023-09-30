@@ -30,7 +30,6 @@ export const moveCanvasToWindow = (enabled: boolean, onbeforeunload) => {
 
 	document.body.appendChild(controls)
 	const screenPlacement = "getScreenDetails" in window
-	console.log(screenPlacement, 'Screen placement API exists')
 	try {
 	} catch {
 		console.log("user did not allow window placement, using normal popup instead")
@@ -48,12 +47,10 @@ export const moveCanvasToWindow = (enabled: boolean, onbeforeunload) => {
 	// if chromium, use the Screen Placement API to automatically place the window in the correct location, compensate for address bar
 	async function placeWindow(lkgCanvas: HTMLCanvasElement, config: LookingGlassConfig, onbeforeunload: any) {
 		const screenDetails = await (window as any).getScreenDetails() 
-		console.log(screenDetails)
 		//temporary, grab the first monitor ID with "LKG" Todo: make more robust
 		const LKG = screenDetails.screens.filter((screen) => screen.label.includes("LKG"))[0]
-		console.log(LKG, 'monitors')
 		if (LKG === undefined) {
-			console.log("no Looking Glass monitor detected - manually opening popup window")
+			console.warn("no Looking Glass display detected - manually opening popup window")
 			openPopup(config, lkgCanvas, onbeforeunload)
 			return
 		}

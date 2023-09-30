@@ -198,7 +198,6 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 			}
 			program = newProgram;
 		  };
-		console.log(Shader(cfg))
 		let program = setupShaderProgram(gl, vertexShaderSource, Shader(cfg))
 		if (program === null) {
 			console.warn("There was a problem with shader construction")
@@ -244,10 +243,17 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 
 		let origWidth, origHeight
 
+		// this function allows us to switch between the following three view types: 
+		// 1. subpixel arrangement - subpixel specific view for the Looking Glass
+		// 2. single view - single view, sampled from the middle of the quilt
+		// 3. quilt view - the full quilt of views
 		function blitTextureToDefaultFramebufferIfNeeded() {
 			if (!cfg.appCanvas || !cfg.lkgCanvas) {
 				return
 			}
+
+			// Save the current WebGL state
+			const oldState = saveWebGLState()
 
 			// Update canvas dimensions if needed
 			if (cfg.appCanvas.width !== cfg.framebufferWidth || cfg.appCanvas.height !== cfg.framebufferHeight) {
@@ -256,14 +262,6 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 				cfg.appCanvas.width = cfg.framebufferWidth
 				cfg.appCanvas.height = cfg.framebufferHeight
 			}
-
-			const oldScissorBox = new Int32Array(4);
-			// gl.getIntegerv(gl.SCISSOR_BOX, oldScissorBox);
-			const scissorTestEnabled = gl.isEnabled(gl.SCISSOR_TEST);
-		  
-
-			// Save the current WebGL state
-			const oldState = saveWebGLState()
 
 			// Set up the WebGL state for rendering
 			setupRenderState()
@@ -350,7 +348,7 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 				program: gl.getParameter(gl.CURRENT_PROGRAM),
 				activeTexture: gl.getParameter(gl.ACTIVE_TEXTURE),
 				textureBinding: gl.getParameter(gl.TEXTURE_BINDING_2D),
-				scissorBox: new Int32Array(gl.getParameter(gl.SCISSOR_BOX)),
+				scissorBox: gl.getParameter(gl.SCISSOR_BOX),
 			}
 		}
 		/**
