@@ -23,7 +23,7 @@
   },
   "scripts": {
     "dev": "vite --mode react",
-    "library": "vite build --mode library && node ./post-build.js && vite build --mode bundle",
+    "library": "vite build --mode library && vite build --mode bundle && node ./post-build.js",
     "build:react": "vite build --mode react"
   },
   "devDependencies": {
