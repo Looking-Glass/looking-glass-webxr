@@ -22,6 +22,7 @@ import LookingGlassXRDevice from "./LookingGlassXRDevice"
 import LookingGlassXRWebGLLayer from "./LookingGlassXRWebGLLayer"
 import { webXRButton, setStyle } from './LookingGlassStyles';
 import { CreateLookingGlassWebXRButton } from './LookingGlassWebXRButton';
+import { createCSSVariables } from "./LookingGlassStyles"
 
 export class LookingGlassWebXRPolyfill extends WebXRPolyfill {
 	private vrButton: HTMLButtonElement | undefined
@@ -32,12 +33,17 @@ export class LookingGlassWebXRPolyfill extends WebXRPolyfill {
 	constructor(cfg?: Partial<ViewControlArgs>) {
 		super()
 		// Init the configuration
+		createCSSVariables()
 		updateLookingGlassConfig(cfg)
 		this.loadPolyfill()
 	}
 
 	static async init(cfg?: Partial<ViewControlArgs>) {
-			new LookingGlassWebXRPolyfill(cfg)
+
+		console.log("css variables created")
+		console.timeStamp("css variables created")
+
+		new LookingGlassWebXRPolyfill(cfg)
 	}
 
 	/**Load  the polyfill*/

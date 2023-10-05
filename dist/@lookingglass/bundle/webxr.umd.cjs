@@ -4205,9 +4205,9 @@ to native implementations of the API.`;
         return div;
       };
       ViewerSelector.prototype.createButton_ = function(label, onclick) {
-        var button = document.createElement("button");
-        button.innerHTML = label;
-        var s = button.style;
+        var button2 = document.createElement("button");
+        button2.innerHTML = label;
+        var s = button2.style;
         s.float = "right";
         s.textTransform = "uppercase";
         s.color = "#1094f7";
@@ -4216,8 +4216,8 @@ to native implementations of the API.`;
         s.border = 0;
         s.background = "none";
         s.marginTop = "16px";
-        button.addEventListener("click", onclick);
-        return button;
+        button2.addEventListener("click", onclick);
+        return button2;
       };
       var commonjsGlobal2 = typeof window !== "undefined" ? window : typeof commonjsGlobal$1 !== "undefined" ? commonjsGlobal$1 : typeof self !== "undefined" ? self : {};
       function unwrapExports(x) {
@@ -7295,11 +7295,14 @@ host this content on a secure origin for the best user experience.
     } else {
       let downloadImage = function() {
         if (cfg.appCanvas != null) {
-          let url = cfg.appCanvas.toDataURL();
+          console.time("capture");
+          let url = cfg.appCanvas.toDataURL("image/jpeg");
+          console.timeLog("capture");
+          console.timeEnd("capture");
           const a = document.createElement("a");
           a.style.display = "none";
           a.href = url;
-          a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.png`;
+          a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.jpeg`;
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
@@ -7321,6 +7324,260 @@ host this content on a secure origin for the best user experience.
     cancel,
     promise: (num) => new Promise((resolve) => request(resolve, Object.assign({}, idleOptions, num)))
   };
+  function createCSSVariables() {
+    let style = document.createElement("style");
+    document.head.appendChild(style);
+    let css = `
+	/* Basic thumb styling for WebKit browsers */
+	.looking-glass-input::-webkit-slider-thumb {
+		background: radial-gradient(76.09% 1304.32% at 87.24% 100%, #A055FA 0%, #5F15E8 100%);
+		border: 2px solid #FFFFFF;
+		border-radius: 22px;
+		-webkit-appearance: none; /* This is important to override browser defaults */
+		width: 24px; /* Set a width and height for the thumb */
+		height: 24px;
+		cursor: pointer;
+		box-shadow: -6px 8px 8px -4.5px rgba(0, 0, 0, 0.16), 0px 0px 12px 1px rgba(0, 0, 0, 0.14);
+        border-radius: 22px;
+	}
+	
+	.looking-glass-input::-moz-range-thumb {
+		background: radial-gradient(76.09% 1304.32% at 87.24% 100%, #A055FA 0%, #5F15E8 100%);
+		border: 2px solid #FFFFFF;
+		border-radius: 22px;
+		-webkit-appearance: none; /* This is important to override browser defaults */
+		width: 20px; /* Set a width and height for the thumb */
+		height: 20px;
+		cursor: pointer;
+		box-shadow: -6px 8px 8px -4.5px rgba(0, 0, 0, 0.16), 0px 0px 12px 1px rgba(0, 0, 0, 0.14);
+        border-radius: 22px;
+	}
+	
+	/* Override the default appearance of the range input */
+	input[type="range"].looking-glass-input {
+		-webkit-appearance: none;
+		width: 100%;
+		height: 8px;
+		margin-top: 16px;
+		background: rgba(255, 255, 255, 0.40);
+		outline: none;
+		opacity: 1;
+		border-radius: 8px;
+		-webkit-transition: 0.2s;
+		transition: opacity 0.2s;
+	}
+    `;
+    style.appendChild(document.createTextNode(css));
+  }
+  const containerRoot = {
+    backgroundColor: "rgba(40, 39, 63, 0.90)",
+    borderColor: "#FFFFFF1A",
+    borderWidth: 1,
+    position: "fixed",
+    zIndex: "1000",
+    paddingRight: "24px",
+    paddingLeft: "24px",
+    padding: "15px",
+    width: "360px",
+    height: "504px",
+    maxWidth: "calc(100vw - 18px)",
+    whiteSpace: "nowrap",
+    color: "white",
+    borderRadius: "10px",
+    right: "15px",
+    bottom: "15px",
+    flex: "row"
+  };
+  const heading = {
+    width: "100%",
+    display: "flex",
+    justifyContent: "start",
+    alignItems: "center",
+    textAlign: "left",
+    fontWeight: "bold",
+    marginBottom: "8px"
+  };
+  const heading6 = {
+    display: "block",
+    fontFamily: "Helvetica Neue",
+    fontStyle: "normal",
+    fontWeight: "700",
+    fontSize: "14px",
+    lineHeight: "20px",
+    alignItems: "center",
+    letterSpacing: "-0.2px"
+  };
+  const controlsContainer = {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "left",
+    padding: "0px",
+    gap: "16px",
+    paddingRight: "24px",
+    paddingLeft: "24px"
+  };
+  const sliderContainer = {
+    order: 2,
+    flexGrow: 0,
+    width: "100%",
+    height: "91px"
+  };
+  const horizontalFlexBoxStyle = {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%"
+  };
+  const button = {
+    background: "radial-gradient(76.09% 1304.32% at 87.24% 100%, #A055FA 0%, #5F15E8 100%)",
+    width: "100%",
+    height: "48px",
+    left: "0px",
+    top: "308px",
+    borderRadius: "8px",
+    color: "white",
+    fontFamily: "Helvetica Neue",
+    fontStyle: "normal",
+    fontWeight: "700",
+    fontSize: "18px",
+    lineHeight: "24px",
+    outline: "none",
+    boxShadow: "none"
+  };
+  const tab_container = {
+    display: "flex",
+    flexDirection: "row"
+  };
+  const tab_active = {
+    background: "radial-gradient(76.09% 1304.32% at 87.24% 100%, #A055FA 0%, #5F15E8 100%)",
+    flexGrow: 1,
+    height: "48px",
+    borderRadius: "8px",
+    color: "white",
+    fontFamily: "Helvetica Neue",
+    fontStyle: "normal",
+    fontWeight: "700",
+    fontSize: "18px",
+    lineHeight: "24px",
+    outline: "none",
+    boxShadow: "none"
+  };
+  const tab_inactive = {
+    background: "rgba(40, 39, 63, 0.90)",
+    height: "48px",
+    flexGrow: 1,
+    borderRadius: "8px",
+    color: "white",
+    fontFamily: "Helvetica Neue",
+    fontStyle: "normal",
+    fontWeight: "700",
+    fontSize: "18px",
+    lineHeight: "24px",
+    outline: "none",
+    boxShadow: "none"
+  };
+  const webXRButton = {
+    cursor: "pointer",
+    left: "calc(50% - 50px)",
+    width: "280px",
+    background: "radial-gradient(76.09% 1304.32% at 87.24% 100%, #403E6C 0%, #1F1E37 100%)",
+    borderRadius: "8px",
+    position: "absolute",
+    fontFamily: "Helvetica Neue",
+    fontStyle: "normal",
+    fontWeight: "700",
+    fontSize: "18px",
+    lineHeight: "24px",
+    bottom: "20px",
+    padding: "12px 6px",
+    color: "#fff",
+    textAlign: "center",
+    outline: "none",
+    zIndex: "9999"
+  };
+  function setStyle(element, style) {
+    Object.assign(element.style, style);
+  }
+  function createSVG(containerStyle, paths, pathStyle) {
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "40");
+    svg.setAttribute("height", "40");
+    svg.setAttribute("viewBox", "0 0 40 40");
+    svg.setAttribute("fill", "none");
+    svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    setPaths(svg, paths);
+    return svg;
+  }
+  function setPaths(svg, paths, style) {
+    for (let i = 0; i < paths.length; i++) {
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("fill-rule", "evenodd");
+      path.setAttribute("clip-rule", "evenodd");
+      path.setAttribute("d", paths[i]);
+      path.setAttribute("fill", "white");
+      svg.appendChild(path);
+    }
+  }
+  const castIconPaths = [
+    "M29 16.2743V23.6543C29 24.58 28.5114 25.4286 27.7143 25.8786L21.2857 29.5814C20.8871 29.8129 20.45 29.9286 20 29.9286C19.55 29.9286 19.1129 29.8129 18.7143 29.5814L18.0018 29.171C18.0022 29.0134 17.9894 28.8522 17.9624 28.6882C17.801 27.6951 17.4588 26.7641 16.9708 25.9295L19.11 27.21V20.6971L13.17 17.3V22.5773C12.5794 22.3251 11.9526 22.1412 11.2996 22.0352L11.2879 22.0333L11.2761 22.0316C11.1832 22.0176 11.0911 22.0082 11 22.0032V16.2743C11 15.3486 11.4886 14.5 12.2857 14.0371L18.7143 10.3471C19.1129 10.1157 19.55 10 20 10C20.45 10 20.8871 10.1157 21.2857 10.3471L27.7143 14.05C28.5114 14.5 29 15.3486 29 16.2743ZM15.6704 27.8281L12.2857 25.8786C11.5941 25.4881 11.1347 24.7977 11.0253 24.0171L11.0323 24.0183C11.2863 24.0618 11.5349 24.121 11.7771 24.195C13.5676 24.7418 15.0071 26.0923 15.6704 27.8281ZM14.31 15.5029L20 18.87L25.69 15.5029L20 12.07L14.31 15.5029ZM20.89 27.21L26.83 23.6543V17.3L20.89 20.6971V27.21Z",
+    "M10 30L10 27.3992C11.4387 27.3992 12.6 28.5609 12.6 30L10 30ZM15.122 30C14.6974 30 14.342 29.6879 14.2727 29.2631C13.9607 27.4599 12.5394 26.0381 10.7367 25.726C10.312 25.6566 10 25.3012 10 24.8764C10 24.3475 10.4593 23.9314 10.9793 24.0094C13.5447 24.4256 15.5727 26.4455 15.9887 29.0117C16.0754 29.5319 15.6507 30 15.122 30Z"
+  ];
+  const svgContainer = {
+    width: "40px",
+    height: "40px",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  };
+  function castIcon() {
+    let icon = createSVG(svgContainer, castIconPaths);
+    return icon;
+  }
+  function generateFOVIndicators() {
+    const indicators = [];
+    for (let i = 0; i <= 10 * 12; i += 12) {
+      indicators.push(`${i + "\xB0"}`);
+    }
+    return indicators;
+  }
+  function FOVindicators(containerDiv) {
+    const horizontalFlexBox = document.createElement("div");
+    setStyle(horizontalFlexBox, horizontalFlexBoxStyle);
+    containerDiv.appendChild(horizontalFlexBox);
+    const indicators = generateFOVIndicators();
+    indicators.forEach((indicator) => {
+      const pElement = document.createElement("p");
+      pElement.style.fontSize = "12px";
+      pElement.style.lineHeight = "16px";
+      pElement.style.color = "rgba(255, 255, 255, 0.40)";
+      pElement.textContent = indicator;
+      horizontalFlexBox.appendChild(pElement);
+    });
+    return indicators;
+  }
+  function generateDepthinessIndicators() {
+    const indicators = [];
+    for (let i = 0; i <= 10 * 0.2; i += 0.2) {
+      const truncated = i.toFixed(1);
+      indicators.push(truncated);
+    }
+    return indicators;
+  }
+  function DepthinessIndicators(containerDiv) {
+    const horizontalFlexBox = document.createElement("div");
+    setStyle(horizontalFlexBox, horizontalFlexBoxStyle);
+    containerDiv.appendChild(horizontalFlexBox);
+    const indicators = generateDepthinessIndicators();
+    indicators.forEach((indicator) => {
+      const pElement = document.createElement("p");
+      pElement.style.fontSize = "12px";
+      pElement.style.lineHeight = "16px";
+      pElement.style.color = "rgba(255, 255, 255, 0.40)";
+      pElement.textContent = indicator;
+      horizontalFlexBox.appendChild(pElement);
+    });
+    return indicators;
+  }
   function initLookingGlassControlGUI() {
     var _a;
     const cfg = getLookingGlassConfig();
@@ -7328,7 +7585,34 @@ host this content on a secure origin for the best user experience.
     if (cfg.lkgCanvas == null) {
       console.warn("window placement called without a valid XR Session!");
     } else {
-      let flyCamera = function() {
+      let addTabs = function(name) {
+        const tabsContainer = document.createElement("div");
+        tabsContainer.style.marginBottom = "8px";
+        setStyle(tabsContainer, tab_container);
+        controlListDiv.appendChild(tabsContainer);
+        const quiltTab = document.createElement("button");
+        quiltTab.innerText = "Quilt";
+        setStyle(quiltTab, tab_active);
+        tabsContainer.appendChild(quiltTab);
+        const centerTab = document.createElement("button");
+        centerTab.innerText = "Center";
+        setStyle(centerTab, tab_inactive);
+        tabsContainer.appendChild(centerTab);
+        const updateValue = (newValue) => {
+          cfg[name] = newValue;
+        };
+        quiltTab.onclick = () => {
+          quiltTab.classList.add("active");
+          centerTab.classList.remove("active");
+          updateValue("2");
+        };
+        centerTab.onclick = () => {
+          centerTab.classList.add("active");
+          quiltTab.classList.remove("active");
+          updateValue("1");
+        };
+        return tabsContainer;
+      }, flyCamera = function() {
         let kx = keys.d - keys.a;
         let ky = keys.w - keys.s;
         if (kx && ky) {
@@ -7346,81 +7630,79 @@ host this content on a secure origin for the best user experience.
       };
       const styleElement = document.createElement("style");
       document.head.appendChild(styleElement);
-      (_a = styleElement.sheet) == null ? void 0 : _a.insertRule("#LookingGlassWebXRControls * { all: revert; font-family: sans-serif }");
+      (_a = styleElement.sheet) == null ? void 0 : _a.insertRule("#LookingGlassWebXRControls * { font-family: sans-serif }");
       const c = document.createElement("div");
       c.id = "LookingGlassWebXRControls";
-      c.style.position = "fixed";
-      c.style.zIndex = "1000";
-      c.style.padding = "15px";
-      c.style.width = "320px";
-      c.style.maxWidth = "calc(100vw - 18px)";
-      c.style.maxHeight = "calc(100vh - 18px)";
-      c.style.whiteSpace = "nowrap";
-      c.style.background = "rgba(0, 0, 0, 0.6)";
-      c.style.color = "white";
-      c.style.borderRadius = "10px";
-      c.style.right = "15px";
-      c.style.bottom = "15px";
-      c.style.flex = "row";
+      c.className = "controlsBackground";
+      setStyle(c, containerRoot);
+      const container = document.createElement("div");
+      c.appendChild(container);
+      setStyle(container, controlsContainer);
       const title = document.createElement("div");
-      c.appendChild(title);
-      title.style.width = "100%";
-      title.style.textAlign = "center";
-      title.style.fontWeight = "bold";
-      title.style.marginBottom = "8px";
-      title.innerText = "Looking Glass Controls";
+      setStyle(title, heading);
+      container.appendChild(title);
+      const text = document.createElement("span");
+      text.innerText = "Casting to Looking Glass";
+      title.appendChild(castIcon());
+      title.appendChild(text);
       const screenshotbutton = document.createElement("button");
-      screenshotbutton.style.display = "block";
-      screenshotbutton.style.margin = "auto";
-      screenshotbutton.style.width = "100%";
-      screenshotbutton.style.height = "35px";
-      screenshotbutton.style.padding = "4px";
-      screenshotbutton.style.marginBottom = "8px";
-      screenshotbutton.style.borderRadius = "8px";
+      setStyle(screenshotbutton, button);
       screenshotbutton.id = "screenshotbutton";
-      c.appendChild(screenshotbutton);
       screenshotbutton.innerText = "Save Hologram";
-      const help = document.createElement("div");
-      c.appendChild(help);
-      help.style.width = "290px";
-      help.style.whiteSpace = "normal";
-      help.style.color = "rgba(255,255,255,0.7)";
-      help.style.fontSize = "14px";
-      help.style.margin = "5px 0";
-      help.innerHTML = "Click the popup and use WASD, mouse left/right drag, and scroll.";
+      const copybutton = document.createElement("button");
+      copybutton.id = "copybutton";
+      setStyle(copybutton, button);
+      copybutton.innerText = "Copy Config";
+      copybutton.addEventListener("click", () => {
+        copyConfigToClipboard(cfg);
+      });
       const controlListDiv = document.createElement("div");
-      c.appendChild(controlListDiv);
+      controlListDiv.style.display = "inline-flex";
+      controlListDiv.style.flexDirection = "column";
+      controlListDiv.style.gap = "16px";
+      controlListDiv.style.alignContent = "start";
+      container.appendChild(controlListDiv);
       const addControl = (name, attrs, opts) => {
-        const stringify = opts.stringify;
         const controlLineDiv = document.createElement("div");
         controlLineDiv.style.marginBottom = "8px";
         controlListDiv.appendChild(controlLineDiv);
+        setStyle(controlLineDiv, sliderContainer);
         const controlID = name;
         const initialValue = cfg[name];
         const label = document.createElement("label");
         controlLineDiv.appendChild(label);
         label.innerText = opts.label;
         label.setAttribute("for", controlID);
-        label.style.width = "100px";
-        label.style.display = "inline-block";
-        label.style.textDecoration = "dotted underline 1px";
-        label.style.fontFamily = `"Courier New"`;
-        label.style.fontSize = "13px";
-        label.style.fontWeight = "bold";
+        setStyle(label, heading6);
         label.title = opts.title;
+        if (controlID === "fovy") {
+          FOVindicators(controlLineDiv);
+        } else if (controlID === "depthiness") {
+          DepthinessIndicators(controlLineDiv);
+        }
         const control = document.createElement("input");
         controlLineDiv.appendChild(control);
         Object.assign(control, attrs);
         control.id = controlID;
+        control.className = "looking-glass-input";
         control.title = opts.title;
         control.value = attrs.value !== void 0 ? attrs.value : initialValue;
+        if (attrs.type === "range") {
+          const newPercentage = (parseFloat(control.value) - parseFloat(control.min)) / (parseFloat(control.max) - parseFloat(control.min)) * 100;
+          const backgroundImage = `linear-gradient(90deg, #ffffff ${newPercentage}%, rgba(255, 255, 255, 0.20) ${newPercentage}%)`;
+          control.style.backgroundImage = backgroundImage;
+        }
         const updateValue = (newValue) => {
           cfg[name] = newValue;
-          updateNumberText(newValue);
         };
         control.oninput = () => {
-          const newValue = attrs.type === "range" ? parseFloat(control.value) : attrs.type === "checkbox" ? control.checked : control.value;
-          updateValue(newValue);
+          if (attrs.type === "range") {
+            const newPercentage = (parseFloat(control.value) - parseFloat(control.min)) / (parseFloat(control.max) - parseFloat(control.min)) * 100;
+            const backgroundImage = `linear-gradient(90deg, #ffffff ${newPercentage}%, rgba(255, 255, 255, 0.08) ${newPercentage}%)`;
+            control.style.backgroundImage = backgroundImage;
+            const newValue = attrs.type === "range" ? parseFloat(control.value) : attrs.type === "checkbox" ? control.checked : control.value;
+            updateValue(newValue);
+          }
         };
         const updateExternally = (callback) => {
           let newValue = callback(cfg[name]);
@@ -7433,54 +7715,31 @@ host this content on a secure origin for the best user experience.
           updateValue(newValue);
         };
         if (attrs.type === "range") {
-          control.style.width = "110px";
-          control.style.height = "8px";
           control.onwheel = (ev) => {
             updateExternally((oldValue) => oldValue + Math.sign(ev.deltaX - ev.deltaY) * attrs.step);
           };
         }
-        let updateNumberText = (value) => {
-        };
-        if (stringify) {
-          const numberText = document.createElement("span");
-          numberText.style.fontFamily = `"Courier New"`;
-          numberText.style.fontSize = "13px";
-          numberText.style.marginLeft = "3px";
-          controlLineDiv.appendChild(numberText);
-          updateNumberText = (v) => {
-            numberText.innerHTML = stringify(v);
-          };
-          updateNumberText(initialValue);
-        }
-        return updateExternally;
+        return controlLineDiv;
       };
+      addTabs("inlineView");
       addControl("fovy", {
         type: "range",
         min: 1 / 180 * Math.PI,
         max: 120.1 / 180 * Math.PI,
         step: 1 / 180 * Math.PI
       }, {
-        label: "fov",
+        label: "Field of view",
         title: "perspective fov (degrades stereo effect)",
-        fixRange: (v) => Math.max(1 / 180 * Math.PI, Math.min(v, 120.1 / 180 * Math.PI)),
-        stringify: (v) => {
-          const xdeg = v / Math.PI * 180;
-          const ydeg = Math.atan(Math.tan(v / 2) * cfg.aspect) * 2 / Math.PI * 180;
-          return `${xdeg.toFixed()}&deg;&times;${ydeg.toFixed()}&deg;`;
-        }
+        fixRange: (v) => Math.max(1 / 180 * Math.PI, Math.min(v, 120.1 / 180 * Math.PI))
       });
       addControl("depthiness", { type: "range", min: 0, max: 2, step: 0.01 }, {
-        label: "depthiness",
+        label: "Depthiness",
         title: 'exaggerates depth by multiplying the width of the view cone (as reported by the firmware) - can somewhat compensate for depthiness lost using higher fov. 1.25 seems to be most physically accurate on Looking Glass 8.9".',
         fixRange: (v) => Math.max(0, v),
         stringify: (v) => `${v.toFixed(2)}x`
       });
-      addControl("inlineView", { type: "range", min: 0, max: 2, step: 1 }, {
-        label: "inline view",
-        title: "what to show inline on the original canvas (swizzled = no overwrite)",
-        fixRange: (v) => Math.max(0, Math.min(v, 2)),
-        stringify: (v) => v === 0 ? "swizzled" : v === 1 ? "center" : v === 2 ? "quilt" : "?"
-      });
+      container.appendChild(screenshotbutton);
+      container.appendChild(copybutton);
       cfg.lkgCanvas.oncontextmenu = (ev) => {
         ev.preventDefault();
       };
@@ -7544,6 +7803,28 @@ host this content on a secure origin for the best user experience.
       }, 1e3);
       return c;
     }
+  }
+  function copyConfigToClipboard(cfg) {
+    let targetX = cfg.targetX;
+    let targetY = cfg.targetY;
+    let targetZ = cfg.targetZ;
+    let fovy = `${Math.round(cfg.fovy / Math.PI * 180)} * Math.PI / 180`;
+    let targetDiam = cfg.targetDiam;
+    let trackballX = cfg.trackballX;
+    let trackballY = cfg.trackballY;
+    let depthiness = cfg.depthiness;
+    const camera = {
+      targetX,
+      targetY,
+      targetZ,
+      fovy,
+      targetDiam,
+      trackballX,
+      trackballY,
+      depthiness
+    };
+    let config = JSON.stringify(camera, null, 4);
+    navigator.clipboard.writeText(config);
   }
   let controls;
   const moveCanvasToWindow = (enabled, onbeforeunload) => {
@@ -8088,10 +8369,13 @@ host this content on a secure origin for the best user experience.
       __publicField(this, "vrButton");
       __publicField(this, "device");
       __publicField(this, "isPresenting", false);
+      createCSSVariables();
       updateLookingGlassConfig(cfg);
       this.loadPolyfill();
     }
     static async init(cfg) {
+      console.log("css variables created");
+      console.timeStamp("css variables created");
       new LookingGlassWebXRPolyfill(cfg);
     }
     async loadPolyfill() {
@@ -8110,7 +8394,7 @@ host this content on a secure origin for the best user experience.
       });
     }
     async overrideDefaultVRButton() {
-      this.vrButton = await waitForElement("VRButton");
+      this.vrButton = await waitForElement("xrbutton");
       if (this.vrButton && this.device) {
         this.device.addEventListener("@@webxr-polyfill/vr-present-start", () => {
           this.isPresenting = true;
@@ -8129,6 +8413,7 @@ host this content on a secure origin for the best user experience.
     async updateVRButtonUI() {
       if (this.vrButton) {
         await delay(100);
+        setStyle(this.vrButton, webXRButton);
         if (this.isPresenting) {
           this.vrButton.innerHTML = "EXIT LOOKING GLASS";
         } else {

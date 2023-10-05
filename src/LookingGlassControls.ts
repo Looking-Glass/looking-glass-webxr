@@ -1,6 +1,6 @@
 import { getLookingGlassConfig } from "./LookingGlassConfig"
 import { LookingGlassMediaController } from "./LookingGlassMediaController"
-import { containerRoot, setStyle, button, controlsContainer, heading, heading6, sliderContainer, slider } from './LookingGlassStyles';
+import { containerRoot, setStyle, button, controlsContainer, heading, heading6, sliderContainer, slider, castIcon, FOVindicators, DepthinessIndicators, tab_active, tab_inactive, tab_container } from './LookingGlassStyles';
 
 //lkgCanvas is stored in the Looking Glass config after being created.
 export function initLookingGlassControlGUI() {
@@ -11,7 +11,7 @@ export function initLookingGlassControlGUI() {
 	} else {
 		const styleElement = document.createElement("style")
 		document.head.appendChild(styleElement)
-		styleElement.sheet?.insertRule("#LookingGlassWebXRControls * { all: revert; font-family: sans-serif }")
+		styleElement.sheet?.insertRule("#LookingGlassWebXRControls * { font-family: sans-serif }")
 
 		const c = document.createElement("div")
 		c.id = "LookingGlassWebXRControls"
@@ -24,7 +24,10 @@ export function initLookingGlassControlGUI() {
 		const title = document.createElement("div")
 		setStyle(title, heading)
 		container.appendChild(title)
-		title.innerText = "Casting to Looking Glass"
+		const text = document.createElement("span")
+		text.innerText = "Casting to Looking Glass"
+		title.appendChild(castIcon())
+		title.appendChild(text)
 
 		const screenshotbutton = document.createElement("button")
 		setStyle(screenshotbutton, button)
@@ -49,11 +52,15 @@ export function initLookingGlassControlGUI() {
 		// help.innerHTML = "Click the popup and use WASD, mouse left/right drag, and scroll."
 
 		const controlListDiv = document.createElement("div")
+		controlListDiv.style.display = "inline-flex"
+		controlListDiv.style.flexDirection = "column"
+		controlListDiv.style.gap = "16px"
+		controlListDiv.style.alignContent = "start"
 		container.appendChild(controlListDiv)
 
-		const addControl = (name: string, attrs: any, opts) => {
-			const stringify = opts.stringify
 
+		const addControl = (name: string, attrs: any, opts) => {
+			
 			const controlLineDiv = document.createElement("div")
 			controlLineDiv.style.marginBottom = "8px"
 			controlListDiv.appendChild(controlLineDiv)
@@ -69,23 +76,43 @@ export function initLookingGlassControlGUI() {
 			setStyle(label, heading6)
 			label.title = opts.title
 
+			if (controlID === "fovy") {
+				FOVindicators(controlLineDiv)
+			}
+			else if (controlID === "depthiness") {
+				DepthinessIndicators(controlLineDiv)
+			}
+
 			const control = document.createElement("input")
 			controlLineDiv.appendChild(control)
 			Object.assign(control, attrs)
 			control.id = controlID
+			control.className = "looking-glass-input"
 			control.title = opts.title
 			control.value = attrs.value !== undefined ? attrs.value : initialValue
+			if (attrs.type === "range") {
+			// update initial value
+			const newPercentage = ((parseFloat(control.value) - parseFloat(control.min)) / (parseFloat(control.max) - parseFloat(control.min))) * 100;
+			const backgroundImage = `linear-gradient(90deg, #ffffff ${newPercentage}%, rgba(255, 255, 255, 0.20) ${newPercentage}%)`
+			control.style.backgroundImage = backgroundImage
+			}
 
 			// The source of truth for the control value is in cfg, not the element's
 			// 'value' field. The text next to the control shows the real value.
 			const updateValue = (newValue) => {
 				cfg[name] = newValue
-				updateNumberText(newValue)
 			}
+
 			control.oninput = () => {
 				// Only in oninput do we actually read the control's value.
+				
+				if (attrs.type === "range") {
+				const newPercentage = ((parseFloat(control.value) - parseFloat(control.min)) / (parseFloat(control.max) - parseFloat(control.min))) * 100;
+				const backgroundImage = `linear-gradient(90deg, #ffffff ${newPercentage}%, rgba(255, 255, 255, 0.08) ${newPercentage}%)`
+				control.style.backgroundImage = backgroundImage
 				const newValue = attrs.type === "range" ? parseFloat(control.value) : attrs.type === "checkbox" ? control.checked : control.value
 				updateValue(newValue)
+				}
 			}
 
 			const updateExternally = (callback) => {
@@ -100,41 +127,64 @@ export function initLookingGlassControlGUI() {
 			}
 
 			if (attrs.type === "range") {
-				setStyle(control, slider)
 				control.onwheel = (ev) => {
 					updateExternally((oldValue) => oldValue + Math.sign(ev.deltaX - ev.deltaY) * attrs.step)
 				}
 			}
 
-			let updateNumberText = (value) => {}
-
-			if (stringify) {
-				const numberText = document.createElement("span")
-				numberText.style.fontFamily = `"Courier New"`
-				numberText.style.fontSize = "13px"
-				numberText.style.marginLeft = "3px"
-				controlLineDiv.appendChild(numberText)
-				updateNumberText = (v) => {
-					numberText.innerHTML = stringify(v)
-				}
-				updateNumberText(initialValue)
-			}
-
-			return updateExternally
+			return controlLineDiv
 		}
 
-		addControl(
-			"inlineView",
-			{ type: "range", min: 0, max: 2, step: 1 },
-			{
-				label: "inline view",
-				title: "what to show inline on the original canvas (swizzled = no overwrite)",
-				fixRange: (v) => Math.max(0, Math.min(v, 2)),
-				stringify: (v) => (v === 0 ? "swizzled" : v === 1 ? "center" : v === 2 ? "quilt" : "?"),
-			}
-		)
+		function addTabs(name: string) {
+			// Create a container for the tabs
+			const tabsContainer = document.createElement("div");
+			tabsContainer.style.marginBottom = "8px";
+			setStyle(tabsContainer, tab_container)
+			controlListDiv.appendChild(tabsContainer);
+		
+			// Create and append tab for "Quilt"
+			const quiltTab = document.createElement("button");
+			quiltTab.innerText = "Quilt";
+			setStyle(quiltTab, tab_active)
+			tabsContainer.appendChild(quiltTab);
+		
+			// Create and append tab for "Center"
+			const centerTab = document.createElement("button");
+			centerTab.innerText = "Center";
+			setStyle(centerTab, tab_inactive)
+			tabsContainer.appendChild(centerTab);
 
-		addControl(
+			const updateValue = (newValue) => {
+				cfg[name] = newValue
+			}
+		
+			// Function to update the value in cfg
+			const updateExternally = (callback) => {
+				let newValue = callback(cfg[name])
+				
+				updateValue(newValue)
+			}
+		
+			// Event listeners for tabs
+			quiltTab.onclick = () => {
+				quiltTab.classList.add('active');
+				centerTab.classList.remove('active');
+				updateValue('2');
+			};
+		
+			centerTab.onclick = () => {
+				centerTab.classList.add('active');
+				quiltTab.classList.remove('active');
+				updateValue('1');
+			};
+		
+			// Return the tabs container in case further modifications are needed
+			return tabsContainer;
+		}
+
+		addTabs("inlineView")
+
+		const FOVSlider = addControl(
 			"fovy",
 			{
 				type: "range",
@@ -143,22 +193,17 @@ export function initLookingGlassControlGUI() {
 				step: (1.0 / 180) * Math.PI,
 			},
 			{
-				label: "fov",
+				label: "Field of view",
 				title: "perspective fov (degrades stereo effect)",
 				fixRange: (v) => Math.max((1.0 / 180) * Math.PI, Math.min(v, (120.1 / 180) * Math.PI)),
-				stringify: (v) => {
-					const xdeg = (v / Math.PI) * 180
-					const ydeg = ((Math.atan(Math.tan(v / 2) * cfg.aspect) * 2) / Math.PI) * 180
-					return `${xdeg.toFixed()}&deg;&times;${ydeg.toFixed()}&deg;`
-				},
 			}
 		)
 
-		addControl(
+		const depthinessSlider = addControl(
 			"depthiness",
 			{ type: "range", min: 0, max: 2, step: 0.01 },
 			{
-				label: "depthiness",
+				label: "Depthiness",
 				title:
 					'exaggerates depth by multiplying the width of the view cone (as reported by the firmware) - can somewhat compensate for depthiness lost using higher fov. 1.25 seems to be most physically accurate on Looking Glass 8.9".',
 				fixRange: (v) => Math.max(0, v),

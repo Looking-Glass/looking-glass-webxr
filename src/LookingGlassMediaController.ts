@@ -19,11 +19,14 @@ export async function LookingGlassMediaController() {
 	function downloadImage() {
 		// capturing must be set to true before downloading an image in order to capture a high quality quilt. TODO: manually grab XRsession framebuffer instead
 		    if (cfg.appCanvas != null) {
-			let url = cfg.appCanvas.toDataURL()
+			console.time("capture")
+			let url = cfg.appCanvas.toDataURL('image/jpeg')
+			console.timeLog("capture")
+			console.timeEnd("capture")
 			const a = document.createElement("a")
 			a.style.display = "none"
 			a.href = url
-			  a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.png`;
+			  a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.jpeg`;
 			document.body.appendChild(a)
 			a.click()
 			document.body.removeChild(a)

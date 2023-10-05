@@ -33,6 +33,8 @@ declare module "@lookingglass/webxr-polyfill/src/api/XRSpace" {
 	}
 }
 
+declare module "*.module.css";
+
 declare module "holoplay-core" {
 	export namespace HoloPlayCore {}
 
