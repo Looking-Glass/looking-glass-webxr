@@ -6829,7 +6829,7 @@ class LookingGlassConfig$1 extends EventTarget {
     });
     __publicField(this, "_viewControls", {
       tileHeight: 512,
-      numViews: 48,
+      numViews: this.quiltHeight * this.quiltWidth,
       trackballX: 0,
       trackballY: 0,
       targetX: 0,
@@ -6897,7 +6897,10 @@ class LookingGlassConfig$1 extends EventTarget {
     this.updateViewControls({ quiltResolution: v });
   }
   get numViews() {
-    return this.quiltWidth * this.quiltHeight;
+    return this._viewControls.numViews;
+  }
+  set numViews(v) {
+    this.updateViewControls({ numViews: v });
   }
   get targetX() {
     return this._viewControls.targetX;

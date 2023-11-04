@@ -6833,7 +6833,7 @@ host this content on a secure origin for the best user experience.
       });
       __publicField(this, "_viewControls", {
         tileHeight: 512,
-        numViews: 48,
+        numViews: this.quiltHeight * this.quiltWidth,
         trackballX: 0,
         trackballY: 0,
         targetX: 0,
@@ -6901,7 +6901,10 @@ host this content on a secure origin for the best user experience.
       this.updateViewControls({ quiltResolution: v });
     }
     get numViews() {
-      return this.quiltWidth * this.quiltHeight;
+      return this._viewControls.numViews;
+    }
+    set numViews(v) {
+      this.updateViewControls({ numViews: v });
     }
     get targetX() {
       return this._viewControls.targetX;

@@ -56,8 +56,8 @@ export type ViewControlArgs = {
 	 */
 	tileHeight: number
 	/**
-	 * Defines the number of views to be rendered
-	 * @default 45
+	 * Defines the number of views to be rendered, overrides quilt settings
+	 * @default null
 	 */
 	numViews: number
 	/** 
@@ -161,7 +161,7 @@ export class LookingGlassConfig extends EventTarget {
 	// Config defaults
 	private _viewControls: ViewControlArgs = {
 		tileHeight: 512,
-		numViews: 48,
+		numViews: this.quiltHeight * this.quiltWidth,
 		trackballX: 0,
 		trackballY: 0,
 		targetX: 0,
@@ -257,10 +257,14 @@ export class LookingGlassConfig extends EventTarget {
 	}
 
 	/**
-	 * defines the number of views to be rendered
+	 * defines the number of views to be rendered, this value overrides the quilt settings if set
 	 */
 	get numViews() {
-		return (this.quiltWidth * this.quiltHeight)
+		return this._viewControls.numViews
+	}
+
+	set numViews(v) {
+		this.updateViewControls({ numViews: v })
 	}
 
 	/**

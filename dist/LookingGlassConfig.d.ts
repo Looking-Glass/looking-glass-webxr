@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 export declare const DefaultEyeHeight: number;
-type Value = {
+declare type Value = {
     value: number;
 };
-export type CalibrationArgs = {
+export declare type CalibrationArgs = {
     configVersion: string;
     pitch: Value;
     slope: Value;
@@ -41,7 +41,7 @@ export declare enum InlineView {
     /** The quilt view */
     Quilt = 2
 }
-export type ViewControlArgs = {
+export declare type ViewControlArgs = {
     /**
      * @Deprecated: since 0.4.0 use `quiltResolution` instead
      * Defines the height of the individual quilt view, the width is then set based on the aspect ratio of the connected device.
@@ -49,10 +49,10 @@ export type ViewControlArgs = {
      */
     tileHeight: number;
     /**
-     * Defines the number of views to be rendered
-     * @default 45
+     * Defines the number of views to be rendered, overrides quilt settings
+     * @default null
      */
-    numViews: number;
+    numViews: number | null;
     /**
      * Defines the rotation of the camera on the X-axis
      * @default 0
@@ -129,7 +129,7 @@ export type ViewControlArgs = {
      */
     appCanvas: HTMLCanvasElement | null;
 };
-type LookingGlassConfigEvent = "on-config-changed";
+declare type LookingGlassConfigEvent = "on-config-changed";
 export declare class LookingGlassConfig extends EventTarget {
     private _calibration;
     private _viewControls;
@@ -151,9 +151,10 @@ export declare class LookingGlassConfig extends EventTarget {
     get quiltResolution(): number;
     set quiltResolution(v: number);
     /**
-     * defines the number of views to be rendered
+     * defines the number of views to be rendered, this value overrides the quilt settings if set
      */
-    get numViews(): number;
+    get numViews(): number | null;
+    set numViews(v: number | null);
     /**
      * defines the position of the camera on the X-axis
      */

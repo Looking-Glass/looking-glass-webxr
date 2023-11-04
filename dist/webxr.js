@@ -36,7 +36,7 @@ class we extends EventTarget {
     });
     R(this, "_viewControls", {
       tileHeight: 512,
-      numViews: 48,
+      numViews: this.quiltHeight * this.quiltWidth,
       trackballX: 0,
       trackballY: 0,
       targetX: 0,
@@ -96,7 +96,10 @@ class we extends EventTarget {
     this.updateViewControls({ quiltResolution: e });
   }
   get numViews() {
-    return this.quiltWidth * this.quiltHeight;
+    return this._viewControls.numViews;
+  }
+  set numViews(e) {
+    this.updateViewControls({ numViews: e });
   }
   get targetX() {
     return this._viewControls.targetX;
