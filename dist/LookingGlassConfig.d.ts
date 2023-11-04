@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 export declare const DefaultEyeHeight: number;
-type Value = {
+declare type Value = {
     value: number;
 };
-export type CalibrationArgs = {
+export declare type CalibrationArgs = {
     configVersion: string;
     pitch: Value;
     slope: Value;
@@ -41,7 +41,7 @@ export declare enum InlineView {
     /** The quilt view */
     Quilt = 2
 }
-export type ViewControlArgs = {
+export declare type ViewControlArgs = {
     /**
      * @Deprecated: since 0.4.0 use `quiltResolution` instead
      * Defines the height of the individual quilt view, the width is then set based on the aspect ratio of the connected device.
@@ -129,7 +129,7 @@ export type ViewControlArgs = {
      */
     appCanvas: HTMLCanvasElement | null;
 };
-type LookingGlassConfigEvent = "on-config-changed";
+declare type LookingGlassConfigEvent = "on-config-changed";
 export declare class LookingGlassConfig extends EventTarget {
     private _calibration;
     private _viewControls;
