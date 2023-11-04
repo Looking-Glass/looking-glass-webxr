@@ -29,20 +29,20 @@ export const moveCanvasToWindow = (enabled: boolean, onbeforeunload) => {
 	cfg.lkgCanvas.height = cfg.calibration.screenH.value
 
 	document.body.appendChild(controls)
-	const screenPlacement = "getScreenDetails" in window
-	console.log(screenPlacement, 'Screen placement API exists')
+	//wrap screen placement api in try catch to handle browsers that don't support it
 	try {
-	} catch {
-		console.log("user did not allow window placement, using normal popup instead")
-	}
-	if (screenPlacement) {
-		// use chrome's screen placement to automatically position the window.
+		const screenPlacement = "getScreenDetails" in window
+		console.log(screenPlacement, 'Screen placement API exists')
+
+		if (!screenPlacement) throw new Error("Screen Placement API not supported")
+			// use chrome's screen placement to automatically position the window.
 		placeWindow(cfg.lkgCanvas, cfg, onbeforeunload)
-	} else {
-		// open a normal pop up window, user will need to move it to the Looking Glass
+		} 
+	// if browser doesn't support screen placement api, use a normal popup
+	catch {
+		console.log("user did not allow window placement, using normal popup instead")
 		openPopup(cfg, cfg.lkgCanvas, onbeforeunload)
 	}
-		// destroy the window
 	}
 }
 	// if chromium, use the Screen Placement API to automatically place the window in the correct location, compensate for address bar

@@ -9,7 +9,6 @@ export async function LookingGlassMediaController(screenshotbutton: HTMLButtonEl
 		return
 	}
 	else {
-		console.log('Media Capture initialized')
 		screenshotbutton.onclick = async () => (await waitforDownload())
 	}
 
@@ -21,14 +20,12 @@ export async function LookingGlassMediaController(screenshotbutton: HTMLButtonEl
 		// capturing must be set to true before downloading an image in order to capture a high quality quilt. TODO: manually grab XRsession framebuffer instead
 		    if (cfg.appCanvas != null) {
 			console.time("capture")
-			console.log("capture started")
 			setTimeout(() => (screenshotbutton.textContent = "Capturing..."), 0);
 
 			let url = cfg.appCanvas.toDataURL('image/jpeg')
 			console.timeLog("capture")
 			console.timeEnd("capture")
 
-			console.log("saving capture")
 			setTimeout(() => (screenshotbutton.textContent = "Saving..."), 0);
 
 			const a = document.createElement("a")
@@ -39,7 +36,6 @@ export async function LookingGlassMediaController(screenshotbutton: HTMLButtonEl
 			a.click()
 			document.body.removeChild(a)
 			window.URL.revokeObjectURL(url)
-			console.log("capture saved")
 
 			setTimeout(() => (screenshotbutton.textContent = "Save Hologram"), 125);
 			}

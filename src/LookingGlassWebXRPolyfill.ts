@@ -39,10 +39,6 @@ export class LookingGlassWebXRPolyfill extends WebXRPolyfill {
 	}
 
 	static async init(cfg?: Partial<ViewControlArgs>) {
-
-		console.log("css variables created")
-		console.timeStamp("css variables created")
-
 		new LookingGlassWebXRPolyfill(cfg)
 	}
 

@@ -1,11 +1,10 @@
 import { getLookingGlassConfig } from "./LookingGlassConfig"
 import { LookingGlassMediaController } from "./LookingGlassMediaController"
-import { containerRoot, setStyle, button, controlsContainer, heading, heading6, sliderContainer, slider, castIcon, FOVindicators, DepthinessIndicators, tab_active, tab_inactive, tab_container, helpIcon, helpButtonStyle } from './LookingGlassStyles';
+import { containerRoot, setStyle, button, button_noBackground, controlsContainer, heading, heading6, sliderContainer, slider, castIcon, FOVindicators, DepthinessIndicators, tab_active, tab_inactive, tab_container, helpIcon, helpButtonStyle, downloadIcon, horizontalFlexCenterStyle, copyIcon } from './LookingGlassStyles';
 
 //lkgCanvas is stored in the Looking Glass config after being created.
 export function initLookingGlassControlGUI() {
 	const cfg = getLookingGlassConfig()
-	console.log(cfg, "for debugging purposes")
 	if (cfg.lkgCanvas == null) {
 		console.warn("window placement called without a valid XR Session!")
 	} else {
@@ -46,17 +45,39 @@ export function initLookingGlassControlGUI() {
 		const screenshotbutton = document.createElement("button")
 		setStyle(screenshotbutton, button)
 		screenshotbutton.id = "screenshotbutton"
-		screenshotbutton.innerText = "Save Hologram"
+
+		const screenshotbuttoncontainer = document.createElement("div")
+		setStyle(screenshotbuttoncontainer, horizontalFlexCenterStyle)
+		screenshotbutton.appendChild(screenshotbuttoncontainer)
+
+		const screenshotbuttonIcon = downloadIcon()
+		screenshotbuttoncontainer.appendChild(screenshotbuttonIcon)
+
+		const screenshotbuttonText = document.createElement("span")
+		screenshotbuttonText.innerText = "Save Hologram"
+		screenshotbuttoncontainer.appendChild(screenshotbuttonText)
 
 		const copybutton = document.createElement("button")
 		copybutton.id = "copybutton"
-		setStyle(copybutton, button)
-		copybutton.innerText = "Copy Config"
+		setStyle(copybutton, button_noBackground)
+		
+		const copybuttoncontainer = document.createElement("div")
+		setStyle(copybuttoncontainer, horizontalFlexCenterStyle)
+		copybutton.appendChild(copybuttoncontainer)
+
+		const copybuttonIcon = copyIcon()
+		copybuttoncontainer.appendChild(copybuttonIcon)
+
+		const copybuttonText = document.createElement("span")
+		copybuttonText.innerText = "Copy Config"
+		copybuttoncontainer.appendChild(copybuttonText)
+
+
 		copybutton.addEventListener("click", () => {
-			copybutton.innerText = "Copied!"
+			copybuttonText.innerText = "Copied!"
 			copyConfigToClipboard(cfg)
 			setTimeout(() => {
-				copybutton.innerText = "Copy Config"
+				copybuttonText.innerText = "Copy Config"
 			}
 			, 300)
 		})
@@ -155,13 +176,13 @@ export function initLookingGlassControlGUI() {
 			// Create and append tab for "Center"
 			const centerTab = document.createElement("button");
 			centerTab.innerText = "Center";
-			setStyle(centerTab, tab_inactive)
+			setStyle(centerTab, cfg.inlineView === 1 ? tab_active : tab_inactive)
 			tabsContainer.appendChild(centerTab);
 
 			// Create and append tab for "Quilt"
 			const quiltTab = document.createElement("button");
 			quiltTab.innerText = "Quilt";
-			setStyle(quiltTab, tab_active)
+			setStyle(quiltTab, cfg.inlineView === 2 ? tab_active : tab_inactive)
 			tabsContainer.appendChild(quiltTab);
 
 			const updateValue = (newValue) => {
@@ -177,8 +198,6 @@ export function initLookingGlassControlGUI() {
 		
 			// Event listeners for tabs
 			quiltTab.onclick = () => {
-				console.log("quilt tab clicked");
-
 				quiltTab.classList.add('active');
 				setStyle(quiltTab, tab_active);
 
@@ -189,8 +208,6 @@ export function initLookingGlassControlGUI() {
 			};
 		
 			centerTab.onclick = () => {
-				console.log("center tab clicked");
-
 				centerTab.classList.add('active');
 				setStyle(centerTab, tab_active);
 
