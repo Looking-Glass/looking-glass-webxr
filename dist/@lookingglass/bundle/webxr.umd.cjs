@@ -7287,32 +7287,38 @@ host this content on a secure origin for the best user experience.
     }
     return out;
   }
-  async function LookingGlassMediaController() {
+  async function LookingGlassMediaController(screenshotbutton) {
     const cfg = getLookingGlassConfig();
     if (cfg.appCanvas == null) {
       console.warn("Media Capture initialized while canvas is null!");
       return;
     } else {
-      let downloadImage = function() {
-        if (cfg.appCanvas != null) {
-          console.time("capture");
-          let url = cfg.appCanvas.toDataURL("image/jpeg");
-          console.timeLog("capture");
-          console.timeEnd("capture");
-          const a = document.createElement("a");
-          a.style.display = "none";
-          a.href = url;
-          a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.jpeg`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          window.URL.revokeObjectURL(url);
-        }
-      };
-      const screenshotbutton = document.getElementById("screenshotbutton");
-      screenshotbutton == null ? void 0 : screenshotbutton.addEventListener("click", waitforDownload);
-      async function waitforDownload() {
-        await resolveWhenIdle.promise(50).finally(downloadImage);
+      console.log("Media Capture initialized");
+      screenshotbutton.onclick = async () => await waitforDownload();
+    }
+    async function waitforDownload() {
+      await resolveWhenIdle.promise(50).finally(downloadImage);
+    }
+    function downloadImage() {
+      if (cfg.appCanvas != null) {
+        console.time("capture");
+        console.log("capture started");
+        setTimeout(() => screenshotbutton.textContent = "Capturing...", 0);
+        let url = cfg.appCanvas.toDataURL("image/jpeg");
+        console.timeLog("capture");
+        console.timeEnd("capture");
+        console.log("saving capture");
+        setTimeout(() => screenshotbutton.textContent = "Saving...", 0);
+        const a = document.createElement("a");
+        a.style.display = "none";
+        a.href = url;
+        a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.jpeg`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        console.log("capture saved");
+        setTimeout(() => screenshotbutton.textContent = "Save Hologram", 125);
       }
     }
   }
@@ -7413,8 +7419,8 @@ host this content on a secure origin for the best user experience.
     alignItems: "left",
     padding: "0px",
     gap: "16px",
-    paddingRight: "24px",
-    paddingLeft: "24px"
+    paddingRight: "16px",
+    paddingLeft: "16px"
   };
   const sliderContainer = {
     order: 2,
@@ -7429,7 +7435,15 @@ host this content on a secure origin for the best user experience.
     alignItems: "center",
     width: "100%"
   };
+  const helpButtonStyle = {
+    border: "none",
+    background: "none",
+    cursor: "pointer",
+    opacity: "40%"
+  };
   const button = {
+    border: "none",
+    cursor: "pointer",
     background: "radial-gradient(76.09% 1304.32% at 87.24% 100%, #A055FA 0%, #5F15E8 100%)",
     width: "100%",
     height: "48px",
@@ -7447,9 +7461,14 @@ host this content on a secure origin for the best user experience.
   };
   const tab_container = {
     display: "flex",
-    flexDirection: "row"
+    flexDirection: "row",
+    background: "#28273F",
+    padding: "4px",
+    borderRadius: "8px"
   };
   const tab_active = {
+    border: "none",
+    cursor: "pointer",
     background: "radial-gradient(76.09% 1304.32% at 87.24% 100%, #A055FA 0%, #5F15E8 100%)",
     flexGrow: 1,
     height: "48px",
@@ -7464,6 +7483,8 @@ host this content on a secure origin for the best user experience.
     boxShadow: "none"
   };
   const tab_inactive = {
+    border: "none",
+    cursor: "pointer",
     background: "rgba(40, 39, 63, 0.90)",
     height: "48px",
     flexGrow: 1,
@@ -7501,9 +7522,9 @@ host this content on a secure origin for the best user experience.
   }
   function createSVG(containerStyle, paths, pathStyle) {
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    svg.setAttribute("width", "40");
-    svg.setAttribute("height", "40");
-    svg.setAttribute("viewBox", "0 0 40 40");
+    svg.setAttribute("width", containerStyle.width);
+    svg.setAttribute("height", containerStyle.height);
+    svg.setAttribute("viewBox", `0 0 ${containerStyle.width} ${containerStyle.height}`);
     svg.setAttribute("fill", "none");
     svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
     setPaths(svg, paths);
@@ -7523,12 +7544,25 @@ host this content on a secure origin for the best user experience.
     "M29 16.2743V23.6543C29 24.58 28.5114 25.4286 27.7143 25.8786L21.2857 29.5814C20.8871 29.8129 20.45 29.9286 20 29.9286C19.55 29.9286 19.1129 29.8129 18.7143 29.5814L18.0018 29.171C18.0022 29.0134 17.9894 28.8522 17.9624 28.6882C17.801 27.6951 17.4588 26.7641 16.9708 25.9295L19.11 27.21V20.6971L13.17 17.3V22.5773C12.5794 22.3251 11.9526 22.1412 11.2996 22.0352L11.2879 22.0333L11.2761 22.0316C11.1832 22.0176 11.0911 22.0082 11 22.0032V16.2743C11 15.3486 11.4886 14.5 12.2857 14.0371L18.7143 10.3471C19.1129 10.1157 19.55 10 20 10C20.45 10 20.8871 10.1157 21.2857 10.3471L27.7143 14.05C28.5114 14.5 29 15.3486 29 16.2743ZM15.6704 27.8281L12.2857 25.8786C11.5941 25.4881 11.1347 24.7977 11.0253 24.0171L11.0323 24.0183C11.2863 24.0618 11.5349 24.121 11.7771 24.195C13.5676 24.7418 15.0071 26.0923 15.6704 27.8281ZM14.31 15.5029L20 18.87L25.69 15.5029L20 12.07L14.31 15.5029ZM20.89 27.21L26.83 23.6543V17.3L20.89 20.6971V27.21Z",
     "M10 30L10 27.3992C11.4387 27.3992 12.6 28.5609 12.6 30L10 30ZM15.122 30C14.6974 30 14.342 29.6879 14.2727 29.2631C13.9607 27.4599 12.5394 26.0381 10.7367 25.726C10.312 25.6566 10 25.3012 10 24.8764C10 24.3475 10.4593 23.9314 10.9793 24.0094C13.5447 24.4256 15.5727 26.4455 15.9887 29.0117C16.0754 29.5319 15.6507 30 15.122 30Z"
   ];
+  const QuestionMarkIconPaths = [
+    "M2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22C6.48 22 2 17.52 2 12ZM11.94 18.43C12.6138 18.43 13.16 17.8838 13.16 17.21C13.16 16.5362 12.6138 15.99 11.94 15.99C11.2662 15.99 10.72 16.5362 10.72 17.21C10.72 17.8838 11.2662 18.43 11.94 18.43ZM13.3319 13.415C13.342 13.3946 13.3522 13.3742 13.3624 13.364C13.6395 12.9577 14.0255 12.6192 14.4168 12.2761C15.3197 11.4846 16.2508 10.6682 15.9383 8.93513C15.643 7.21448 14.2685 5.79926 12.5479 5.54472C10.4505 5.23928 8.5975 6.53232 8.03752 8.38534C7.86444 8.97586 8.31242 9.57656 8.92331 9.57656H9.12693C9.54437 9.57656 9.88036 9.2813 10.0229 8.91477C10.3487 8.00863 11.3058 7.38756 12.3646 7.61155C13.342 7.81518 14.0547 8.78241 13.9631 9.78019C13.8941 10.5576 13.3388 10.9875 12.7225 11.4647C12.3379 11.7624 11.9296 12.0785 11.601 12.5088L11.5908 12.4986C11.5732 12.5163 11.5589 12.5407 11.5442 12.5661C11.5334 12.5846 11.5223 12.6036 11.5094 12.6208C11.4941 12.6463 11.4763 12.6717 11.4585 12.6972C11.4407 12.7226 11.4228 12.7481 11.4076 12.7735C11.3159 12.9161 11.2447 13.0586 11.1836 13.2215C11.1785 13.2419 11.1683 13.2571 11.1581 13.2724C11.1479 13.2877 11.1378 13.303 11.1327 13.3233C11.1225 13.3335 11.1225 13.3437 11.1225 13.3539C11.0003 13.7204 10.9189 14.1582 10.9189 14.6775H12.9653C12.9653 14.4229 12.9959 14.1989 13.0671 13.9851C13.0875 13.9138 13.118 13.8426 13.1486 13.7713C13.1588 13.7306 13.169 13.6899 13.1893 13.6593C13.23 13.5779 13.2809 13.4964 13.3318 13.415L13.3319 13.415Z"
+  ];
+  const helpContainer = {
+    width: "24px",
+    height: "24px",
+    fill: "none",
+    xmlns: "http://www.w3.org/2000/svg"
+  };
   const svgContainer = {
     width: "40px",
     height: "40px",
     fill: "none",
     xmlns: "http://www.w3.org/2000/svg"
   };
+  function helpIcon() {
+    let icon = createSVG(helpContainer, QuestionMarkIconPaths);
+    return icon;
+  }
   function castIcon() {
     let icon = createSVG(svgContainer, castIconPaths);
     return icon;
@@ -7590,25 +7624,31 @@ host this content on a secure origin for the best user experience.
         tabsContainer.style.marginBottom = "8px";
         setStyle(tabsContainer, tab_container);
         controlListDiv.appendChild(tabsContainer);
-        const quiltTab = document.createElement("button");
-        quiltTab.innerText = "Quilt";
-        setStyle(quiltTab, tab_active);
-        tabsContainer.appendChild(quiltTab);
         const centerTab = document.createElement("button");
         centerTab.innerText = "Center";
         setStyle(centerTab, tab_inactive);
         tabsContainer.appendChild(centerTab);
+        const quiltTab = document.createElement("button");
+        quiltTab.innerText = "Quilt";
+        setStyle(quiltTab, tab_active);
+        tabsContainer.appendChild(quiltTab);
         const updateValue = (newValue) => {
           cfg[name] = newValue;
         };
         quiltTab.onclick = () => {
+          console.log("quilt tab clicked");
           quiltTab.classList.add("active");
+          setStyle(quiltTab, tab_active);
           centerTab.classList.remove("active");
+          setStyle(centerTab, tab_inactive);
           updateValue("2");
         };
         centerTab.onclick = () => {
+          console.log("center tab clicked");
           centerTab.classList.add("active");
+          setStyle(centerTab, tab_active);
           quiltTab.classList.remove("active");
+          setStyle(quiltTab, tab_inactive);
           updateValue("1");
         };
         return tabsContainer;
@@ -7638,13 +7678,23 @@ host this content on a secure origin for the best user experience.
       const container = document.createElement("div");
       c.appendChild(container);
       setStyle(container, controlsContainer);
+      const titleWrapper = document.createElement("div");
+      setStyle(titleWrapper, heading);
+      container.appendChild(titleWrapper);
       const title = document.createElement("div");
       setStyle(title, heading);
-      container.appendChild(title);
+      titleWrapper.appendChild(title);
       const text = document.createElement("span");
       text.innerText = "Casting to Looking Glass";
       title.appendChild(castIcon());
       title.appendChild(text);
+      const helpButton = document.createElement("button");
+      titleWrapper.appendChild(helpButton);
+      setStyle(helpButton, helpButtonStyle);
+      helpButton.appendChild(helpIcon());
+      helpButton.onclick = () => {
+        window.open("https://docs.lookingglassfactory.com/developer-tools/webxr", "_blank");
+      };
       const screenshotbutton = document.createElement("button");
       setStyle(screenshotbutton, button);
       screenshotbutton.id = "screenshotbutton";
@@ -7654,7 +7704,11 @@ host this content on a secure origin for the best user experience.
       setStyle(copybutton, button);
       copybutton.innerText = "Copy Config";
       copybutton.addEventListener("click", () => {
+        copybutton.innerText = "Copied!";
         copyConfigToClipboard(cfg);
+        setTimeout(() => {
+          copybutton.innerText = "Copy Config";
+        }, 300);
       });
       const controlListDiv = document.createElement("div");
       controlListDiv.style.display = "inline-flex";
@@ -7734,7 +7788,7 @@ host this content on a secure origin for the best user experience.
       });
       addControl("depthiness", { type: "range", min: 0, max: 2, step: 0.01 }, {
         label: "Depthiness",
-        title: 'exaggerates depth by multiplying the width of the view cone (as reported by the firmware) - can somewhat compensate for depthiness lost using higher fov. 1.25 seems to be most physically accurate on Looking Glass 8.9".',
+        title: "exaggerates depth by multiplying the width of the view cone",
         fixRange: (v) => Math.max(0, v),
         stringify: (v) => `${v.toFixed(2)}x`
       });
@@ -7799,7 +7853,7 @@ host this content on a secure origin for the best user experience.
       });
       requestAnimationFrame(flyCamera);
       setTimeout(() => {
-        LookingGlassMediaController();
+        LookingGlassMediaController(screenshotbutton);
       }, 1e3);
       return c;
     }

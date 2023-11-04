@@ -17,7 +17,6 @@
 import XRWebGLLayer, { PRIVATE as XRWebGLLayer_PRIVATE } from "@lookingglass/webxr-polyfill/src/api/XRWebGLLayer"
 import { Shader } from "holoplay-core"
 import { getLookingGlassConfig } from "./LookingGlassConfig"
-import { initLookingGlassControlGUI } from "./LookingGlassControls"
 import { moveCanvasToWindow } from "./LookingGlassWindow"
 
 export const PRIVATE = Symbol("LookingGlassXRWebGLLayer")

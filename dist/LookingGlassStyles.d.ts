@@ -60,17 +60,6 @@ export declare const slider: {
     cursor: string;
     width: string;
 };
-export declare const sliderThumb: {
-    background: string;
-    border: string;
-    boxShadow: string;
-    borderRadius: string;
-};
-export declare const sliderTrack: {
-    background: string;
-    backdropFilter: string;
-    borderRadius: string;
-};
 export declare const horizontalFlexBoxStyle: {
     display: string;
     flexDirection: string;
@@ -78,7 +67,15 @@ export declare const horizontalFlexBoxStyle: {
     alignItems: string;
     width: string;
 };
+export declare const helpButtonStyle: {
+    border: string;
+    background: string;
+    cursor: string;
+    opacity: string;
+};
 export declare const button: {
+    border: string;
+    cursor: string;
     background: string;
     width: string;
     height: string;
@@ -97,8 +94,13 @@ export declare const button: {
 export declare const tab_container: {
     display: string;
     flexDirection: string;
+    background: string;
+    padding: string;
+    borderRadius: string;
 };
 export declare const tab_active: {
+    border: string;
+    cursor: string;
     background: string;
     flexGrow: number;
     height: string;
@@ -113,6 +115,8 @@ export declare const tab_active: {
     boxShadow: string;
 };
 export declare const tab_inactive: {
+    border: string;
+    cursor: string;
     background: string;
     height: string;
     flexGrow: number;
@@ -150,6 +154,7 @@ export declare const webXRButton: {
  * set the style of an HTML or SVG Element with a javascript object, this only sets the style, and not other attributes.
  */
 export declare function setStyle(element: HTMLElement | SVGElement, style: any): void;
+export declare function helpIcon(): SVGSVGElement;
 export declare function castIcon(): SVGSVGElement;
 export declare function FOVindicators(containerDiv: HTMLDivElement): string[];
 export declare function DepthinessIndicators(containerDiv: HTMLDivElement): string[];

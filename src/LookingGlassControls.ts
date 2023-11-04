@@ -1,6 +1,6 @@
 import { getLookingGlassConfig } from "./LookingGlassConfig"
 import { LookingGlassMediaController } from "./LookingGlassMediaController"
-import { containerRoot, setStyle, button, controlsContainer, heading, heading6, sliderContainer, slider, castIcon, FOVindicators, DepthinessIndicators, tab_active, tab_inactive, tab_container } from './LookingGlassStyles';
+import { containerRoot, setStyle, button, controlsContainer, heading, heading6, sliderContainer, slider, castIcon, FOVindicators, DepthinessIndicators, tab_active, tab_inactive, tab_container, helpIcon, helpButtonStyle } from './LookingGlassStyles';
 
 //lkgCanvas is stored in the Looking Glass config after being created.
 export function initLookingGlassControlGUI() {
@@ -21,13 +21,27 @@ export function initLookingGlassControlGUI() {
 		c.appendChild(container)
 		setStyle(container, controlsContainer)
 
+		const titleWrapper = document.createElement("div")
+		setStyle(titleWrapper, heading)
+		container.appendChild(titleWrapper)
+
 		const title = document.createElement("div")
 		setStyle(title, heading)
-		container.appendChild(title)
+		titleWrapper.appendChild(title)
+
 		const text = document.createElement("span")
 		text.innerText = "Casting to Looking Glass"
 		title.appendChild(castIcon())
 		title.appendChild(text)
+
+		const helpButton = document.createElement("button")
+		titleWrapper.appendChild(helpButton)
+		setStyle(helpButton, helpButtonStyle)
+		helpButton.appendChild(helpIcon())
+
+		helpButton.onclick = () => {
+			window.open("https://docs.lookingglassfactory.com/developer-tools/webxr", "_blank")
+		}
 
 		const screenshotbutton = document.createElement("button")
 		setStyle(screenshotbutton, button)
@@ -39,17 +53,13 @@ export function initLookingGlassControlGUI() {
 		setStyle(copybutton, button)
 		copybutton.innerText = "Copy Config"
 		copybutton.addEventListener("click", () => {
+			copybutton.innerText = "Copied!"
 			copyConfigToClipboard(cfg)
+			setTimeout(() => {
+				copybutton.innerText = "Copy Config"
+			}
+			, 300)
 		})
-
-		// const help = document.createElement("div")
-		// container.appendChild(help)
-		// help.style.width = "290px"
-		// help.style.whiteSpace = "normal"
-		// help.style.color = "rgba(255,255,255,0.7)"
-		// help.style.fontSize = "14px"
-		// help.style.margin = "5px 0"
-		// help.innerHTML = "Click the popup and use WASD, mouse left/right drag, and scroll."
 
 		const controlListDiv = document.createElement("div")
 		controlListDiv.style.display = "inline-flex"
@@ -142,17 +152,17 @@ export function initLookingGlassControlGUI() {
 			setStyle(tabsContainer, tab_container)
 			controlListDiv.appendChild(tabsContainer);
 		
-			// Create and append tab for "Quilt"
-			const quiltTab = document.createElement("button");
-			quiltTab.innerText = "Quilt";
-			setStyle(quiltTab, tab_active)
-			tabsContainer.appendChild(quiltTab);
-		
 			// Create and append tab for "Center"
 			const centerTab = document.createElement("button");
 			centerTab.innerText = "Center";
 			setStyle(centerTab, tab_inactive)
 			tabsContainer.appendChild(centerTab);
+
+			// Create and append tab for "Quilt"
+			const quiltTab = document.createElement("button");
+			quiltTab.innerText = "Quilt";
+			setStyle(quiltTab, tab_active)
+			tabsContainer.appendChild(quiltTab);
 
 			const updateValue = (newValue) => {
 				cfg[name] = newValue
@@ -167,14 +177,26 @@ export function initLookingGlassControlGUI() {
 		
 			// Event listeners for tabs
 			quiltTab.onclick = () => {
+				console.log("quilt tab clicked");
+
 				quiltTab.classList.add('active');
+				setStyle(quiltTab, tab_active);
+
 				centerTab.classList.remove('active');
+				setStyle(centerTab, tab_inactive);
+				
 				updateValue('2');
 			};
 		
 			centerTab.onclick = () => {
+				console.log("center tab clicked");
+
 				centerTab.classList.add('active');
+				setStyle(centerTab, tab_active);
+
 				quiltTab.classList.remove('active');
+				setStyle(quiltTab, tab_inactive);
+				
 				updateValue('1');
 			};
 		
@@ -205,7 +227,7 @@ export function initLookingGlassControlGUI() {
 			{
 				label: "Depthiness",
 				title:
-					'exaggerates depth by multiplying the width of the view cone (as reported by the firmware) - can somewhat compensate for depthiness lost using higher fov. 1.25 seems to be most physically accurate on Looking Glass 8.9".',
+					'exaggerates depth by multiplying the width of the view cone',
 				fixRange: (v) => Math.max(0, v),
 				stringify: (v) => `${v.toFixed(2)}x`,
 			}
@@ -298,7 +320,7 @@ export function initLookingGlassControlGUI() {
 
 		// start the media controller after the buttons have been initialized
 		setTimeout(() => {
-			LookingGlassMediaController()
+			LookingGlassMediaController(screenshotbutton)
 		}, 1000)
 
 		return c
