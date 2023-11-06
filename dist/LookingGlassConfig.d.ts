@@ -52,7 +52,7 @@ export declare type ViewControlArgs = {
      * Defines the number of views to be rendered, overrides quilt settings
      * @default null
      */
-    numViews: number | null;
+    numViews: number;
     /**
      * Defines the rotation of the camera on the X-axis
      * @default 0
@@ -153,8 +153,8 @@ export declare class LookingGlassConfig extends EventTarget {
     /**
      * defines the number of views to be rendered, this value overrides the quilt settings if set
      */
-    get numViews(): number | null;
-    set numViews(v: number | null);
+    get numViews(): number;
+    set numViews(v: number);
     /**
      * defines the position of the camera on the X-axis
      */
