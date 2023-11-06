@@ -1,51 +1,60 @@
 import { getLookingGlassConfig } from "./LookingGlassConfig"
 import LookingGlassXRDevice from "./LookingGlassXRDevice"
 
-export async function LookingGlassMediaController() {
-	const cfg = getLookingGlassConfig()
-	let currentInlineView = 2 // we change this value later when the screenshot capture starts.
+export async function LookingGlassMediaController(screenshotbutton: HTMLButtonElement) {
 
-	// the function to download the image from the canvas
-	function downloadImage() {
-		if (cfg.appCanvas != null) {
-			try {
-				let url = cfg.appCanvas.toDataURL()
-				const a = document.createElement("a")
-				a.style.display = "none"
-				a.href = url
-				a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.png`
-				document.body.appendChild(a)
-				a.click()
-				document.body.removeChild(a)
-				window.URL.revokeObjectURL(url)
-			} catch (error) {
-				console.error("Error while capturing canvas data:", error)
-			} finally {
-				// Reset inlineView value to its initial value
-				cfg.inlineView = currentInlineView
-			}
-		}
+	const cfg = getLookingGlassConfig();
+
+	if (cfg.appCanvas == null) {
+		console.warn('Media Capture initialized while canvas is null!')
+		return
+	}
+	else {
+		screenshotbutton.onclick = async () => (await waitforDownload())
 	}
 
-	const screenshotButton = document.getElementById("screenshotbutton") as HTMLButtonElement | null
-	// add screenshot button listener, this calls the downloadImage function only at the end of the frame loop
-	if (screenshotButton) {
-		screenshotButton.addEventListener("click", () => {
-			currentInlineView = cfg.inlineView
-			const xrDevice = LookingGlassXRDevice.getInstance()
-			if (!xrDevice) {
-				console.warn("LookingGlassXRDevice not initialized")
-				return
+	async function waitforDownload() {
+		await resolveWhenIdle.promise( 50 ).finally(downloadImage)
+	}
+
+	function downloadImage() {
+		// capturing must be set to true before downloading an image in order to capture a high quality quilt. TODO: manually grab XRsession framebuffer instead
+		    if (cfg.appCanvas != null) {
+			console.time("capture")
+			setTimeout(() => (screenshotbutton.textContent = "Capturing..."), 0);
+
+			let url = cfg.appCanvas.toDataURL('image/jpeg')
+			console.timeLog("capture")
+			console.timeEnd("capture")
+
+			setTimeout(() => (screenshotbutton.textContent = "Saving..."), 0);
+
+			const a = document.createElement("a")
+			a.style.display = "none"
+			a.href = url
+			  a.download = `hologram_qs${cfg.quiltWidth}x${cfg.quiltHeight}a${cfg.aspect}.jpeg`;
+			document.body.appendChild(a)
+			a.click()
+			document.body.removeChild(a)
+			window.URL.revokeObjectURL(url)
+
+			setTimeout(() => (screenshotbutton.textContent = "Save Hologram"), 125);
 			}
-
-			// set inlineView to quilt before capturing the screenshot
-			cfg.inlineView = 2
-			xrDevice.captureScreenshot = true
-
-			// set the screenshotCallback to downloadImage after the next frame is rendered
-			setTimeout(() => {
-				xrDevice.screenshotCallback = downloadImage
-			}, 100)
-		})
 	}
 }
+
+// make request and cancel generic to support most browsers
+const idleOptions = { timeout: 500 };
+const request = window.requestIdleCallback || window.requestAnimationFrame;
+const cancel = window.cancelIdleCallback || window.cancelAnimationFrame;
+
+
+// controllable promise
+const resolveWhenIdle = {
+  request: request,
+  cancel: cancel,
+  promise: (num) => new Promise((resolve) => request(resolve, Object.assign({}, idleOptions, num))),
+};
+
+export { resolveWhenIdle };
+
