@@ -105,7 +105,6 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 				gl.framebufferRenderbuffer(gl.FRAMEBUFFER, dsConfig.attachment, gl.RENDERBUFFER, depthStencil)
 			}
 			gl.bindFramebuffer(gl.FRAMEBUFFER, oldFramebufferBinding)
-			console.log(performance.now().toFixed(2), 'setupFramebuffer', oldFramebufferBinding);
 		}
 
 		allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg)
