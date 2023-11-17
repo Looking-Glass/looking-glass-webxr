@@ -71,8 +71,11 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 			depthStencil = gl.createRenderbuffer()
 		}
 		// utility functions for allocating the framebuffer resources
-
+		let allocatedFramebufferWidth = NaN
+		let allocatedFramebufferHeight = NaN
 		const allocateFramebufferAttachments = (gl, texture, depthStencil, dsConfig, cfg) => {
+			allocatedFramebufferWidth = cfg.framebufferWidth
+			allocatedFramebufferHeight = cfg.framebufferHeight
 			allocateTexture(gl, texture, cfg.framebufferWidth, cfg.framebufferHeight)
 			if (depthStencil) {
 				allocateDepthStencil(gl, depthStencil, dsConfig, cfg.framebufferWidth, cfg.framebufferHeight)
@@ -102,10 +105,19 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 				gl.framebufferRenderbuffer(gl.FRAMEBUFFER, dsConfig.attachment, gl.RENDERBUFFER, depthStencil)
 			}
 			gl.bindFramebuffer(gl.FRAMEBUFFER, oldFramebufferBinding)
+			console.log(performance.now().toFixed(2), 'setupFramebuffer', oldFramebufferBinding);
 		}
 
 		allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg)
-		cfg.addEventListener("on-config-changed", () => allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg))
+		cfg.addEventListener("on-config-changed", () => {
+			// only reallocate textures if framebuffer size has changed
+			if (
+				cfg.framebufferWidth !== allocatedFramebufferWidth ||
+				cfg.framebufferHeight !== allocatedFramebufferHeight
+			) {
+				allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg)
+			}
+		});
 
 		setupFramebuffer(gl, framebuffer, texture, dsConfig, depthStencil, config)
 
