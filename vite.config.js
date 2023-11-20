@@ -19,7 +19,7 @@ export default defineConfig(({ mode }) => {
 	if (mode === "dev") {
 		return {
 			server: {
-				port: 5173,
+				port: 3002,
 				https: false,
 			},
 			publicDir: false,
