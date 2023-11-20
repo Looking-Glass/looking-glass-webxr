@@ -12,7 +12,7 @@
       "require": "./dist/webxr.umd.cjs"
     }
   },
-  "version": "0.4.0",
+  "version": "0.5.0-alpha.0",
   "license": "Apache-2.0",
   "private": false,
   "description": "Official WebXR implementation for Looking Glass Holographic Displays.",
@@ -32,7 +32,7 @@
     "@rollup/plugin-replace": "^5.0.1",
     "@rollup/plugin-typescript": "^9.0.2",
     "rollup-plugin-typescript-paths": "^1.4.0",
-    "three": "^0.146.0",
+    "three": "0.157.0",
     "tslib": "^2.4.1",
     "typescript": "^4.8.4",
     "vite": "^3.1.2",
