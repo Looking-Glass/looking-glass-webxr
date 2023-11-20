@@ -15,7 +15,7 @@
  */
 import XRWebGLLayer from "@lookingglass/webxr-polyfill/src/api/XRWebGLLayer";
 export declare const PRIVATE: unique symbol;
-export declare type Viewport = {
+export type Viewport = {
     0: any;
 };
 export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
