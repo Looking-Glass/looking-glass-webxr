@@ -1,18 +1,10 @@
-.threejs-iframe {
-    border-radius: 20px;
-    border: solid white 1px;
-    width: 400px;
-    height: 600px;
-}
-
 body {
     background-color: #000;
     font-family: Haasgrotdisp, sans-serif;
     color: #fff;
     font-size: 100%;
     line-height: 1;
-    margin-left: 32px;
-    margin-top: 16px;
+    margin: auto 16px;
   }
   
   h1 {
@@ -99,12 +91,60 @@ body {
     text-align: center;
   }
 
-  .box {
+  #main-page {
+    margin: 0.4em;
+  }
+
+  .description {
+    margin: 1em 0 2em 0;
+  }
+
+  .page-section {
+    margin-bottom: 40px; 
+  }
+
+  .page-section h2 {
+    margin: .5em;
+  }
+
+  .example-grid {
     display: flex;
-    justify-content: left;
+    flex-flow: row wrap;
+    justify-content: flex-start;
     gap: 32px;
+  }
+
+  .example {
+    padding: 0;
+    margin: 0;
+  }
+
+  .scene {
     width: 400px;
-    height: 600px;
+    height: 700px;
+  }
+
+  /* Small screens */
+  @media all and (max-width: 900px) {
+    .example-grid {
+      /* On small screens, try using columns instead of rows */
+      flex-flow: column wrap;
+      /* Make this asymetrical to leave room for a thumb track */
+      padding-right: 40px;
+    }
+
+    .scene {
+      width: 100%;
+      height: 500px;
+    }
+  }
+
+  /* three-iframe settings */
+  .threejs-iframe {
+    border-radius: 20px;
+    border: solid white 1px;
+    width: 100%;
+    height: 100%;
   }
 
   .xrbutton {
