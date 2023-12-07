@@ -49,8 +49,8 @@ export type ViewControlArgs = {
      */
     tileHeight: number;
     /**
-     * Defines the number of views to be rendered
-     * @default 45
+     * Defines the number of views to be rendered, overrides quilt settings
+     * @default null
      */
     numViews: number;
     /**
@@ -151,9 +151,10 @@ export declare class LookingGlassConfig extends EventTarget {
     get quiltResolution(): number;
     set quiltResolution(v: number);
     /**
-     * defines the number of views to be rendered
+     * defines the number of views to be rendered, this value overrides the quilt settings if set
      */
     get numViews(): number;
+    set numViews(v: number);
     /**
      * defines the position of the camera on the X-axis
      */

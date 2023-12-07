@@ -71,8 +71,11 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 			depthStencil = gl.createRenderbuffer()
 		}
 		// utility functions for allocating the framebuffer resources
-
+		let allocatedFramebufferWidth = NaN
+		let allocatedFramebufferHeight = NaN
 		const allocateFramebufferAttachments = (gl, texture, depthStencil, dsConfig, cfg) => {
+			allocatedFramebufferWidth = cfg.framebufferWidth
+			allocatedFramebufferHeight = cfg.framebufferHeight
 			allocateTexture(gl, texture, cfg.framebufferWidth, cfg.framebufferHeight)
 			if (depthStencil) {
 				allocateDepthStencil(gl, depthStencil, dsConfig, cfg.framebufferWidth, cfg.framebufferHeight)
@@ -105,7 +108,15 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 		}
 
 		allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg)
-		cfg.addEventListener("on-config-changed", () => allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg))
+		cfg.addEventListener("on-config-changed", () => {
+			// only reallocate textures if framebuffer size has changed
+			if (
+				cfg.framebufferWidth !== allocatedFramebufferWidth ||
+				cfg.framebufferHeight !== allocatedFramebufferHeight
+			) {
+				allocateFramebufferAttachments(gl, texture, depthStencil, dsConfig, cfg)
+			}
+		});
 
 		setupFramebuffer(gl, framebuffer, texture, dsConfig, depthStencil, config)
 
@@ -279,8 +290,12 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 		// Utility functions to handle WebGL state
 
 		function restoreWebGLState(oldState) {
+			// restore texture slot 0 binding
+			gl.activeTexture(gl.TEXTURE0)
+			gl.bindTexture(gl.TEXTURE_2D, oldState.texture0Binding)
+
+			// restore previously active texture slot
 			gl.activeTexture(oldState.activeTexture)
-			gl.bindTexture(gl.TEXTURE_2D, oldState.textureBinding)
 			gl.useProgram(oldState.program)
 			gl.bindRenderbuffer(gl.RENDERBUFFER, oldState.renderbufferBinding)
 			gl.bindFramebuffer(gl.FRAMEBUFFER, oldState.framebufferBinding)
@@ -324,7 +339,13 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 		 * @returns {Object} The current WebGL state
 		 */
 		function saveWebGLState() {
-			return {
+			// save the currently active texture slot
+			let activeTextureSlot = gl.getParameter(gl.ACTIVE_TEXTURE);
+			// save the texture in slot 0, since we will overwrite it
+			gl.activeTexture(gl.TEXTURE0);
+			let texture0Binding = gl.getParameter(gl.TEXTURE_BINDING_2D);
+
+			let state = {
 				VAO: gl.getParameter(gl.VERTEX_ARRAY_BINDING),
 				cullFace: gl.getParameter(gl.CULL_FACE),
 				blend: gl.getParameter(gl.BLEND),
@@ -335,9 +356,11 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 				framebufferBinding: gl.getParameter(gl.FRAMEBUFFER_BINDING),
 				renderbufferBinding: gl.getParameter(gl.RENDERBUFFER_BINDING),
 				program: gl.getParameter(gl.CURRENT_PROGRAM),
-				activeTexture: gl.getParameter(gl.ACTIVE_TEXTURE),
-				textureBinding: gl.getParameter(gl.TEXTURE_BINDING_2D),
+				activeTexture: activeTextureSlot, // active texture slot
+				texture0Binding: texture0Binding,
 			}
+
+			return state;
 		}
 		/**
 		 * Set up the WebGL state for rendering

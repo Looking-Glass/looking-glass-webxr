@@ -1,7 +1,8 @@
 import { getLookingGlassConfig } from "./LookingGlassConfig"
 import LookingGlassXRDevice from "./LookingGlassXRDevice"
 
-export async function LookingGlassMediaController() {
+export async function LookingGlassMediaController(screenshotbutton: HTMLButtonElement) {
+
 	const cfg = getLookingGlassConfig()
 	let currentInlineView = 2 // we change this value later when the screenshot capture starts.
 
@@ -26,11 +27,9 @@ export async function LookingGlassMediaController() {
 			}
 		}
 	}
-
-	const screenshotButton = document.getElementById("screenshotbutton") as HTMLButtonElement | null
 	// add screenshot button listener, this calls the downloadImage function only at the end of the frame loop
-	if (screenshotButton) {
-		screenshotButton.addEventListener("click", () => {
+	if (screenshotbutton) {
+		screenshotbutton.addEventListener("click", () => {
 			currentInlineView = cfg.inlineView
 			const xrDevice = LookingGlassXRDevice.getInstance()
 			if (!xrDevice) {
@@ -49,3 +48,4 @@ export async function LookingGlassMediaController() {
 		})
 	}
 }
+

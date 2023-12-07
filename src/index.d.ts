@@ -25,6 +25,7 @@ declare module "@lookingglass/webxr-polyfill/src/devices/XRDevice" {
 		public LookingGlassInverseViewMatrices: any[];
         public captureScreenshot: boolean;
         public screenshotCallback: any;
+        public views: number;
 	}
 }
 

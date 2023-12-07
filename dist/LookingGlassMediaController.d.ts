@@ -1,1 +1,1 @@
-export declare function LookingGlassMediaController(): Promise<void>;
+export declare function LookingGlassMediaController(screenshotbutton: HTMLButtonElement): Promise<void>;
