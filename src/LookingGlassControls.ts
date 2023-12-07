@@ -175,13 +175,17 @@ export function initLookingGlassControlGUI() {
 		
 			// Create and append tab for "Center"
 			const centerTab = document.createElement("button");
-			centerTab.innerText = "Center";
+			const centerText = document.createElement("span");
+			centerText.innerText = "Center";
+			centerTab.appendChild(centerText);
 			setStyle(centerTab, cfg.inlineView === 1 ? tab_active : tab_inactive)
 			tabsContainer.appendChild(centerTab);
 
 			// Create and append tab for "Quilt"
 			const quiltTab = document.createElement("button");
-			quiltTab.innerText = "Quilt";
+			const quiltText = document.createElement("span");
+			quiltText.innerText = "Quilt";
+			quiltTab.appendChild(quiltText);
 			setStyle(quiltTab, cfg.inlineView === 2 ? tab_active : tab_inactive)
 			tabsContainer.appendChild(quiltTab);
 
