@@ -24,6 +24,8 @@ export const moveCanvasToWindow = (enabled: boolean, onbeforeunload) => {
 	cfg.lkgCanvas.style.position = "fixed"
 	cfg.lkgCanvas.style.bottom = "0"
 	cfg.lkgCanvas.style.left = "0"
+	cfg.lkgCanvas.style.width = "100%"
+	cfg.lkgCanvas.style.height = "100%"
 
 	cfg.lkgCanvas.width = cfg.calibration.screenW.value
 	cfg.lkgCanvas.height = cfg.calibration.screenH.value
