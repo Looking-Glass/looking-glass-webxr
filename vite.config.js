@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
         port: 5173,
         https: false,
       },
-      publicDir: "public",
+      publicDir: false,
       build: {
         minify: false,
         lib: {
