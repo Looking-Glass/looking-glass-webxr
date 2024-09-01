@@ -4,8 +4,8 @@
   "files": [
     "dist"
   ],
-  "main": "./dist/webxr.umd.cjs",
-  "module": "./dist/webxr.js",
+  "main": "./dist/@lookingglass/webxr.umd.cjs",
+  "module": "./dist/@lookingglass/webxr.js",
   "exports": {
     ".": {
       "import": "./dist/webxr.js",
