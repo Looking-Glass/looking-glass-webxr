@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import WebXRPolyfill from "@lookingglass/webxr-polyfill/src/WebXRPolyfill";
-import { ViewControlArgs } from "./LookingGlassConfig";
+import { CalibrationArgs, ViewControlArgs } from "./LookingGlassConfig";
 import LookingGlassXRDevice from "./LookingGlassXRDevice";
 export declare class LookingGlassWebXRPolyfill extends WebXRPolyfill {
     private vrButton;
@@ -30,6 +30,7 @@ export declare class LookingGlassWebXRPolyfill extends WebXRPolyfill {
     /** Refresh the current state of the VRButton */
     private updateVRButtonUI;
     update(cfg: Partial<ViewControlArgs>): void;
+    setCalibration(calibration: CalibrationArgs): void;
 }
 /**
  * Get the global Looking Glass Config.

@@ -270,4 +270,5 @@ export declare class LookingGlassConfig extends EventTarget {
 export declare function getLookingGlassConfig(): LookingGlassConfig;
 /** Update the global LookingGlassConfig's viewControls */
 export declare function updateLookingGlassConfig(viewControls: Partial<ViewControlArgs> | undefined): void;
+export declare function updateLookingGlassCalibration(calibration: CalibrationArgs): void;
 export {};

@@ -17,7 +17,7 @@
 import API from "@lookingglass/webxr-polyfill/src/api/index"
 import XRSystem from "@lookingglass/webxr-polyfill/src/api/XRSystem"
 import WebXRPolyfill from "@lookingglass/webxr-polyfill/src/WebXRPolyfill"
-import { getLookingGlassConfig, updateLookingGlassConfig, ViewControlArgs } from "./LookingGlassConfig"
+import { CalibrationArgs, getLookingGlassConfig, updateLookingGlassCalibration, updateLookingGlassConfig, ViewControlArgs } from "./LookingGlassConfig"
 import LookingGlassXRDevice from "./LookingGlassXRDevice"
 import LookingGlassXRWebGLLayer from "./LookingGlassXRWebGLLayer"
 
@@ -102,6 +102,10 @@ export class LookingGlassWebXRPolyfill extends WebXRPolyfill {
 
 	public update(cfg: Partial<ViewControlArgs>) {
 		updateLookingGlassConfig(cfg)
+	}
+
+	public setCalibration(calibration: CalibrationArgs) {
+		updateLookingGlassCalibration(calibration)
 	}
 }
 
