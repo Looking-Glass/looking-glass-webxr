@@ -668,3 +668,8 @@ export function updateLookingGlassConfig(viewControls: Partial<ViewControlArgs> 
 		lkgConfig.updateViewControls(viewControls)
 	}
 }
+
+export function updateLookingGlassCalibration(calibration: CalibrationArgs) {
+	const lkgConfig = getLookingGlassConfig()
+	lkgConfig.calibration = calibration
+}

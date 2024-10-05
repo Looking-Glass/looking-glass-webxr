@@ -362,7 +362,11 @@ function z(t) {
   const i = S();
   t != null && i.updateViewControls(t);
 }
-async function we() {
+function we(t) {
+  const i = S();
+  i.calibration = t;
+}
+async function ge() {
   const t = S();
   let i = 2;
   async function e() {
@@ -393,7 +397,7 @@ async function we() {
     }, 100);
   });
 }
-function ge() {
+function ye() {
   var i, e, n, s, o;
   const t = S();
   if (t.lkgCanvas == null)
@@ -402,8 +406,8 @@ function ge() {
     let u = function() {
       let a = d.d - d.a, r = d.w - d.s;
       a && r && (a *= Math.sqrt(0.5), r *= Math.sqrt(0.5));
-      const l = t.trackballX, h = t.trackballY, m = Math.cos(l) * a - Math.sin(l) * Math.cos(h) * r, C = -Math.sin(h) * r, M = -Math.sin(l) * a - Math.cos(l) * Math.cos(h) * r;
-      t.targetX = t.targetX + m * t.targetDiam * 0.03, t.targetY = t.targetY + C * t.targetDiam * 0.03, t.targetZ = t.targetZ + M * t.targetDiam * 0.03, requestAnimationFrame(u);
+      const l = t.trackballX, h = t.trackballY, m = Math.cos(l) * a - Math.sin(l) * Math.cos(h) * r, C = -Math.sin(h) * r, k = -Math.sin(l) * a - Math.cos(l) * Math.cos(h) * r;
+      t.targetX = t.targetX + m * t.targetDiam * 0.03, t.targetY = t.targetY + C * t.targetDiam * 0.03, t.targetZ = t.targetZ + k * t.targetDiam * 0.03, requestAnimationFrame(u);
     };
     const x = document.createElement("style");
     document.head.appendChild(x), (i = x.sheet) == null || i.insertRule("#LookingGlassWebXRControls * { all: revert; font-family: sans-serif }");
@@ -415,7 +419,7 @@ function ge() {
     f.style.display = "block", f.style.margin = "auto", f.style.width = "100%", f.style.height = "35px", f.style.padding = "4px", f.style.marginBottom = "8px", f.style.borderRadius = "8px", f.id = "screenshotbutton", c.appendChild(f), f.innerText = "Save Hologram", t.quiltResolution.height * t.quiltResolution.width > 33177600 ? (f.style.backgroundColor = "#ccc", f.style.color = "#999", f.style.cursor = "not-allowed", f.title = "Button is disabled because the quilt resolution is too large.") : (f.style.backgroundColor = "", f.style.color = "", f.style.cursor = "", f.title = "");
     const w = document.createElement("button");
     w.style.display = "block", w.style.margin = "auto", w.style.width = "100%", w.style.height = "35px", w.style.padding = "4px", w.style.marginBottom = "8px", w.style.borderRadius = "8px", w.id = "copybutton", c.appendChild(w), w.innerText = "Copy Config", w.addEventListener("click", () => {
-      ye(t);
+      Ee(t);
     });
     const E = document.createElement("div");
     c.appendChild(E), E.style.width = "290px", E.style.whiteSpace = "normal", E.style.color = "rgba(255,255,255,0.7)", E.style.fontSize = "14px", E.style.margin = "5px 0", E.innerHTML = "Click the popup and use WASD, mouse left/right drag, and scroll.";
@@ -424,12 +428,12 @@ function ge() {
     const T = (a, r, l) => {
       const h = l.stringify, m = document.createElement("div");
       m.style.marginBottom = "8px", _.appendChild(m);
-      const C = a, M = t[a], L = document.createElement("label");
+      const C = a, k = t[a], L = document.createElement("label");
       m.appendChild(L), L.innerText = l.label, L.setAttribute("for", C), L.style.width = "100px", L.style.display = "inline-block", L.style.textDecoration = "dotted underline 1px", L.style.fontFamily = '"Courier New"', L.style.fontSize = "13px", L.style.fontWeight = "bold", L.title = l.title;
       const v = document.createElement("input");
-      m.appendChild(v), Object.assign(v, r), v.id = C, v.title = l.title, v.value = r.value !== void 0 ? r.value : M;
+      m.appendChild(v), Object.assign(v, r), v.id = C, v.title = l.title, v.value = r.value !== void 0 ? r.value : k;
       const X = (y) => {
-        t[a] = y, G(y);
+        t[a] = y, D(y);
       };
       v.oninput = () => {
         const y = r.type === "range" ? parseFloat(v.value) : r.type === "checkbox" ? v.checked : v.value;
@@ -442,13 +446,13 @@ function ge() {
       r.type === "range" && (v.style.width = "110px", v.style.height = "8px", v.onwheel = (y) => {
         K((p) => p + Math.sign(y.deltaX - y.deltaY) * r.step);
       });
-      let G = (y) => {
+      let D = (y) => {
       };
       if (h) {
         const y = document.createElement("span");
-        y.style.fontFamily = '"Courier New"', y.style.fontSize = "13px", y.style.marginLeft = "3px", m.appendChild(y), G = (p) => {
+        y.style.fontFamily = '"Courier New"', y.style.fontSize = "13px", y.style.marginLeft = "3px", m.appendChild(y), D = (p) => {
           y.innerHTML = h(p);
-        }, G(M);
+        }, D(k);
       }
       return K;
     };
@@ -493,8 +497,8 @@ function ge() {
     }, { passive: !1 }), t.lkgCanvas.addEventListener("mousemove", (a) => {
       const r = a.movementX, l = -a.movementY;
       if (a.buttons & 2 || a.buttons & 1 && (a.shiftKey || a.ctrlKey)) {
-        const h = t.trackballX, m = t.trackballY, C = -Math.cos(h) * r + Math.sin(h) * Math.sin(m) * l, M = -Math.cos(m) * l, L = Math.sin(h) * r + Math.cos(h) * Math.sin(m) * l;
-        t.targetX = t.targetX + C * t.targetDiam * 1e-3, t.targetY = t.targetY + M * t.targetDiam * 1e-3, t.targetZ = t.targetZ + L * t.targetDiam * 1e-3;
+        const h = t.trackballX, m = t.trackballY, C = -Math.cos(h) * r + Math.sin(h) * Math.sin(m) * l, k = -Math.cos(m) * l, L = Math.sin(h) * r + Math.cos(h) * Math.sin(m) * l;
+        t.targetX = t.targetX + C * t.targetDiam * 1e-3, t.targetY = t.targetY + k * t.targetDiam * 1e-3, t.targetZ = t.targetZ + L * t.targetDiam * 1e-3;
       } else
         a.buttons & 1 && (t.trackballX = t.trackballX - r * 0.01, t.trackballY = t.trackballY - l * 0.01);
     });
@@ -535,8 +539,8 @@ function ge() {
     }, { passive: !1 }), (n = t.appCanvas) == null || n.addEventListener("mousemove", (a) => {
       const r = a.movementX, l = -a.movementY;
       if (a.buttons & 2 || a.buttons & 1 && (a.shiftKey || a.ctrlKey)) {
-        const h = t.trackballX, m = t.trackballY, C = -Math.cos(h) * r + Math.sin(h) * Math.sin(m) * l, M = -Math.cos(m) * l, L = Math.sin(h) * r + Math.cos(h) * Math.sin(m) * l;
-        t.targetX = t.targetX + C * t.targetDiam * 1e-3, t.targetY = t.targetY + M * t.targetDiam * 1e-3, t.targetZ = t.targetZ + L * t.targetDiam * 1e-3;
+        const h = t.trackballX, m = t.trackballY, C = -Math.cos(h) * r + Math.sin(h) * Math.sin(m) * l, k = -Math.cos(m) * l, L = Math.sin(h) * r + Math.cos(h) * Math.sin(m) * l;
+        t.targetX = t.targetX + C * t.targetDiam * 1e-3, t.targetY = t.targetY + k * t.targetDiam * 1e-3, t.targetZ = t.targetZ + L * t.targetDiam * 1e-3;
       } else
         a.buttons & 1 && (t.trackballX = t.trackballX - r * 0.01, t.trackballY = t.trackballY - l * 0.01);
     }), (s = t.appCanvas) == null || s.addEventListener("keydown", (a) => {
@@ -570,11 +574,11 @@ function ge() {
           break;
       }
     }), requestAnimationFrame(u), setTimeout(() => {
-      we();
+      ge();
     }, 1e3), c;
   }
 }
-function ye(t) {
+function Ee(t) {
   const i = {
     targetX: t.targetX,
     targetY: t.targetY,
@@ -589,15 +593,15 @@ function ye(t) {
   navigator.clipboard.writeText(e);
 }
 let N;
-const Ee = (t, i) => {
+const Ce = (t, i) => {
   const e = S();
   if (e.lkgCanvas == null) {
     console.warn("window placement called without a valid XR Session!");
     return;
   } else
-    t == !1 ? Le(e, N) : (N == null && (N = ge()), e.lkgCanvas.style.position = "fixed", e.lkgCanvas.style.bottom = "0", e.lkgCanvas.style.left = "0", e.lkgCanvas.width = e.calibration.screenW.value, e.lkgCanvas.height = e.calibration.screenH.value, document.body.appendChild(N), "getScreenDetails" in window ? Ce(e.lkgCanvas, e, i) : j(e, e.lkgCanvas, i));
+    t == !1 ? Re(e, N) : (N == null && (N = ye()), e.lkgCanvas.style.position = "fixed", e.lkgCanvas.style.bottom = "0", e.lkgCanvas.style.left = "0", e.lkgCanvas.width = e.calibration.screenW.value, e.lkgCanvas.height = e.calibration.screenH.value, document.body.appendChild(N), "getScreenDetails" in window ? Le(e.lkgCanvas, e, i) : j(e, e.lkgCanvas, i));
 };
-async function Ce(t, i, e) {
+async function Le(t, i, e) {
   const s = (await window.getScreenDetails()).screens.filter((o) => o.label.includes("LKG"))[0];
   if (s === void 0) {
     console.log("no Looking Glass monitor detected - manually opening popup window"), j(i, t, e);
@@ -622,7 +626,7 @@ async function Ce(t, i, e) {
 function j(t, i, e) {
   t.popup = window.open("", void 0, "width=640,height=360"), t.popup && (t.popup.document.title = "Looking Glass Window (fullscreen me on Looking Glass!)", t.popup.document.body.style.background = "black", t.popup.document.body.style.transform = "1.0", Z(t), t.popup.document.body.appendChild(i), console.assert(e), t.popup.onbeforeunload = e);
 }
-function Le(t, i) {
+function Re(t, i) {
   var e;
   (e = i.parentElement) == null || e.removeChild(i), t.popup && (t.popup.onbeforeunload = null, t.popup.close(), t.popup = null);
 }
@@ -632,7 +636,7 @@ function Z(t) {
   });
 }
 const P = Symbol("LookingGlassXRWebGLLayer");
-class Re extends me {
+class xe extends me {
   constructor(i, e, n) {
     super(i, e, n);
     const s = S();
@@ -644,10 +648,10 @@ class Re extends me {
     const u = this[be].config, x = e.createTexture();
     let c, b;
     const f = e.createFramebuffer(), F = e.enable.bind(e), w = e.disable.bind(e), E = e.getExtension("OES_vertex_array_object"), _ = 34229, T = E ? E.bindVertexArrayOES.bind(E) : e.bindVertexArray.bind(e), d = () => {
-      const k = e.getParameter(e.TEXTURE_BINDING_2D);
-      if (e.bindTexture(e.TEXTURE_2D, x), e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, s.framebufferWidth, s.framebufferHeight, 0, e.RGBA, e.UNSIGNED_BYTE, null), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MIN_FILTER, e.LINEAR), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER, e.LINEAR), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_BASE_LEVEL, 0), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAX_LEVEL, 0), e.bindTexture(e.TEXTURE_2D, k), c) {
-        const D = e.getParameter(e.RENDERBUFFER_BINDING);
-        e.bindRenderbuffer(e.RENDERBUFFER, c), e.renderbufferStorage(e.RENDERBUFFER, b.format, s.framebufferWidth, s.framebufferHeight), e.bindRenderbuffer(e.RENDERBUFFER, D);
+      const M = e.getParameter(e.TEXTURE_BINDING_2D);
+      if (e.bindTexture(e.TEXTURE_2D, x), e.texImage2D(e.TEXTURE_2D, 0, e.RGBA, s.framebufferWidth, s.framebufferHeight, 0, e.RGBA, e.UNSIGNED_BYTE, null), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MIN_FILTER, e.LINEAR), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAG_FILTER, e.LINEAR), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_BASE_LEVEL, 0), e.texParameteri(e.TEXTURE_2D, e.TEXTURE_MAX_LEVEL, 0), e.bindTexture(e.TEXTURE_2D, M), c) {
+        const G = e.getParameter(e.RENDERBUFFER_BINDING);
+        e.bindRenderbuffer(e.RENDERBUFFER, c), e.renderbufferStorage(e.RENDERBUFFER, b.format, s.framebufferWidth, s.framebufferHeight), e.bindRenderbuffer(e.RENDERBUFFER, G);
       }
     };
     (u.depth || u.stencil) && (u.depth && u.stencil ? b = { format: e.DEPTH_STENCIL, attachment: e.DEPTH_STENCIL_ATTACHMENT } : u.depth ? b = { format: e.DEPTH_COMPONENT16, attachment: e.DEPTH_ATTACHMENT } : u.stencil && (b = { format: e.STENCIL_INDEX8, attachment: e.STENCIL_ATTACHMENT }), c = e.createRenderbuffer()), d(), s.addEventListener("on-config-changed", d);
@@ -665,7 +669,7 @@ class Re extends me {
       return;
     e.attachShader(r, h);
     {
-      const k = `#version 300 es
+      const M = `#version 300 es
 			in vec2 a_position;
 			out vec2 v_texcoord;
 			void main() {
@@ -673,14 +677,14 @@ class Re extends me {
 			  v_texcoord = a_position;
 			}
 		  `;
-      e.shaderSource(l, k), e.compileShader(l), e.getShaderParameter(l, e.COMPILE_STATUS) || console.warn(e.getShaderInfoLog(l));
+      e.shaderSource(l, M), e.compileShader(l), e.getShaderParameter(l, e.COMPILE_STATUS) || console.warn(e.getShaderInfoLog(l));
     }
-    let m, C, M;
+    let m, C, k;
     const L = () => {
-      const k = de(s);
-      if (k === m || (m = k, !h))
+      const M = de(s);
+      if (M === m || (m = M, !h))
         return;
-      if (e.shaderSource(h, k), e.compileShader(h), !e.getShaderParameter(h, e.COMPILE_STATUS)) {
+      if (e.shaderSource(h, M), e.compileShader(h), !e.getShaderParameter(h, e.COMPILE_STATUS)) {
         console.warn(e.getShaderInfoLog(h));
         return;
       }
@@ -690,36 +694,36 @@ class Re extends me {
         console.warn(e.getProgramInfoLog(r));
         return;
       }
-      C = e.getAttribLocation(r, "a_position"), M = e.getUniformLocation(r, "u_viewType");
-      const D = e.getUniformLocation(r, "u_texture"), W = e.getUniformLocation(r, "subpixelData"), U = e.getParameter(e.CURRENT_PROGRAM);
-      e.useProgram(r), e.uniform1i(D, 0), e.uniform1fv(W, s.subpixelCells), e.useProgram(U);
+      C = e.getAttribLocation(r, "a_position"), k = e.getUniformLocation(r, "u_viewType");
+      const G = e.getUniformLocation(r, "u_texture"), W = e.getUniformLocation(r, "subpixelData"), U = e.getParameter(e.CURRENT_PROGRAM);
+      e.useProgram(r), e.uniform1i(G, 0), e.uniform1fv(W, s.subpixelCells), e.useProgram(U);
     };
     s.addEventListener("on-config-changed", L);
-    const v = E ? E.createVertexArrayOES() : e.createVertexArray(), X = e.createBuffer(), K = e.getParameter(e.ARRAY_BUFFER_BINDING), G = e.getParameter(_);
-    T(v), e.bindBuffer(e.ARRAY_BUFFER, X), e.bufferData(e.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), e.STATIC_DRAW), e.enableVertexAttribArray(C), e.vertexAttribPointer(C, 2, e.FLOAT, !1, 0, 0), T(G), e.bindBuffer(e.ARRAY_BUFFER, K);
+    const v = E ? E.createVertexArrayOES() : e.createVertexArray(), X = e.createBuffer(), K = e.getParameter(e.ARRAY_BUFFER_BINDING), D = e.getParameter(_);
+    T(v), e.bindBuffer(e.ARRAY_BUFFER, X), e.bufferData(e.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), e.STATIC_DRAW), e.enableVertexAttribArray(C), e.vertexAttribPointer(C, 2, e.FLOAT, !1, 0, 0), T(D), e.bindBuffer(e.ARRAY_BUFFER, K);
     const y = () => {
       console.assert(this[P].LookingGlassEnabled), e.bindFramebuffer(e.FRAMEBUFFER, f);
-      const k = e.getParameter(e.COLOR_CLEAR_VALUE), D = e.getParameter(e.DEPTH_CLEAR_VALUE), W = e.getParameter(e.STENCIL_CLEAR_VALUE);
-      e.clearColor(0, 0, 0, 0), e.clearDepth(1), e.clearStencil(0), e.clear(e.DEPTH_BUFFER_BIT | e.COLOR_BUFFER_BIT | e.STENCIL_BUFFER_BIT), e.clearColor(k[0], k[1], k[2], k[3]), e.clearDepth(D), e.clearStencil(W);
+      const M = e.getParameter(e.COLOR_CLEAR_VALUE), G = e.getParameter(e.DEPTH_CLEAR_VALUE), W = e.getParameter(e.STENCIL_CLEAR_VALUE);
+      e.clearColor(0, 0, 0, 0), e.clearDepth(1), e.clearStencil(0), e.clear(e.DEPTH_BUFFER_BIT | e.COLOR_BUFFER_BIT | e.STENCIL_BUFFER_BIT), e.clearColor(M[0], M[1], M[2], M[3]), e.clearDepth(G), e.clearStencil(W);
     }, p = e.canvas;
     let A, B;
     const J = () => {
       if (!this[P].LookingGlassEnabled)
         return;
       (p.width !== s.calibration.screenW.value || p.height !== s.calibration.screenH.value) && s.capturing === !1 ? (A = p.width, B = p.height, p.width = s.calibration.screenW.value, p.height = s.calibration.screenH.value) : s.capturing === !0 && (A = p.width, B = p.height, p.width = s.framebufferWidth, p.height = s.framebufferHeight);
-      const k = e.getParameter(_), D = e.getParameter(e.CULL_FACE), W = e.getParameter(e.BLEND), U = e.getParameter(e.DEPTH_TEST), Q = e.getParameter(e.STENCIL_TEST), ee = e.getParameter(e.SCISSOR_TEST), te = e.getParameter(e.VIEWPORT), ie = e.getParameter(e.FRAMEBUFFER_BINDING), se = e.getParameter(e.RENDERBUFFER_BINDING), ae = e.getParameter(e.CURRENT_PROGRAM), ne = e.getParameter(e.ACTIVE_TEXTURE);
+      const M = e.getParameter(_), G = e.getParameter(e.CULL_FACE), W = e.getParameter(e.BLEND), U = e.getParameter(e.DEPTH_TEST), Q = e.getParameter(e.STENCIL_TEST), ee = e.getParameter(e.SCISSOR_TEST), te = e.getParameter(e.VIEWPORT), ie = e.getParameter(e.FRAMEBUFFER_BINDING), se = e.getParameter(e.RENDERBUFFER_BINDING), ae = e.getParameter(e.CURRENT_PROGRAM), ne = e.getParameter(e.ACTIVE_TEXTURE);
       {
         const re = e.getParameter(e.TEXTURE_BINDING_2D);
-        e.bindFramebuffer(e.FRAMEBUFFER, null), e.useProgram(r), T(v), e.activeTexture(e.TEXTURE0), e.bindTexture(e.TEXTURE_2D, x), e.disable(e.BLEND), e.disable(e.CULL_FACE), e.disable(e.DEPTH_TEST), e.disable(e.STENCIL_TEST), e.viewport(0, 0, e.drawingBufferWidth, e.drawingBufferHeight), e.uniform1i(M, 0), e.drawArrays(e.TRIANGLES, 0, 6), o == null || o.clearRect(0, 0, s.calibration.screenW.value, s.calibration.screenH.value), o == null || o.drawImage(p, 0, 0), s.inlineView !== 0 && (e.uniform1i(M, s.inlineView), e.drawArrays(e.TRIANGLES, 0, 6)), e.bindTexture(e.TEXTURE_2D, re);
+        e.bindFramebuffer(e.FRAMEBUFFER, null), e.useProgram(r), T(v), e.activeTexture(e.TEXTURE0), e.bindTexture(e.TEXTURE_2D, x), e.disable(e.BLEND), e.disable(e.CULL_FACE), e.disable(e.DEPTH_TEST), e.disable(e.STENCIL_TEST), e.viewport(0, 0, e.drawingBufferWidth, e.drawingBufferHeight), e.uniform1i(k, 0), e.drawArrays(e.TRIANGLES, 0, 6), o == null || o.clearRect(0, 0, s.calibration.screenW.value, s.calibration.screenH.value), o == null || o.drawImage(p, 0, 0), s.inlineView !== 0 && (e.uniform1i(k, s.inlineView), e.drawArrays(e.TRIANGLES, 0, 6)), e.bindTexture(e.TEXTURE_2D, re);
       }
-      e.activeTexture(ne), e.useProgram(ae), e.bindRenderbuffer(e.RENDERBUFFER, se), e.bindFramebuffer(e.FRAMEBUFFER, ie), e.viewport(...te), (ee ? F : w)(e.SCISSOR_TEST), (Q ? F : w)(e.STENCIL_TEST), (U ? F : w)(e.DEPTH_TEST), (W ? F : w)(e.BLEND), (D ? F : w)(e.CULL_FACE), T(k);
+      e.activeTexture(ne), e.useProgram(ae), e.bindRenderbuffer(e.RENDERBUFFER, se), e.bindFramebuffer(e.FRAMEBUFFER, ie), e.viewport(...te), (ee ? F : w)(e.SCISSOR_TEST), (Q ? F : w)(e.STENCIL_TEST), (U ? F : w)(e.DEPTH_TEST), (W ? F : w)(e.BLEND), (G ? F : w)(e.CULL_FACE), T(M);
     };
     this[P] = {
       LookingGlassEnabled: !1,
       framebuffer: f,
       clearFramebuffer: y,
       blitTextureToDefaultFramebufferIfNeeded: J,
-      moveCanvasToWindow: Ee,
+      moveCanvasToWindow: Ce,
       restoreOriginalCanvasDimensions: () => {
         A && B && (p.width = A, p.height = B, A = B = void 0);
       }
@@ -772,7 +776,7 @@ const V = class extends fe {
   async requestSession(i, e) {
     if (!this.isSessionSupported(i))
       return Promise.reject();
-    const n = i !== "inline", s = new Te(i, e), o = S();
+    const n = i !== "inline", s = new _e(i, e), o = S();
     return this.sessions.set(s.id, s), n && (this.dispatchEvent("@@webxr-polyfill/vr-present-start", s.id), window.addEventListener("unload", () => {
       o.popup && o.popup.close(), o.popup = null;
     })), Promise.resolve(s.id);
@@ -791,8 +795,8 @@ const V = class extends fe {
       for (let b = 0; b < s.numViews; ++b) {
         const f = (b + 0.5) / s.numViews - 0.5, F = Math.tan(s.viewCone * f), w = u * F, E = this.LookingGlassInverseViewMatrices[b] = this.LookingGlassInverseViewMatrices[b] || g.create();
         g.translate(E, c, [w, 0, 0]), g.invert(E, E);
-        const _ = Math.max(x + e.depthNear, 0.01), T = x + e.depthFar, d = _ * o, a = d, r = -d, l = _ * -F, h = s.aspect * d, m = l + h, C = l - h, M = this.LookingGlassProjectionMatrices[b] = this.LookingGlassProjectionMatrices[b] || g.create();
-        g.set(M, 2 * _ / (m - C), 0, 0, 0, 0, 2 * _ / (a - r), 0, 0, (m + C) / (m - C), (a + r) / (a - r), -(T + _) / (T - _), -1, 0, 0, -2 * T * _ / (T - _), 0);
+        const _ = Math.max(x + e.depthNear, 0.01), T = x + e.depthFar, d = _ * o, a = d, r = -d, l = _ * -F, h = s.aspect * d, m = l + h, C = l - h, k = this.LookingGlassProjectionMatrices[b] = this.LookingGlassProjectionMatrices[b] || g.create();
+        g.set(k, 2 * _ / (m - C), 0, 0, 0, 0, 2 * _ / (a - r), 0, 0, (m + C) / (m - C), (a + r) / (a - r), -(T + _) / (T - _), -1, 0, 0, -2 * T * _ / (T - _), 0);
       }
     } else {
       const o = n.baseLayer.context, u = o.drawingBufferWidth / o.drawingBufferHeight;
@@ -826,7 +830,7 @@ const V = class extends fe {
     if (i === "immersive-vr") {
       const e = S();
       for (let n = this.viewSpaces.length; n < e.numViews; ++n)
-        this.viewSpaces[n] = new _e(n);
+        this.viewSpaces[n] = new ke(n);
       return this.viewSpaces.length = e.numViews, this.viewSpaces;
     }
   }
@@ -863,8 +867,8 @@ const V = class extends fe {
 };
 let I = V;
 R(I, "instance", null);
-let xe = 0;
-class Te {
+let Te = 0;
+class _e {
   constructor(i, e) {
     R(this, "mode");
     R(this, "immersive");
@@ -873,10 +877,10 @@ class Te {
     R(this, "inlineVerticalFieldOfView");
     R(this, "ended");
     R(this, "enabledFeatures");
-    this.mode = i, this.immersive = i === "immersive-vr" || i === "immersive-ar", this.id = ++xe, this.baseLayer = null, this.inlineVerticalFieldOfView = Math.PI * 0.5, this.ended = !1, this.enabledFeatures = e;
+    this.mode = i, this.immersive = i === "immersive-vr" || i === "immersive-ar", this.id = ++Te, this.baseLayer = null, this.inlineVerticalFieldOfView = Math.PI * 0.5, this.ended = !1, this.enabledFeatures = e;
   }
 }
-class _e extends pe {
+class ke extends pe {
   constructor(e) {
     super();
     R(this, "viewIndex");
@@ -904,7 +908,7 @@ class $ extends ue {
     this.overrideDefaultVRButton(), console.warn('Looking Glass WebXR "polyfill" overriding native WebXR API.');
     for (const e in q)
       this.global[e] = q[e];
-    this.global.XRWebGLLayer = Re, this.injected = !0, this.device = new I(this.global), this.xr = new ce(Promise.resolve(this.device)), Object.defineProperty(this.global.navigator, "xr", {
+    this.global.XRWebGLLayer = xe, this.injected = !0, this.device = new I(this.global), this.xr = new ce(Promise.resolve(this.device)), Object.defineProperty(this.global.navigator, "xr", {
       value: this.xr,
       configurable: !0
     });
@@ -920,13 +924,16 @@ class $ extends ue {
   }
   async updateVRButtonUI() {
     if (this.vrButton) {
-      await ke(100), this.isPresenting ? this.vrButton.innerHTML = "EXIT LOOKING GLASS" : this.vrButton.innerHTML = "ENTER LOOKING GLASS";
+      await Se(100), this.isPresenting ? this.vrButton.innerHTML = "EXIT LOOKING GLASS" : this.vrButton.innerHTML = "ENTER LOOKING GLASS";
       const e = 220;
       this.vrButton.style.width = `${e}px`, this.vrButton.style.left = `calc(50% - ${e / 2}px)`;
     }
   }
   update(e) {
     z(e);
+  }
+  setCalibration(e) {
+    we(e);
   }
 }
 async function Me(t) {
@@ -944,11 +951,11 @@ async function Me(t) {
     }, 5e3);
   });
 }
-function ke(t) {
+function Se(t) {
   return new Promise((i) => setTimeout(i, t));
 }
-const Ve = S();
+const Xe = S();
 export {
-  Ve as LookingGlassConfig,
+  Xe as LookingGlassConfig,
   $ as LookingGlassWebXRPolyfill
 };
