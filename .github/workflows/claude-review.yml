@@ -20,18 +20,25 @@ permissions:
 jobs:
   claude-review:
     if: >-
-      github.event_name == 'pull_request' ||
+      (
+        github.event_name == 'pull_request' &&
+        github.event.pull_request.head.repo.full_name == github.repository &&
+        github.actor != 'dependabot[bot]'
+      ) ||
       (
         github.event_name == 'issue_comment' &&
         github.event.issue.pull_request &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
         contains(github.event.comment.body || '', '@claude')
       ) ||
       (
         github.event_name == 'pull_request_review_comment' &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.comment.author_association) &&
         contains(github.event.comment.body || '', '@claude')
       ) ||
       (
         github.event_name == 'pull_request_review' &&
+        contains(fromJSON('["OWNER","MEMBER","COLLABORATOR"]'), github.event.review.author_association) &&
         contains(github.event.review.body || '', '@claude')
       )
     permissions:
@@ -40,5 +47,6 @@ jobs:
       issues: write
       actions: read
       id-token: write
-    uses: Looking-Glass/ai-ops/.github/workflows/claude-pr-review.yml@main
-    secrets: inherit
+    uses: Looking-Glass/ai-ops/.github/workflows/claude-pr-review.yml@c76384eabc355c2ea81be0de520b03579a7241a2
+    secrets:
+      CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
