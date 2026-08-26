@@ -5204,7 +5204,7 @@ to native implementations of the API.`;
   const MAX_EXTENSION_COS = 0.87;
   const RAD_TO_DEG = 180 / Math.PI;
   function eulerFromQuaternion(out, q, order) {
-    function clamp(value, min, max) {
+    function clamp2(value, min, max) {
       return value < min ? min : value > max ? max : value;
     }
     var sqx = q[0] * q[0];
@@ -5213,28 +5213,28 @@ to native implementations of the API.`;
     var sqw = q[3] * q[3];
     if (order === "XYZ") {
       out[0] = Math.atan2(2 * (q[0] * q[3] - q[1] * q[2]), sqw - sqx - sqy + sqz);
-      out[1] = Math.asin(clamp(2 * (q[0] * q[2] + q[1] * q[3]), -1, 1));
+      out[1] = Math.asin(clamp2(2 * (q[0] * q[2] + q[1] * q[3]), -1, 1));
       out[2] = Math.atan2(2 * (q[2] * q[3] - q[0] * q[1]), sqw + sqx - sqy - sqz);
     } else if (order === "YXZ") {
-      out[0] = Math.asin(clamp(2 * (q[0] * q[3] - q[1] * q[2]), -1, 1));
+      out[0] = Math.asin(clamp2(2 * (q[0] * q[3] - q[1] * q[2]), -1, 1));
       out[1] = Math.atan2(2 * (q[0] * q[2] + q[1] * q[3]), sqw - sqx - sqy + sqz);
       out[2] = Math.atan2(2 * (q[0] * q[1] + q[2] * q[3]), sqw - sqx + sqy - sqz);
     } else if (order === "ZXY") {
-      out[0] = Math.asin(clamp(2 * (q[0] * q[3] + q[1] * q[2]), -1, 1));
+      out[0] = Math.asin(clamp2(2 * (q[0] * q[3] + q[1] * q[2]), -1, 1));
       out[1] = Math.atan2(2 * (q[1] * q[3] - q[2] * q[0]), sqw - sqx - sqy + sqz);
       out[2] = Math.atan2(2 * (q[2] * q[3] - q[0] * q[1]), sqw - sqx + sqy - sqz);
     } else if (order === "ZYX") {
       out[0] = Math.atan2(2 * (q[0] * q[3] + q[2] * q[1]), sqw - sqx - sqy + sqz);
-      out[1] = Math.asin(clamp(2 * (q[1] * q[3] - q[0] * q[2]), -1, 1));
+      out[1] = Math.asin(clamp2(2 * (q[1] * q[3] - q[0] * q[2]), -1, 1));
       out[2] = Math.atan2(2 * (q[0] * q[1] + q[2] * q[3]), sqw + sqx - sqy - sqz);
     } else if (order === "YZX") {
       out[0] = Math.atan2(2 * (q[0] * q[3] - q[2] * q[1]), sqw - sqx + sqy - sqz);
       out[1] = Math.atan2(2 * (q[1] * q[3] - q[0] * q[2]), sqw + sqx - sqy - sqz);
-      out[2] = Math.asin(clamp(2 * (q[0] * q[1] + q[2] * q[3]), -1, 1));
+      out[2] = Math.asin(clamp2(2 * (q[0] * q[1] + q[2] * q[3]), -1, 1));
     } else if (order === "XZY") {
       out[0] = Math.atan2(2 * (q[0] * q[3] + q[1] * q[2]), sqw - sqx + sqy - sqz);
       out[1] = Math.atan2(2 * (q[0] * q[2] + q[1] * q[3]), sqw + sqx - sqy - sqz);
-      out[2] = Math.asin(clamp(2 * (q[2] * q[3] - q[0] * q[1]), -1, 1));
+      out[2] = Math.asin(clamp2(2 * (q[2] * q[3] - q[0] * q[1]), -1, 1));
     } else {
       console.log("No order given for quaternion to euler conversion.");
       return;
@@ -6743,337 +6743,6 @@ host this content on a secure origin for the best user experience.
     var seed = xmur3(state.toString());
     return xoshiro128ss(seed(), seed(), seed(), seed());
   }
-  function glslifyNumbers(strings, ...values) {
-    let s = strings[0];
-    for (let i = 1; i < strings.length; ++i) {
-      const v = values[i - 1];
-      s += typeof v === "number" ? v.toPrecision(10) : v;
-      s += strings[i];
-    }
-    return s;
-  }
-  function Shader(cfg) {
-    const pitch = glslifyNumbers`${cfg.pitch}`;
-    const slope = glslifyNumbers`${cfg.tilt}`;
-    const center = glslifyNumbers`${cfg.calibration.center.value}`;
-    const subp = glslifyNumbers`${cfg.subp}`;
-    const tileCount = glslifyNumbers`${cfg.numViews}`;
-    const tilesX = glslifyNumbers`${cfg.quiltWidth}`;
-    const tilesY = glslifyNumbers`${cfg.quiltHeight}`;
-    const subpixelCellCount = `${Math.round(cfg.calibration.subpixelCells.length)}`;
-    const cellPatternType = `${Math.round(cfg.subpixelMode)}`;
-    const framebufferWidth = glslifyNumbers`${cfg.framebufferWidth}`;
-    const framebufferHeight = glslifyNumbers`${cfg.framebufferHeight}`;
-    const tileHeight = glslifyNumbers`${cfg.tileHeight}`;
-    const tileWidth = glslifyNumbers`${cfg.tileWidth}`;
-    const quiltWidth = glslifyNumbers`${cfg.quiltWidth}`;
-    const quiltHeight = glslifyNumbers`${cfg.quiltHeight}`;
-    const screenWidth = glslifyNumbers`${cfg.calibration.screenW.value}`;
-    const screenHeight = glslifyNumbers`${cfg.calibration.screenH.value}`;
-    const filterMode = `${Math.round(cfg.filterMode)}`;
-    const gaussianSigma = glslifyNumbers`${cfg.gaussianSigma}`;
-    return `#version 300 es
-    precision mediump float;
-
-    uniform int u_viewType;
-    uniform sampler2D u_texture;
-    in vec2 v_texcoord;
-
-    const int MAX_SUBPIXELS = 60;
-    uniform float subpixelData[MAX_SUBPIXELS];
-
-    const int subpixelCellCount = ${subpixelCellCount};
-    const int cellPatternType = ${cellPatternType};
-    const int filter_mode = ${filterMode};
-    const float gaussian_sigma = ${gaussianSigma};
-    const float tileCount = ${tileCount};
-    const float focus = 0.0;
-
-    const vec2 quiltViewPortion = vec2(
-      ${quiltWidth * tileWidth / framebufferWidth},
-      ${quiltHeight * tileHeight / framebufferHeight});
-
-    int GetCellForPixel(vec2 screen_uv)
-    {
-        int xPos = int(screen_uv.x * ${screenWidth});
-        int yPos = int(screen_uv.y * ${screenHeight});
-        int cell;
-    
-        if(cellPatternType == 0)
-        {
-            cell = 0;
-        }
-        else if(cellPatternType == 1)
-        {
-            // Checkerboard pattern AB
-            //                      BA
-            if ((yPos % 2 == 0 && xPos % 2 == 0) || (yPos % 2 != 0 && xPos % 2 != 0)) {
-                cell = 0;
-            } else {
-                cell = 1;
-            }
-        }
-        else if(cellPatternType == 2)
-        {
-            cell = xPos % 2;
-        }
-        else if(cellPatternType == 3)
-        {
-            int offset = (xPos % 2) * 2;
-            cell = ((yPos + offset) % 4);
-        }
-        else if(cellPatternType == 4)
-        {
-            cell = yPos % 2;
-        }
-    
-        return cell % subpixelCellCount;
-    }
-
-    vec2 GetQuiltCoordinates(vec2 tile_uv, int viewIndex)
-    {
-        float totalTiles = tileCount;
-        float floaty = float(viewIndex);
-        float view = clamp(floaty, 0.0, totalTiles);
-        // on some platforms this is required to fix some precision issue???
-        float tx = ${tilesX} - 0.00001; // just an incredibly dumb bugfix
-        float tileXIndex = mod(view, tx);
-        float tileYIndex = floor(view / tx);
-    
-        float quiltCoordU = ((tileXIndex + tile_uv.x) / tx) * quiltViewPortion.x;
-        float quiltCoordV = ((tileYIndex + tile_uv.y) / ${tilesY}) * quiltViewPortion.y;
-    
-        vec2 quilt_uv = vec2(quiltCoordU, quiltCoordV);
-    
-        return quilt_uv;
-    }
-
-    float GetPixelShift(float val, int subPixel, int axis, int cell)
-    {
-        int index = cell * 6 + subPixel * 2 + axis;
-        float offset = subpixelData[index];
-
-        return val + offset;
-    }
-
-    vec3 GetSubpixelViews(vec2 screen_uv) {
-        vec3 views = vec3(0.0);
-
-        // calculate x contribution for each cell
-        if(subpixelCellCount <= 0)
-        {
-            views[0] = screen_uv.x + ${subp} * 0.0;
-            views[1] = screen_uv.x + ${subp} * 1.0;
-            views[2] = screen_uv.x + ${subp} * 2.0;
-                
-    
-            // calculate y contribution for each cell
-            views[0] += screen_uv.y * ${slope};
-            views[1] += screen_uv.y * ${slope};
-            views[2] += screen_uv.y * ${slope};
-        } else {
-            // get the cell type for this screen space pixel
-            int cell = GetCellForPixel(screen_uv);
-    
-            // calculate x contribution for each cell
-            views[0]  = GetPixelShift(screen_uv.x, 0, 0, cell);
-            views[1]  = GetPixelShift(screen_uv.x, 1, 0, cell);
-            views[2]  = GetPixelShift(screen_uv.x, 2, 0, cell);
-    
-            // calculate y contribution for each cell
-            views[0] += GetPixelShift(screen_uv.y, 0, 1, cell) * ${slope};
-            views[1] += GetPixelShift(screen_uv.y, 1, 1, cell) * ${slope};
-            views[2] += GetPixelShift(screen_uv.y, 2, 1, cell) * ${slope};
-        }
-
-        views *= vec3(${pitch});
-        views -= vec3(${center});
-        views = vec3(1.0) - fract(views);
-
-        views = clamp(views, vec3(0.00001), vec3(0.999999));
-    
-        return views;
-    }
-    
-    // this is the simplest sampling mode where we just cast the viewIndex to int and take the color from that tile.
-    vec4 GetViewsColors(vec2 tile_uv, vec3 views)
-    {
-        vec4 color = vec4(0, 0, 0, 1);
-    
-        for(int channel = 0; channel < 3; channel++)
-        {
-            int viewIndex = int(views[channel] * tileCount);
-    
-            float viewDir = views[channel] * 2.0 - 1.0;
-            vec2 focused_uv = tile_uv;
-            focused_uv.x += viewDir * focus;
-    
-            vec2 quilt_uv = GetQuiltCoordinates(focused_uv, viewIndex);
-            color[channel] = texture(u_texture, quilt_uv)[channel];
-        }
-    
-        return color;
-    }
-
-    //view filtering
-
-    vec4 OldViewFiltering(vec2 tile_uv, vec3 views)
-    {
-        vec3 viewIndicies = views * tileCount;
-        float viewSpaceTileSize = 1.0 / tileCount;
-    
-        // the idea here is to sample the closest two views and lerp between them
-        vec3 leftViews = views;
-        vec3 rightViews = leftViews + viewSpaceTileSize;
-    
-        vec4 leftColor = GetViewsColors(tile_uv, leftViews);
-        vec4 rightColor = GetViewsColors(tile_uv, rightViews);
-    
-        vec3 leftRightLerp = viewIndicies - floor(viewIndicies);
-    
-        return vec4(
-            mix(leftColor.x, rightColor.x, leftRightLerp.x),
-            mix(leftColor.y, rightColor.y, leftRightLerp.y),
-            mix(leftColor.z, rightColor.z, leftRightLerp.z),
-            1.0
-        );
-    }
-
-    vec4 GaussianViewFiltering(vec2 tile_uv, vec3 views)
-    {
-        vec3 viewIndicies = views * tileCount;
-        float viewSpaceTileSize = 1.0 / tileCount;
-    
-        // this is just sampling a center view and the left and right view
-        vec3 centerViews = views;
-        vec3 leftViews = centerViews - viewSpaceTileSize;
-        vec3 rightViews = centerViews + viewSpaceTileSize;
-    
-        vec4 centerColor = GetViewsColors(tile_uv, centerViews);
-        vec4 leftColor   = GetViewsColors(tile_uv, leftViews);
-        vec4 rightColor  = GetViewsColors(tile_uv, rightViews);
-    
-        // Calculate the effective discrete view directions based on the tileCount
-        vec3 centerSnappedViews = floor(centerViews * tileCount) / tileCount;
-        vec3 leftSnappedViews = floor(leftViews * tileCount) / tileCount;
-        vec3 rightSnappedViews = floor(rightViews * tileCount) / tileCount;
-    
-        // Gaussian weighting
-        float sigma = gaussian_sigma;
-        float multiplier = 2.0 * sigma * sigma;
-    
-        vec3 centerDiff = views - centerSnappedViews;
-        vec3 leftDiff = views - leftSnappedViews;
-        vec3 rightDiff = views - rightSnappedViews;
-    
-        vec3 centerWeight = exp(-centerDiff * centerDiff / multiplier);
-        vec3 leftWeight = exp(-leftDiff * leftDiff / multiplier);
-        vec3 rightWeight = exp(-rightDiff * rightDiff / multiplier);
-    
-        // Normalize the weights so they sum to 1 for each channel
-        vec3 totalWeight = centerWeight + leftWeight + rightWeight;
-        centerWeight /= totalWeight;
-        leftWeight /= totalWeight;
-        rightWeight /= totalWeight;
-    
-        // Weighted averaging based on Gaussian weighting for each channel
-        vec4 outputColor = vec4(
-            centerColor.r * centerWeight.x + leftColor.r * leftWeight.x + rightColor.r * rightWeight.x,
-            centerColor.g * centerWeight.y + leftColor.g * leftWeight.y + rightColor.g * rightWeight.y,
-            centerColor.b * centerWeight.z + leftColor.b * leftWeight.z + rightColor.b * rightWeight.z,
-            1.0
-        );
-    
-        return outputColor;
-    }
-
-    vec4 NGaussianViewFiltering(vec2 tile_uv, vec3 views, int n)
-    {
-        vec3 viewIndicies = views * tileCount;
-        float viewSpaceTileSize = 1.0 / tileCount;
-    
-        float sigma = gaussian_sigma;  // Adjust as needed
-        float multiplier = 2.0 * sigma * sigma;
-    
-        vec4 outputColor = vec4(0.0);
-    
-        for(int i = -n; i <= n; i++)
-        {
-            float offset = float(i) * viewSpaceTileSize;
-            vec3 offsetViews = views + offset;
-    
-            vec4 sampleColor = GetViewsColors(tile_uv, offsetViews);
-    
-            // Calculate the effective discrete view directions based on the tileCount
-            vec3 snappedViews = floor(offsetViews * tileCount) / tileCount;
-    
-            // Calculate Gaussian weights
-            vec3 diff = views - snappedViews;
-            vec3 weight = exp(-diff * diff / multiplier);
-    
-            // Accumulate color
-            outputColor.rgb += sampleColor.rgb * weight;
-        }
-        // Normalize the color
-        vec3 totalWeight = vec3(0.0);
-        for(int i = -n; i <= n; i++)
-        {
-            float offset = float(i) * viewSpaceTileSize;
-            vec3 offsetViews = views + offset;
-    
-            // Calculate the effective discrete view directions based on the tileCount
-            vec3 snappedViews = floor(offsetViews * tileCount) / tileCount;
-    
-            // Calculate Gaussian weights
-            vec3 diff = views - snappedViews;
-            vec3 weight = exp(-diff * diff / multiplier);
-    
-            totalWeight += weight;
-        }
-    
-        outputColor.rgb /= totalWeight;
-        outputColor.a = 1.0;
-    
-        return outputColor;
-    }
-
-    float remap(float value, float from1, float to1, float from2, float to2) {
-      return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
-    }
-
-    out vec4 color;
-
-    void main() {
-      if (u_viewType == 2) { // "quilt" view
-        color = texture(u_texture, v_texcoord);
-        return;
-      }
-      if (u_viewType == 1) { // middle view
-        color = texture(u_texture, GetQuiltCoordinates(v_texcoord.xy, ${Math.round(tileCount / 2)}));
-        return;
-      }
-
-    vec3 views = GetSubpixelViews(v_texcoord);
-
-    if(filter_mode == 0)
-        {
-            color = GetViewsColors(v_texcoord, views);
-        }
-        else if(filter_mode == 1)
-        {
-            color = OldViewFiltering(v_texcoord, views);
-        }
-        else if(filter_mode == 2)
-        {
-            color = GaussianViewFiltering(v_texcoord, views);
-        }
-        else if(filter_mode == 3)
-        {
-            color = NGaussianViewFiltering(v_texcoord, views, 10);
-        }
-    }
-  `;
-  }
   const DefaultEyeHeight = 1.6;
   var InlineView;
   (function(InlineView2) {
@@ -7084,6 +6753,7 @@ host this content on a secure origin for the best user experience.
   class LookingGlassConfig$1 extends EventTarget {
     constructor(cfg) {
       super();
+      __publicField(this, "_subpixelModeOverridden", false);
       __publicField(this, "_calibration", {
         configVersion: "1.0",
         pitch: { value: 45 },
@@ -7122,12 +6792,22 @@ host this content on a secure origin for the best user experience.
         XRSession: null,
         lkgCanvas: null,
         appCanvas: null,
-        subpixelMode: 1,
-        filterMode: 1,
-        gaussianSigma: 0.01
+        subpixelMode: 0,
+        filterMode: 2,
+        gaussianSigma: 0.01,
+        focus: 0,
+        viewDimming: false,
+        filterEnd: 0.05,
+        filterSize: 0.15,
+        edgeThreshold: 0.01
       });
       __publicField(this, "LookingGlassDetected");
-      this._viewControls = { ...this._viewControls, ...cfg };
+      this._subpixelModeOverridden = (cfg == null ? void 0 : cfg.subpixelMode) !== void 0;
+      const normalizedConfig = { ...cfg };
+      if (normalizedConfig.subpixelMode === void 0) {
+        delete normalizedConfig.subpixelMode;
+      }
+      this._viewControls = { ...this._viewControls, ...normalizedConfig };
       this.syncCalibration();
     }
     syncCalibration() {
@@ -7152,17 +6832,28 @@ host this content on a secure origin for the best user experience.
       return this._calibration;
     }
     set calibration(value) {
+      var _a;
       this._calibration = {
         ...this._calibration,
         ...value
       };
+      const cellPatternMode = (_a = this._calibration.CellPatternMode) == null ? void 0 : _a.value;
+      if (!this._subpixelModeOverridden && typeof cellPatternMode === "number" && Number.isFinite(cellPatternMode)) {
+        this._viewControls.subpixelMode = Math.round(cellPatternMode);
+      }
       this.onConfigChange();
     }
     updateViewControls(value) {
       if (value != void 0) {
+        const normalizedValue = { ...value };
+        if (value.subpixelMode !== void 0) {
+          this._subpixelModeOverridden = true;
+        } else {
+          delete normalizedValue.subpixelMode;
+        }
         this._viewControls = {
           ...this._viewControls,
-          ...value
+          ...normalizedValue
         };
         this.onConfigChange();
       }
@@ -7290,6 +6981,36 @@ host this content on a secure origin for the best user experience.
     }
     set gaussianSigma(v) {
       this.updateViewControls({ gaussianSigma: v });
+    }
+    get focus() {
+      return this._viewControls.focus;
+    }
+    set focus(v) {
+      this.updateViewControls({ focus: v });
+    }
+    get viewDimming() {
+      return this._viewControls.viewDimming;
+    }
+    set viewDimming(v) {
+      this.updateViewControls({ viewDimming: v });
+    }
+    get filterEnd() {
+      return this._viewControls.filterEnd;
+    }
+    set filterEnd(v) {
+      this.updateViewControls({ filterEnd: v });
+    }
+    get filterSize() {
+      return this._viewControls.filterSize;
+    }
+    set filterSize(v) {
+      this.updateViewControls({ filterSize: v });
+    }
+    get edgeThreshold() {
+      return this._viewControls.edgeThreshold;
+    }
+    set edgeThreshold(v) {
+      this.updateViewControls({ edgeThreshold: v });
     }
     get popup() {
       return this._viewControls.popup;
@@ -7423,21 +7144,19 @@ host this content on a secure origin for the best user experience.
     get pitch() {
       return this._calibration.pitch.value * this._calibration.screenW.value / this._calibration.DPI.value * Math.cos(Math.atan(1 / this._calibration.slope.value));
     }
+    get center() {
+      const flipCenterOffset = this._calibration.flipImageX.value ? 0.5 : 0;
+      return this._calibration.center.value + flipCenterOffset;
+    }
     get subpixelCells() {
       const subPixelCells = new Float32Array(6 * this._calibration.subpixelCells.length);
       this._calibration.subpixelCells.forEach((cell, index) => {
-        cell.ROffsetX /= this.calibration.screenW.value;
-        cell.ROffsetY /= this.calibration.screenH.value;
-        cell.GOffsetX /= this.calibration.screenW.value;
-        cell.GOffsetY /= this.calibration.screenH.value;
-        cell.BOffsetX /= this.calibration.screenW.value;
-        cell.BOffsetY /= this.calibration.screenH.value;
-        subPixelCells[index * 6 + 0] = cell.ROffsetX;
-        subPixelCells[index * 6 + 1] = cell.ROffsetY;
-        subPixelCells[index * 6 + 2] = cell.GOffsetX;
-        subPixelCells[index * 6 + 3] = cell.GOffsetY;
-        subPixelCells[index * 6 + 4] = cell.BOffsetX;
-        subPixelCells[index * 6 + 5] = cell.BOffsetY;
+        subPixelCells[index * 6 + 0] = cell.ROffsetX / this.calibration.screenW.value;
+        subPixelCells[index * 6 + 1] = cell.ROffsetY / this.calibration.screenH.value;
+        subPixelCells[index * 6 + 2] = cell.GOffsetX / this.calibration.screenW.value;
+        subPixelCells[index * 6 + 3] = cell.GOffsetY / this.calibration.screenH.value;
+        subPixelCells[index * 6 + 4] = cell.BOffsetX / this.calibration.screenW.value;
+        subPixelCells[index * 6 + 5] = cell.BOffsetY / this.calibration.screenH.value;
       });
       return subPixelCells;
     }
@@ -7686,6 +7405,336 @@ host this content on a secure origin for the best user experience.
     }
     return out;
   }
+  const MAX_SUBPIXEL_CELLS = 16;
+  function glslFloat(value) {
+    if (!Number.isFinite(value)) {
+      return "0.0";
+    }
+    const result = value.toPrecision(10);
+    return result.includes(".") || result.includes("e") ? result : `${result}.0`;
+  }
+  function glslInt(value) {
+    if (!Number.isFinite(value)) {
+      return "0";
+    }
+    return Math.round(value).toString();
+  }
+  function clamp(value, min, max) {
+    return Math.min(Math.max(value, min), max);
+  }
+  function createLenticularShaderSource(cfg) {
+    const tileCount = cfg.numViews;
+    const tileWidth = Math.floor(cfg.framebufferWidth / cfg.quiltWidth);
+    const tileHeight = Math.floor(cfg.framebufferHeight / cfg.quiltHeight);
+    const viewPortionX = cfg.quiltWidth * tileWidth / cfg.framebufferWidth;
+    const viewPortionY = cfg.quiltHeight * tileHeight / cfg.framebufferHeight;
+    const subpixelCellCount = Math.min(cfg.calibration.subpixelCells.length, MAX_SUBPIXEL_CELLS);
+    const safeSubpixelCellCount = Math.max(subpixelCellCount, 1);
+    const filterMode = clamp(Math.round(cfg.filterMode), 0, 3);
+    const centerViewIndex = Math.floor(tileCount / 2);
+    const rawFilterEnd = Number.isFinite(cfg.filterEnd) ? cfg.filterEnd : 0.05;
+    const filterEnd = clamp(rawFilterEnd, 0, 0.499999);
+    const rawFilterSize = Number.isFinite(cfg.filterSize) ? cfg.filterSize : 0.15;
+    const filterSize = clamp(rawFilterSize, 1e-6, Math.max(1e-6, 0.5 - filterEnd));
+    const rawGaussianSigma = Number.isFinite(cfg.gaussianSigma) ? cfg.gaussianSigma : 0.01;
+    const gaussianSigma = Math.max(Math.abs(rawGaussianSigma), 1e-6);
+    const rawEdgeThreshold = Number.isFinite(cfg.edgeThreshold) ? cfg.edgeThreshold : 0.01;
+    const edgeThreshold = Math.max(rawEdgeThreshold, 1e-6);
+    return `#version 300 es
+precision highp float;
+
+uniform int u_viewType;
+uniform sampler2D u_texture;
+in vec2 v_texcoord;
+out vec4 color;
+
+const int MAX_SUBPIXEL_CELLS = ${MAX_SUBPIXEL_CELLS};
+uniform float subpixelData[6 * MAX_SUBPIXEL_CELLS];
+
+const float pitch = ${glslFloat(cfg.pitch)};
+const float slope = ${glslFloat(cfg.tilt)};
+const float center = ${glslFloat(cfg.center)};
+const float subpixelSize = ${glslFloat(cfg.subp)};
+const float screenW = ${glslFloat(cfg.calibration.screenW.value)};
+const float screenH = ${glslFloat(cfg.calibration.screenH.value)};
+const float tileCount = ${glslFloat(tileCount)};
+const vec2 viewPortion = vec2(${glslFloat(viewPortionX)}, ${glslFloat(viewPortionY)});
+const vec4 tile = vec4(${glslFloat(cfg.quiltWidth)}, ${glslFloat(cfg.quiltHeight)}, ${glslFloat(tileCount)}, 0.0);
+const float focus = ${glslFloat(cfg.focus * cfg.quiltWidth)};
+const int subpixelCellCount = ${glslInt(subpixelCellCount)};
+const int safeSubpixelCellCount = ${glslInt(safeSubpixelCellCount)};
+const int filter_mode = ${glslInt(filterMode)};
+const int cellPatternType = ${glslInt(cfg.subpixelMode)};
+const int filter_edge = ${cfg.viewDimming ? 1 : 0};
+const float filter_end = ${glslFloat(filterEnd)};
+const float filter_size = ${glslFloat(filterSize)};
+const float gaussian_sigma = ${glslFloat(gaussianSigma)};
+const float edgeThreshold = ${glslFloat(edgeThreshold)};
+
+int GetCellForPixel(vec2 screen_uv)
+{
+	// Keep these modes synchronized with LookingGlassBridge's
+	// tools/glsl_converter/lent_lent.glsl cell-pattern mappings.
+	int xPos = int(screen_uv.x * screenW);
+	int yPos = int(screen_uv.y * screenH);
+	int cell = 0;
+
+	if(cellPatternType == 1)
+	{
+		if ((yPos % 2 == 0 && xPos % 2 == 0) || (yPos % 2 != 0 && xPos % 2 != 0)) {
+			cell = 0;
+		} else {
+			cell = 1;
+		}
+	}
+	else if(cellPatternType == 2)
+	{
+		cell = yPos % 4;
+	}
+	else if(cellPatternType == 3)
+	{
+		int offset = (xPos % 2) * 2;
+		cell = (yPos + offset) % 4;
+	}
+	else if(cellPatternType == 4)
+	{
+		cell = xPos % 2;
+	}
+
+	return cell % safeSubpixelCellCount;
+}
+
+float GetPixelShift(float val, int subp, int axis, int cell)
+{
+	int index = cell * 6 + subp * 2 + axis;
+	float offset = subpixelData[index];
+	return val + offset;
+}
+
+vec3 GetSubpixelViews(vec2 screen_uv)
+{
+	vec3 views = vec3(0.0);
+
+	if(subpixelCellCount <= 0)
+	{
+		views[0] = screen_uv.x + subpixelSize * 0.0;
+		views[1] = screen_uv.x + subpixelSize * 1.0;
+		views[2] = screen_uv.x + subpixelSize * 2.0;
+
+		views[0] += screen_uv.y * slope;
+		views[1] += screen_uv.y * slope;
+		views[2] += screen_uv.y * slope;
+	}
+	else
+	{
+		int cell = GetCellForPixel(screen_uv);
+
+		views[0] = GetPixelShift(screen_uv.x, 0, 0, cell);
+		views[1] = GetPixelShift(screen_uv.x, 1, 0, cell);
+		views[2] = GetPixelShift(screen_uv.x, 2, 0, cell);
+
+		views[0] += GetPixelShift(screen_uv.y, 0, 1, cell) * slope;
+		views[1] += GetPixelShift(screen_uv.y, 1, 1, cell) * slope;
+		views[2] += GetPixelShift(screen_uv.y, 2, 1, cell) * slope;
+	}
+
+	views *= vec3(pitch);
+	views -= vec3(center);
+	views = vec3(1.0) - fract(views);
+	views = clamp(views, vec3(0.00001), vec3(0.999999));
+
+	return views;
+}
+
+vec2 GetQuiltCoordinates(vec2 tile_uv, int viewIndex)
+{
+	float view = clamp(float(viewIndex), 0.0, max(tileCount - 1.0, 0.0));
+	float tx = tile.x - 0.00001;
+	float tileXIndex = mod(view, tx);
+	float tileYIndex = floor(view / tx);
+
+	float quiltCoordU = ((tileXIndex + tile_uv.x) / tx) * viewPortion.x;
+	float quiltCoordV = ((tileYIndex + tile_uv.y) / tile.y) * viewPortion.y;
+	// The WebXR quilt is rendered into a WebGL framebuffer, so its texture
+	// coordinates already use the bottom-left origin expected by sampling.
+	return vec2(quiltCoordU, quiltCoordV);
+}
+
+vec4 GetViewsColors(vec2 tile_uv, vec3 views)
+{
+	vec4 color = vec4(0.0, 0.0, 0.0, 1.0);
+
+	for(int channel = 0; channel < 3; channel++)
+	{
+		int viewIndex = int(clamp(views[channel] * tileCount, 0.0, max(tileCount - 1.0, 0.0)));
+		float viewDir = views[channel] * 2.0 - 1.0;
+		vec2 focused_uv = tile_uv;
+		focused_uv.x += viewDir * focus;
+
+		vec2 quilt_uv = GetQuiltCoordinates(focused_uv, viewIndex);
+		color[channel] = texture(u_texture, quilt_uv)[channel];
+	}
+
+	return color;
+}
+
+vec4 OldViewFiltering(vec2 tile_uv, vec3 views)
+{
+	vec3 viewIndicies = views * tileCount;
+	float viewSpaceTileSize = 1.0 / tileCount;
+	vec3 leftViews = views;
+	vec3 rightViews = leftViews + viewSpaceTileSize;
+
+	vec4 leftColor = GetViewsColors(tile_uv, leftViews);
+	vec4 rightColor = GetViewsColors(tile_uv, rightViews);
+	vec3 leftRightLerp = viewIndicies - floor(viewIndicies);
+
+	return vec4(
+		mix(leftColor.x, rightColor.x, leftRightLerp.x),
+		mix(leftColor.y, rightColor.y, leftRightLerp.y),
+		mix(leftColor.z, rightColor.z, leftRightLerp.z),
+		1.0
+	);
+}
+
+vec4 GaussianViewFiltering(vec2 tile_uv, vec3 views)
+{
+	float viewSpaceTileSize = 1.0 / tileCount;
+	vec3 centerViews = views;
+	vec3 leftViews = centerViews - viewSpaceTileSize;
+	vec3 rightViews = centerViews + viewSpaceTileSize;
+
+	vec4 centerColor = GetViewsColors(tile_uv, centerViews);
+	vec4 leftColor = GetViewsColors(tile_uv, leftViews);
+	vec4 rightColor = GetViewsColors(tile_uv, rightViews);
+
+	vec3 centerSnappedViews = floor(centerViews * tileCount) / tileCount;
+	vec3 leftSnappedViews = floor(leftViews * tileCount) / tileCount;
+	vec3 rightSnappedViews = floor(rightViews * tileCount) / tileCount;
+
+	float multiplier = 2.0 * gaussian_sigma * gaussian_sigma;
+	vec3 centerDiff = views - centerSnappedViews;
+	vec3 leftDiff = views - leftSnappedViews;
+	vec3 rightDiff = views - rightSnappedViews;
+
+	vec3 centerWeight = exp(-centerDiff * centerDiff / multiplier);
+	vec3 leftWeight = exp(-leftDiff * leftDiff / multiplier);
+	vec3 rightWeight = exp(-rightDiff * rightDiff / multiplier);
+	vec3 totalWeight = centerWeight + leftWeight + rightWeight;
+	const vec3 minWeight = vec3(1e-20);
+	vec3 validWeight = step(minWeight, totalWeight);
+	vec3 weightedColor = vec3(
+		centerColor.r * centerWeight.x + leftColor.r * leftWeight.x + rightColor.r * rightWeight.x,
+		centerColor.g * centerWeight.y + leftColor.g * leftWeight.y + rightColor.g * rightWeight.y,
+		centerColor.b * centerWeight.z + leftColor.b * leftWeight.z + rightColor.b * rightWeight.z
+	);
+	vec3 blendedColor = weightedColor / max(totalWeight, minWeight);
+
+	return vec4(mix(centerColor.rgb, blendedColor, validWeight), 1.0);
+}
+
+vec3 ComputeGaussianWeight(vec3 targetViews, vec3 sampledViews)
+{
+	float multiplier = 2.0 * gaussian_sigma * gaussian_sigma;
+	vec3 diff = targetViews - sampledViews;
+	return exp(-diff * diff / multiplier);
+}
+
+vec4 NRISViewFiltering(vec2 tile_uv, vec3 views, int n)
+{
+	float viewSpaceTileSize = 1.0 / tileCount;
+	vec4 outputColor = vec4(0.0);
+	vec3 totalWeight = vec3(0.0);
+	vec3 nearestColor = vec3(0.0);
+
+	for(int i = -n; i <= n; i++)
+	{
+		float offset = float(i) * viewSpaceTileSize;
+		vec3 offsetViews = views + offset;
+		vec4 sampleColor = GetViewsColors(tile_uv, offsetViews);
+		vec3 snappedViews = floor(offsetViews * tileCount) / tileCount;
+		vec3 weight = ComputeGaussianWeight(views, snappedViews);
+
+		outputColor.rgb += sampleColor.rgb * weight;
+		totalWeight += weight;
+		if(i == 0)
+		{
+			nearestColor = sampleColor.rgb;
+		}
+	}
+
+	const vec3 minWeight = vec3(1e-20);
+	vec3 validWeight = step(minWeight, totalWeight);
+	outputColor.rgb = mix(nearestColor, outputColor.rgb / max(totalWeight, minWeight), validWeight);
+	outputColor.a = 1.0;
+
+	return outputColor;
+}
+
+vec3 ViewDimming(vec3 views)
+{
+	float fadeEnd1 = filter_end + filter_size;
+	float fullColorEnd = 1.0 - fadeEnd1;
+	float fadeEnd2 = 1.0 - filter_end;
+
+	vec3 lowerFade = smoothstep(filter_end, fadeEnd1, views);
+	vec3 upperFade = vec3(1.0) - smoothstep(fullColorEnd, fadeEnd2, views);
+	return min(lowerFade, upperFade);
+}
+
+float CalculateEdgeFade(vec2 tile_uv)
+{
+	float fade = min(smoothstep(0.0, edgeThreshold, tile_uv.x),
+		smoothstep(0.0, edgeThreshold, 1.0 - tile_uv.x));
+	fade *= min(smoothstep(0.0, edgeThreshold, tile_uv.y),
+		smoothstep(0.0, edgeThreshold, 1.0 - tile_uv.y));
+	return fade;
+}
+
+void main()
+{
+	if (u_viewType == 2) {
+		color = texture(u_texture, v_texcoord);
+		return;
+	}
+
+	if (u_viewType == 1) {
+		color = texture(u_texture, GetQuiltCoordinates(v_texcoord, ${centerViewIndex}));
+		return;
+	}
+
+	vec2 screen_uv = v_texcoord;
+	vec2 tile_uv = v_texcoord;
+	vec3 views = GetSubpixelViews(screen_uv);
+	vec4 outputColor = vec4(0.0, 0.0, 0.0, 1.0);
+
+	if(filter_mode == 0 || tileCount == 1.0)
+	{
+		outputColor = GetViewsColors(tile_uv, views);
+	}
+	else if(filter_mode == 1)
+	{
+		outputColor = OldViewFiltering(tile_uv, views);
+	}
+	else if(filter_mode == 2)
+	{
+		outputColor = GaussianViewFiltering(tile_uv, views);
+	}
+	else if(filter_mode == 3)
+	{
+		outputColor = NRISViewFiltering(tile_uv, views, 10);
+	}
+
+	if (filter_edge == 1)
+	{
+		outputColor.rgb *= ViewDimming(views);
+	}
+
+	float fade = CalculateEdgeFade(tile_uv);
+	color = mix(vec4(0.0, 0.0, 0.0, 1.0), outputColor, fade);
+}
+`;
+  }
   async function LookingGlassMediaController() {
     const cfg = getLookingGlassConfig();
     let currentInlineView = 2;
@@ -7923,13 +7972,13 @@ host this content on a secure origin for the best user experience.
       addControl("filterMode", { type: "range", min: 0, max: 3, step: 1 }, {
         label: "view filtering mode",
         title: "controls the method used for view blending",
-        fixRange: (v) => Math.max(0, Math.min(v, 2)),
-        stringify: (v) => v === 0 ? "old, studio style" : v === 1 ? "2 view" : v === 2 ? "gaussian" : v === 3 ? "10 view gaussian" : "?"
+        fixRange: (v) => Math.max(0, Math.min(v, 3)),
+        stringify: (v) => v === 0 ? "old, studio style" : v === 1 ? "2 view" : v === 2 ? "gaussian" : v === 3 ? "21-view gaussian (expensive)" : "?"
       });
-      addControl("gaussianSigma", { type: "range", min: -1, max: 1, step: 0.01 }, {
+      addControl("gaussianSigma", { type: "range", min: 1e-3, max: 1, step: 0.01 }, {
         label: "gaussian sigma",
         title: "control view blending",
-        fixRange: (v) => Math.max(-1, Math.min(v, 1)),
+        fixRange: (v) => Math.max(1e-3, Math.min(v, 1)),
         stringify: (v) => v
       });
       cfg.lkgCanvas.oncontextmenu = (ev) => {
@@ -8179,6 +8228,8 @@ host this content on a secure origin for the best user experience.
           gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, cfg.framebufferWidth, cfg.framebufferHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+          gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 0);
           gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 0);
         }
@@ -8226,7 +8277,7 @@ host this content on a secure origin for the best user experience.
       gl.attachShader(program, fs);
       {
         const vsSource = `#version 300 es
-			in vec2 a_position;
+			layout(location = 0) in vec2 a_position;
 			out vec2 v_texcoord;
 			void main() {
 			  gl_Position = vec4(a_position * 2.0 - 1.0, 0.0, 1.0);
@@ -8239,43 +8290,44 @@ host this content on a secure origin for the best user experience.
           console.warn(gl.getShaderInfoLog(vs));
       }
       let lastGeneratedFSSource;
-      let a_location;
+      let a_location = 0;
       let u_viewType;
+      let u_texture = null;
+      let u_subpixelCells = null;
       const recompileProgram = () => {
-        const fsSource = Shader(cfg);
-        if (fsSource === lastGeneratedFSSource)
-          return;
-        lastGeneratedFSSource = fsSource;
-        if (!fs) {
-          return;
+        const fsSource = createLenticularShaderSource(cfg);
+        if (fsSource !== lastGeneratedFSSource) {
+          gl.shaderSource(fs, fsSource);
+          gl.compileShader(fs);
+          if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+            console.warn(gl.getShaderInfoLog(fs));
+            return;
+          }
+          gl.linkProgram(program);
+          if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+            console.warn(gl.getProgramInfoLog(program));
+            return;
+          }
+          lastGeneratedFSSource = fsSource;
+          a_location = gl.getAttribLocation(program, "a_position");
+          u_viewType = gl.getUniformLocation(program, "u_viewType");
+          u_texture = gl.getUniformLocation(program, "u_texture");
+          u_subpixelCells = gl.getUniformLocation(program, "subpixelData");
         }
-        gl.shaderSource(fs, fsSource);
-        gl.compileShader(fs);
-        if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
-          console.warn(gl.getShaderInfoLog(fs));
-          return;
-        }
-        if (!program) {
-          return;
-        }
-        gl.linkProgram(program);
-        if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-          console.warn(gl.getProgramInfoLog(program));
-          return;
-        }
-        a_location = gl.getAttribLocation(program, "a_position");
-        u_viewType = gl.getUniformLocation(program, "u_viewType");
-        const u_texture = gl.getUniformLocation(program, "u_texture");
-        const u_subpixelCells = gl.getUniformLocation(program, "subpixelData");
+        const subpixelCells = cfg.subpixelCells;
+        const maxSubpixelFloats = MAX_SUBPIXEL_CELLS * 6;
+        const subpixelUniformData = new Float32Array(maxSubpixelFloats);
+        subpixelUniformData.set(subpixelCells.length > maxSubpixelFloats ? subpixelCells.slice(0, maxSubpixelFloats) : subpixelCells);
         const oldProgram = gl.getParameter(gl.CURRENT_PROGRAM);
         {
           gl.useProgram(program);
           gl.uniform1i(u_texture, 0);
-          gl.uniform1fv(u_subpixelCells, cfg.subpixelCells);
+          gl.uniform1fv(u_subpixelCells, subpixelUniformData);
         }
         gl.useProgram(oldProgram);
       };
       cfg.addEventListener("on-config-changed", recompileProgram);
+      recompileProgram();
       const vao = OES_VAO ? OES_VAO.createVertexArrayOES() : gl.createVertexArray();
       const vbo = gl.createBuffer();
       const oldBufferBinding = gl.getParameter(gl.ARRAY_BUFFER_BINDING);

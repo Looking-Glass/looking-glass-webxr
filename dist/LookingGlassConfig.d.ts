@@ -157,9 +157,17 @@ export declare type ViewControlArgs = {
     filterMode: number;
     /**gaussian sigma */
     gaussianSigma: number;
+    /** Horizontal focus shift applied during lenticular sampling. Matches Bridge's focus parameter before it is multiplied by quilt columns. */
+    focus: number;
+    /** Enables edge dimming across the view cone. Opt-in in WebXR to preserve its legacy output; Bridge enables this for most displays. */
+    viewDimming: boolean;
+    filterEnd: number;
+    filterSize: number;
+    edgeThreshold: number;
 };
 declare type LookingGlassConfigEvent = "on-config-changed";
 export declare class LookingGlassConfig extends EventTarget {
+    private _subpixelModeOverridden;
     private _calibration;
     private _viewControls;
     LookingGlassDetected: any;
@@ -242,6 +250,16 @@ export declare class LookingGlassConfig extends EventTarget {
     set filterMode(v: number);
     get gaussianSigma(): number;
     set gaussianSigma(v: number);
+    get focus(): number;
+    set focus(v: number);
+    get viewDimming(): boolean;
+    set viewDimming(v: boolean);
+    get filterEnd(): number;
+    set filterEnd(v: number);
+    get filterSize(): number;
+    set filterSize(v: number);
+    get edgeThreshold(): number;
+    set edgeThreshold(v: number);
     get popup(): Window | null;
     set popup(v: Window | null);
     get XRSession(): any;
@@ -264,6 +282,7 @@ export declare class LookingGlassConfig extends EventTarget {
     get tilt(): number;
     get subp(): number;
     get pitch(): number;
+    get center(): number;
     get subpixelCells(): Float32Array;
 }
 /** The global LookingGlassConfig */

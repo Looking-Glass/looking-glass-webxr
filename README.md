@@ -89,6 +89,21 @@ Since Looking Glass WebXR is engine agnostic there are a few settings that will 
 - `fovy`       - defines the vertical FOV of your camera (defined in radians)
 - `depthiness` - modifies to the view frustum to increase or decrease the perceived depth of the scene.
 - `inlineView` - changes how the original canvas on your main web page is displayed, can show the encoded subpixel matrix, a single centered view, or a quilt view.
+- `filterMode` - changes the lenticular view filtering mode: `0` nearest view, `1` two-view blend, `2` gaussian, `3` 21-view gaussian (expensive).
+- `gaussianSigma` - controls gaussian view blending width.
+- `subpixelMode` - defaults to the connected device's calibration `CellPatternMode`; setting it explicitly opts out of subsequent device-driven changes.
+- `filterEnd` and `filterSize` - control the view-cone dimming boundaries when `viewDimming` is enabled.
+- `edgeThreshold` - controls the outer screen-edge fade width.
+- `focus` - applies the Bridge-style horizontal focus shift during lenticular sampling.
+- `viewDimming` - fades view-cone edges for displays/content that need it. WebXR keeps this off by default for backward compatibility, while Bridge enables it for most displays.
+
+## Depth of field and 3D cursor
+
+Depth of field and depth-aware cursors need scene depth, normals, camera matrices, and framework-specific render passes, so they should be implemented in the app layer rather than inside the engine-agnostic WebXR polyfill.
+
+For three.js or react-three-fiber apps, render DOF with a post-processing pass such as `BokehPass`, `DepthOfFieldEffect`, or `@react-three/postprocessing` after your scene render. Use the Looking Glass focal target (`LookingGlassConfig.targetX/Y/Z`) as the focus point and update the pass focus distance from the active camera each frame.
+
+For a Unity-style 3D cursor in three.js, render a tiny depth/normal picking pass from the active center-view camera, sample the pointer pixel, unproject depth back to world space, and orient the cursor from the sampled normal. On double-click, copy that world point into `LookingGlassConfig.targetX`, `targetY`, and `targetZ`, and adjust `targetDiam` or your app camera framing as needed.
 
 ## Updating the view
 

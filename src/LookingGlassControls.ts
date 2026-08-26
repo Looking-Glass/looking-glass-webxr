@@ -213,18 +213,18 @@ export function initLookingGlassControlGUI() {
 			{
 				label: "view filtering mode",
 				title: "controls the method used for view blending",
-				fixRange: (v) => Math.max(0, Math.min(v, 2)),
-				stringify: (v) => (v === 0 ? "old, studio style" : v === 1 ? "2 view" : v === 2 ? "gaussian" : v === 3 ? "10 view gaussian": "?"),
+				fixRange: (v) => Math.max(0, Math.min(v, 3)),
+				stringify: (v) => (v === 0 ? "old, studio style" : v === 1 ? "2 view" : v === 2 ? "gaussian" : v === 3 ? "21-view gaussian (expensive)" : "?"),
 			}
 		)
 
 		addControl(
 			"gaussianSigma",
-			{type: "range", min: -1, max: 1, step: 0.01},
+			{type: "range", min: 0.001, max: 1, step: 0.01},
 			{
 				label: "gaussian sigma",
 				title: "control view blending",
-				fixRange: (v) => Math.max(-1, Math.min(v, 1)),
+				fixRange: (v) => Math.max(0.001, Math.min(v, 1)),
 				stringify: (v) => (v)
 			}
 		)

@@ -15,8 +15,8 @@
  */
 
 import XRWebGLLayer, { PRIVATE as XRWebGLLayer_PRIVATE } from "@lookingglass/webxr-polyfill/src/api/XRWebGLLayer"
-import { Shader } from "holoplay-core"
 import { getLookingGlassConfig } from "./LookingGlassConfig"
+import { createLenticularShaderSource, MAX_SUBPIXEL_CELLS } from "./LenticularShader"
 import { moveCanvasToWindow } from "./LookingGlassWindow"
 
 export const PRIVATE = Symbol("LookingGlassXRWebGLLayer")
@@ -59,6 +59,10 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 				gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, cfg.framebufferWidth, cfg.framebufferHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null)
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
+				// Match LookingGlassBridge OpenGLProgram's lenticular sampler state:
+				// focus may cross interior tiles, but quilt-edge samples must not wrap.
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
+				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_BASE_LEVEL, 0)
 				gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAX_LEVEL, 0)
 			}
@@ -112,7 +116,7 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 
 		{
 			const vsSource = `#version 300 es
-			in vec2 a_position;
+			layout(location = 0) in vec2 a_position;
 			out vec2 v_texcoord;
 			void main() {
 			  gl_Position = vec4(a_position * 2.0 - 1.0, 0.0, 1.0);
@@ -125,50 +129,52 @@ export default class LookingGlassXRWebGLLayer extends XRWebGLLayer {
 		}
 
 		let lastGeneratedFSSource
-		let a_location
+		let a_location = 0
 		let u_viewType
+		let u_texture: WebGLUniformLocation | null = null
+		let u_subpixelCells: WebGLUniformLocation | null = null
 
 		const recompileProgram = () => {
-			const fsSource = Shader(cfg)
+			const fsSource = createLenticularShaderSource(cfg)
 
-			if (fsSource === lastGeneratedFSSource) return
-			lastGeneratedFSSource = fsSource
+			if (fsSource !== lastGeneratedFSSource) {
+				gl.shaderSource(fs, fsSource)
+				gl.compileShader(fs)
+				if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
+					console.warn(gl.getShaderInfoLog(fs))
+					return
+				}
 
-			if (!fs) {
-				return
+				gl.linkProgram(program)
+				if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+					console.warn(gl.getProgramInfoLog(program))
+					return
+				}
+
+				lastGeneratedFSSource = fsSource
+				a_location = gl.getAttribLocation(program, "a_position")
+				u_viewType = gl.getUniformLocation(program, "u_viewType")
+				u_texture = gl.getUniformLocation(program, "u_texture")
+				u_subpixelCells = gl.getUniformLocation(program, "subpixelData")
 			}
 
-			gl.shaderSource(fs, fsSource)
-			gl.compileShader(fs)
-			if (!gl.getShaderParameter(fs, gl.COMPILE_STATUS)) {
-				console.warn(gl.getShaderInfoLog(fs))
-				return
-			}
-
-			if (!program) {
-				return
-			}
-
-			gl.linkProgram(program)
-			if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-				console.warn(gl.getProgramInfoLog(program))
-				return
-			}
-
-			a_location = gl.getAttribLocation(program, "a_position")
-			u_viewType = gl.getUniformLocation(program, "u_viewType")
-			const u_texture = gl.getUniformLocation(program, "u_texture")
-			const u_subpixelCells = gl.getUniformLocation(program, "subpixelData")
+			// Calibration may update the subpixel offsets without changing the
+			// generated shader source, so refresh uniforms on every config event.
+			const subpixelCells = cfg.subpixelCells
+			const maxSubpixelFloats = MAX_SUBPIXEL_CELLS * 6
+			const subpixelUniformData = new Float32Array(maxSubpixelFloats)
+			subpixelUniformData.set(subpixelCells.length > maxSubpixelFloats ? subpixelCells.slice(0, maxSubpixelFloats) : subpixelCells)
 
 			const oldProgram = gl.getParameter(gl.CURRENT_PROGRAM)
 			{
 				gl.useProgram(program)
 				gl.uniform1i(u_texture, 0) // Always use texture unit 0 for u_texture
-				gl.uniform1fv(u_subpixelCells, cfg.subpixelCells)
+				gl.uniform1fv(u_subpixelCells, subpixelUniformData)
 			}
 			gl.useProgram(oldProgram)
 		}
 		cfg.addEventListener("on-config-changed", recompileProgram)
+		recompileProgram()
 
 		const vao = OES_VAO ? OES_VAO.createVertexArrayOES() : gl.createVertexArray()
 		const vbo = gl.createBuffer()

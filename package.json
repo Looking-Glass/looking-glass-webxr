@@ -23,7 +23,8 @@
   "scripts": {
     "dev": "vite build --mode dev && vite --mode dev --host",
     "build": "vite build --mode build",
-    "production": "vite build --mode dev && vite build --mode build"
+    "production": "vite build --mode dev && vite build --mode build",
+    "test": "node --test"
   },
   "devDependencies": {
     "@babylonjs/core": "^5.43.2",
